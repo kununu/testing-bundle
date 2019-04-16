@@ -10,7 +10,7 @@ final class CachePoolFixture2 implements CachePoolFixtureInterface
     public function load(CacheItemPoolInterface $cachePool): void
     {
         $item = $cachePool->getItem('key_3');
-        $item->set('value_');
+        $item->set('value_3');
         $cachePool->save($item);
     }
 }

@@ -26,14 +26,10 @@ abstract class FixturesAwareTestCase extends BaseWebTestCase
 
     final protected function getContainer() : ContainerInterface
     {
-        $kernel = $this->createKernel();
-        $kernel->boot();
-        $container = $kernel->getContainer();
-
-        if ($container->has('test.service_container')) {
-            return $container->get('test.service_container');
-        } else {
-            return $container;
+        if (!static::$kernel || !static::$container) {
+            static::createClient();
         }
+
+        return static::$container;
     }
 }

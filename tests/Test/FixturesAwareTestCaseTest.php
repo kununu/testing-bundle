@@ -21,25 +21,53 @@ final class FixturesAwareTestCaseTest extends FixturesAwareTestCase
     /** @var Connection */
     private $monolithicConnection;
 
-//    public function testLoadCachePoolFixturesWithAppend()
-//    {
-//        /** @var CacheItemPoolInterface $cachePool1 */
-//        $cachePool1 = $this->getContainer()->get('app.cache.first');
-//
-//        $cachePool1ItemToPurge1 = $cachePool1->getItem('cache_pool_1_key_to_purge_1');
-//        $cachePool1ItemToPurge1->set('value_to_purge_1');
-//        $cachePool1->save($cachePool1ItemToPurge1);
-//
-//        $this->loadCachePoolFixtures(
-//            'app.cache.first',
-//            [],
-//            false
-//        );
-//
-//        $cachePool1ItemAfterPurge1 = $cachePool1->getItem('cache_pool_1_key_to_purge_1');
-//
-//        $this->assertNull($cachePool1ItemAfterPurge1->get());
-//    }
+    /** @var CacheItemPoolInterface */
+    private $cachePool;
+
+    public function testLoadCachePoolFixturesWithoutAppend()
+    {
+        $cachePool1ItemToPurge1 = $this->cachePool->getItem('cache_pool_1_key_to_purge_1');
+        $cachePool1ItemToPurge1->set('value_to_purge_1');
+        $this->cachePool->save($cachePool1ItemToPurge1);
+
+        $this->loadCachePoolFixtures(
+            'app.cache.first',
+            [CachePoolFixture1::class,CachePoolFixture2::class]
+        );
+
+        $cachePool1ItemAfterPurge1 = $this->cachePool->getItem('cache_pool_1_key_to_purge_1');
+        $cachePool1Item1 = $this->cachePool->getItem('key_1');
+        $cachePool1Item2 = $this->cachePool->getItem('key_2');
+        $cachePool1Item3 = $this->cachePool->getItem('key_3');
+
+        $this->assertNull($cachePool1ItemAfterPurge1->get());
+        $this->assertEquals('value_1', $cachePool1Item1->get());
+        $this->assertEquals('value_2', $cachePool1Item2->get());
+        $this->assertEquals('value_3', $cachePool1Item3->get());
+    }
+
+    public function testLoadCachePoolFixturesWithAppend()
+    {
+        $cachePool1ItemToNotPurge1 = $this->cachePool->getItem('cache_pool_1_key_to_not_purge_1');
+        $cachePool1ItemToNotPurge1->set('value_to_not_purge_1');
+        $this->cachePool->save($cachePool1ItemToNotPurge1);
+
+        $this->loadCachePoolFixtures(
+            'app.cache.first',
+            [CachePoolFixture1::class,CachePoolFixture2::class],
+            true
+        );
+
+        $cachePool1ItemAfterToNotPurge1 = $this->cachePool->getItem('cache_pool_1_key_to_not_purge_1');
+        $cachePool1Item1 = $this->cachePool->getItem('key_1');
+        $cachePool1Item2 = $this->cachePool->getItem('key_2');
+        $cachePool1Item3 = $this->cachePool->getItem('key_3');
+
+        $this->assertEquals('value_to_not_purge_1', $cachePool1ItemAfterToNotPurge1->get());
+        $this->assertEquals('value_1', $cachePool1Item1->get());
+        $this->assertEquals('value_2', $cachePool1Item2->get());
+        $this->assertEquals('value_3', $cachePool1Item3->get());
+    }
 
     public function testLoadDbFixturesWithAppend()
     {
@@ -91,6 +119,7 @@ final class FixturesAwareTestCaseTest extends FixturesAwareTestCase
     {
         parent::setUp();
 
+        $this->cachePool = $this->getContainer()->get('app.cache.first');
         $this->defaultConnection = $this->getContainer()->get('doctrine.dbal.default_connection');
         $this->monolithicConnection = $this->getContainer()->get('doctrine.dbal.monolithic_connection');
 
