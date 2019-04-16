@@ -5,7 +5,7 @@
     "require": {
         "php": "^7.2",
         "symfony/framework-bundle": "^4.2",
-        "kununu/data-fixtures": "^1.0",
+        "kununu/data-fixtures": "dev-initial-version",
         "symfony/config": "^4.2",
         "symfony/dependency-injection": "^4.2",
         "symfony/http-kernel": "^4.2"
