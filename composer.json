@@ -1,6 +1,5 @@
 {
     "name": "kununu/testing-bundle",
-    "version": "1.0.0",
     "description": "Testing made easy by providing helper classes and fixtures loading",
     "type": "library",
     "require": {
@@ -33,8 +32,8 @@
     },
     "repositories": [
         {
-            "type": "path",
-            "url": "../data-fixtures"
+          "type": "vcs",
+          "url": "https://github.com/kununu/data-fixtures.git"
         }
     ]
 }
