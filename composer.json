@@ -32,9 +32,9 @@
     },
     "repositories": [
         {
-          "type": "vcs",
-          "url": "https://github.com/kununu/data-fixtures.git",
-          "no-api": true
+            "type": "vcs",
+            "url": "https://github.com/kununu/data-fixtures.git",
+            "no-api": true
         }
     ]
 }
