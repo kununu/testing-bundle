@@ -1,0 +1,12 @@
+doctrine:
+    dbal:
+        connections:
+            default:
+                driver: pdo_sqlite
+                path: "%kernel.cache_dir%/default.db"
+                charset: UTF8
+
+            monolithic:
+                driver: pdo_sqlite
+                path: "%kernel.cache_dir%/monolithic.db"
+                charset: UTF8

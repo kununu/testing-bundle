@@ -1,0 +1,7 @@
+framework:
+    cache:
+        pools:
+            app.cache.first:
+                adapter: cache.adapter.memcached
+            app.cache.second:
+                adapter: cache.adapter.memcached
