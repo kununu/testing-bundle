@@ -72,7 +72,6 @@ final class IntegrationTest extends FixturesAwareTestCase
 ### Connection Fixtures
 
 All Doctrine Connections are elegible to be used to load fixtures.
-
 For example, assuming you are using the [Doctrine Bundle](https://github.com/doctrine/DoctrineBundle).
 
 ```
