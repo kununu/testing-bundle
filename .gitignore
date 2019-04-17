@@ -1,0 +1,7 @@
+.php_cs.cache
+composer.lock
+.idea/
+.phpunit.result.cache
+tests/App/var/
+vendor/
+tests/.results/

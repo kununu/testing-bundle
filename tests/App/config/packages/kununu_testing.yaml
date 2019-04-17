@@ -1,0 +1,8 @@
+kununu_testing:
+    connections:
+        default:
+            excluded_tables:
+                - table_to_exclude
+        monolithic:
+            excluded_tables:
+                - table_to_exclude

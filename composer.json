@@ -1,0 +1,42 @@
+{
+    "name": "kununu/testing-bundle",
+    "description": "Testing made easy by providing helper classes and fixtures loading",
+    "type": "library",
+    "require": {
+        "php": "^7.2",
+        "symfony/framework-bundle": "^4.2",
+        "kununu/data-fixtures": "^1.0.1",
+        "symfony/config": "^4.2",
+        "symfony/dependency-injection": "^4.2",
+        "symfony/http-kernel": "^4.2"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^8.1",
+        "matthiasnoback/symfony-dependency-injection-test": "^4.0",
+        "doctrine/doctrine-bundle": "^1.10",
+        "symfony/browser-kit": "^4.2"
+    },
+    "suggest": {
+        "ext-pdo_sqlite": "To run Integration Tests."
+    },
+    "autoload": {
+        "psr-4": {
+            "Kununu\\TestingBundle\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Kununu\\TestingBundle\\Tests\\": "tests/"
+        }
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/kununu/data-fixtures.git",
+            "no-api": true
+        }
+    ]
+}
