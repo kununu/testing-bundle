@@ -8,7 +8,7 @@ withEnv([
     ansiColor {
         timestamps {
             defaultPipeline.getSource()
-            defaultPipeline.runPhpLibTests()
+            defaultPipeline.runPhpLibTests("--exclude-group integration")
             defaultPipeline.runSonar("php")
 
             if (env.BRANCH_NAME in ["master"]) {

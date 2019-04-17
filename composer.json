@@ -11,11 +11,13 @@
         "symfony/http-kernel": "^4.2"
     },
     "require-dev": {
-        "ext-pdo_sqlite": "*",
         "phpunit/phpunit": "^8.1",
         "matthiasnoback/symfony-dependency-injection-test": "^4.0",
         "doctrine/doctrine-bundle": "^1.10",
         "symfony/browser-kit": "^4.2"
+    },
+    "suggest": {
+        "ext-pdo_sqlite": "To run Integration Tests."
     },
     "autoload": {
         "psr-4": {

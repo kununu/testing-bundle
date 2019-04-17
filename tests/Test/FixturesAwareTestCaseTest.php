@@ -13,6 +13,9 @@ use Kununu\TestingBundle\Tests\App\Fixtures\Connection\ConnectionFixture1;
 use Kununu\TestingBundle\Tests\App\Fixtures\Connection\ConnectionSqlFixture1;
 use Psr\Cache\CacheItemPoolInterface;
 
+/**
+ * @group integration
+ */
 final class FixturesAwareTestCaseTest extends FixturesAwareTestCase
 {
     /** @var Connection */

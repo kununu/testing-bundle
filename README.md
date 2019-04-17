@@ -176,5 +176,10 @@ Run the tests by doing:
 
 ```
 composer install
-vendor/phpunit/phpunit/phpunit tests
+
+kununu test lib testing-bundle [--exclude-group integration]
+# OR
+vendor/phpunit/phpunit/phpunit tests [--exclude-group integration]
 ```
+
+**If you want to run the integration tests you will need the extension `ext-pdo_sqlite`.
