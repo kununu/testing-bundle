@@ -14,6 +14,8 @@ use Symfony\Component\DependencyInjection\Reference;
 
 final class CachePoolCompilerPass implements CompilerPassInterface
 {
+    private const SERVICE_PREFIX = 'kununu_testing.orchestrator.cache_pools';
+
     public function process(ContainerBuilder $container)
     {
         $cachePoolServices = $container->findTaggedServiceIds('cache.pool');
@@ -33,17 +35,17 @@ final class CachePoolCompilerPass implements CompilerPassInterface
         $cachePool = new Reference($id);
 
         // Purger Definition for the CachePool with provided $id
-        $purgerId = sprintf('kununu_testing.orchestrator.cache_pools.%s.purger', $id);
+        $purgerId = sprintf('%s.%s.purger',self::SERVICE_PREFIX, $id);
         $purgerDefinition = new Definition(CachePoolPurger::class, [$cachePool]);
         $container->setDefinition($purgerId, $purgerDefinition);
 
         // Executor Definition for the CachePool with provided $id
-        $executorId = sprintf('kununu_testing.orchestrator.cache_pools.%s.executor', $id);
+        $executorId = sprintf('%s.%s.executor',self::SERVICE_PREFIX, $id);
         $executorDefinition = new Definition(CachePoolExecutor::class, [$cachePool, new Reference($purgerId)]);
         $container->setDefinition($executorId, $executorDefinition);
 
         // Loader Definition for the CachePool with provided $id
-        $loaderId = sprintf('kununu_testing.orchestrator.cache_pools.%s.loader', $id);
+        $loaderId = sprintf('%s.%s.loader',self::SERVICE_PREFIX, $id);
         $loaderDefinition = new Definition(CachePoolFixturesLoader::class);
         $container->setDefinition($loaderId, $loaderDefinition);
 
@@ -57,6 +59,6 @@ final class CachePoolCompilerPass implements CompilerPassInterface
         );
         $cachePoolOrchestratorDefinition->setPublic(true);
 
-        $container->setDefinition(sprintf('kununu_testing.orchestrator.cache_pools.%s', $id), $cachePoolOrchestratorDefinition);
+        $container->setDefinition(sprintf('%s.%s', self::SERVICE_PREFIX, $id), $cachePoolOrchestratorDefinition);
     }
 }
