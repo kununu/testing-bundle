@@ -2,18 +2,18 @@
 
 namespace Kununu\TestingBundle\Test;
 
-use Symfony\Bundle\FrameworkBundle\Client;
+use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Component\HttpFoundation\Response;
 
 abstract class WebTestCase extends FixturesAwareTestCase
 {
-    final protected function getClient() : Client
+    final protected function doRequest(RequestBuilder $builder): Response
     {
-        return static::createClient();
-    }
+        $this->initClient();
 
-    final protected function doRequest(Client $client, RequestBuilder $builder): Response
-    {
+        /** @var KernelBrowser $client */
+        $client = static::$client;
+
         $client->request(...$builder->build());
 
         $response = $client->getResponse();
@@ -29,5 +29,12 @@ abstract class WebTestCase extends FixturesAwareTestCase
         }
 
         return $response;
+    }
+
+    private function initClient() : void
+    {
+        if (!static::$client) {
+            static::createClient();
+        }
     }
 }
