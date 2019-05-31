@@ -14,7 +14,6 @@ final class WebTestCaseTest extends WebTestCase
     public function testDoRequest()
     {
         $response = $this->doRequest(
-            $this->getClient(),
             RequestBuilder::aGetRequest()->withUri('/app/response')
         );
 
