@@ -7,16 +7,17 @@ use Symfony\Component\HttpFoundation\Response;
 
 abstract class WebTestCase extends FixturesAwareTestCase
 {
+    /** @var KernelBrowser $client */
+    private $client;
+
     final protected function doRequest(RequestBuilder $builder): Response
     {
         $this->initClient();
 
-        /** @var KernelBrowser $client */
-        $client = static::$client;
+        $this->client->request(...$builder->build());
 
-        $client->request(...$builder->build());
-
-        $response = $client->getResponse();
+        /** @var Response $response */
+        $response = $this->client->getResponse();
 
         // Since there is no content, then there is also no content-type header.
         if ($response->getStatusCode() !== Response::HTTP_NO_CONTENT) {
@@ -33,8 +34,8 @@ abstract class WebTestCase extends FixturesAwareTestCase
 
     private function initClient() : void
     {
-        if (!static::$client) {
-            static::createClient();
+        if (!$this->client) {
+            $this->client = static::createClient();
         }
     }
 }
