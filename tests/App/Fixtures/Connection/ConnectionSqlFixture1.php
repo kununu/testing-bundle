@@ -6,7 +6,7 @@ use Kununu\DataFixtures\Adapter\ConnectionSqlFixture;
 
 final class ConnectionSqlFixture1 extends ConnectionSqlFixture
 {
-    protected function filesName(): array
+    protected function fileNames(): array
     {
         return [
             __DIR__ . '/Sql/fixture1.sql',
