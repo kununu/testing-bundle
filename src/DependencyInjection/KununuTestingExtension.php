@@ -21,5 +21,9 @@ final class KununuTestingExtension extends Extension
                 );
             }
         }
+
+        if (!empty($config['elastic_search'])) {
+            $container->setParameter('kununu_testing.elastic_search', $config['elastic_search']);
+        }
     }
 }

@@ -6,3 +6,7 @@ kununu_testing:
         monolithic:
             excluded_tables:
                 - table_to_exclude
+    elastic_search:
+        my_index_alias:
+            service: 'Kununu\TestingBundle\Tests\App\ElasticSearch'
+            index_name: 'my_index'

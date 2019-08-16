@@ -24,6 +24,14 @@ abstract class FixturesAwareTestCase extends BaseWebTestCase
         $orchestrator->execute($classNames, $append);
     }
 
+    final protected function loadElasticSearchFixtures(string $alias, array $classNames = [], bool $append = false) : void
+    {
+        /** @var Orchestrator $orchestrator */
+        $orchestrator = $this->getContainer()->get(sprintf('kununu_testing.orchestrator.elastic_search.%s', $alias));
+
+        $orchestrator->execute($classNames, $append);
+    }
+
     final protected function getContainer() : ContainerInterface
     {
         if (!static::$kernel || !static::$container) {
