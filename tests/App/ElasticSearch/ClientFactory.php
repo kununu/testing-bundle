@@ -5,7 +5,7 @@ namespace Kununu\TestingBundle\Tests\App\ElasticSearch;
 use Elasticsearch\Client;
 use Elasticsearch\ClientBuilder;
 
-class ClientFactory
+final class ClientFactory
 {
     public static function getInstance(array $hosts): Client
     {
