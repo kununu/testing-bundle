@@ -5,4 +5,4 @@ services:
     Kununu\TestingBundle\Tests\App\ElasticSearch:
         factory: ['@Kununu\TestingBundle\Tests\App\ElasticSearch\ClientFactory', getInstance]
         arguments:
-            - ['172.17.0.38']
+            - ['%elasticsearch_url%']

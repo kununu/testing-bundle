@@ -39,6 +39,44 @@ final class KununuTestingExtensionTest extends AbstractExtensionTestCase
         );
     }
 
+    public function testThatWhenElasticSearchIsConfiguredThenParametersWithConfigsAreSet()
+    {
+        $this->load([
+            'elastic_search' => [
+                'alias_1' => [
+                    'index_name' => 'index_1',
+                    'service' => 'service_1'
+                ],
+                'alias_2' => [
+                    'index_name' => 'index_2',
+                    'service' => 'service_1'
+                ],
+                'alias_3' => [
+                    'index_name' => 'index_1',
+                    'service' => 'service_2'
+                ],
+            ]
+        ]);
+
+        $this->assertContainerBuilderHasParameter(
+            'kununu_testing.elastic_search',
+            [
+                'alias_1' => [
+                    'index_name' => 'index_1',
+                    'service' => 'service_1'
+                ],
+                'alias_2' => [
+                    'index_name' => 'index_2',
+                    'service' => 'service_1'
+                ],
+                'alias_3' => [
+                    'index_name' => 'index_1',
+                    'service' => 'service_2'
+                ],
+            ]
+        );
+    }
+
     protected function getContainerExtensions(): array
     {
         return [

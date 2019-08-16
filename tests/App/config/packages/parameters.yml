@@ -1,0 +1,2 @@
+parameters:
+    elasticsearch_url: ''
