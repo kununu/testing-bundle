@@ -157,7 +157,7 @@ final class IntegrationTest extends FixturesAwareTestCase
 {
     public function testIntegration()
     {
-        // Start with an empty database and loading data from Fixture1
+        // Start with an empty index and loading data from Fixture1
         $this->loadElasticSearchFixtures(
             'my_index_alias',
             [Fixture1::class]
