@@ -41,7 +41,7 @@ final class ElasticSearchCompilerPass implements CompilerPassInterface
 
         // Executor Definition
         $executorId = sprintf('%s.%s.executor',self::SERVICE_PREFIX, $alias);
-        $executorDefinition = new Definition(ElasticSearchExecutor::class, [$client, new Reference($purgerId)]);
+        $executorDefinition = new Definition(ElasticSearchExecutor::class, [$client, $indexName, new Reference($purgerId)]);
         $container->setDefinition($executorId, $executorDefinition);
 
         // Loader definition

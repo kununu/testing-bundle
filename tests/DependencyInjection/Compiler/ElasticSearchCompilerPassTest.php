@@ -58,6 +58,11 @@ final class ElasticSearchCompilerPassTest extends AbstractCompilerPassTestCase
             $this->assertContainerBuilderHasServiceDefinitionWithArgument(
                 $executorId,
                 1,
+                $indexName
+            );
+            $this->assertContainerBuilderHasServiceDefinitionWithArgument(
+                $executorId,
+                2,
                 new Reference($purgerId)
             );
             $this->assertContainerBuilderHasService(

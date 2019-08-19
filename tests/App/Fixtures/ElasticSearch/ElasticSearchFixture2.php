@@ -7,11 +7,11 @@ use Kununu\DataFixtures\Adapter\ElasticSearchFixtureInterface;
 
 final class ElasticSearchFixture2 implements ElasticSearchFixtureInterface
 {
-    public function load(Client $elasticSearch): void
+    public function load(Client $elasticSearch, string $indexName): void
     {
         $elasticSearch->index(
             [
-                'index' => 'my_index',
+                'index' => $indexName,
                 'id'    => 'my_id_2',
                 'body'  => ['field' => 'value_2']
             ]
