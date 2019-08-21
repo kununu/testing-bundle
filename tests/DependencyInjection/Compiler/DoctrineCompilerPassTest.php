@@ -13,15 +13,15 @@ use Symfony\Component\DependencyInjection\Reference;
 
 final class DoctrineCompilerPassTest extends AbstractCompilerPassTestCase
 {
-    public function testThatCreatesOrchestratorForEachDoctrineConnection()
+    public function testThatCreatesOrchestratorForEachDoctrineConnection(): void
     {
         $connections = [
-            'default' => 'doctrine.default_connection',
-            'monolithic' => 'doctrine.monolithic_connection'
+            'default'    => 'doctrine.default_connection',
+            'monolithic' => 'doctrine.monolithic_connection',
         ];
 
         $tables = [
-            'default' => ['table1', 'table2'],
+            'default'    => ['table1', 'table2'],
             'monolithic' => ['table1', 'table3'],
         ];
 
@@ -30,14 +30,14 @@ final class DoctrineCompilerPassTest extends AbstractCompilerPassTestCase
         $this->setParameter(
             'kununu_testing.connections.default',
             [
-                'excluded_tables' => $tables['default']
+                'excluded_tables' => $tables['default'],
             ]
         );
 
         $this->setParameter(
             'kununu_testing.connections.monolithic',
             [
-                'excluded_tables' => $tables['monolithic']
+                'excluded_tables' => $tables['monolithic'],
             ]
         );
         $this->compile();

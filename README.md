@@ -126,6 +126,59 @@ final class IntegrationTest extends FixturesAwareTestCase
 }
 ```
 
+### Elasticsearch Fixtures
+
+If you want to load Elasticsearch fixtures in your tests first you will need to configure the bundle:
+
+```
+kununu_testing:
+    elastic_search:
+        my_index_alias:
+            service: 'My\Elasticsearch\Client'
+            index_name: 'my_index_name'
+```
+
+In your tests you can extend the classes `FixturesAwareTestCase` or `WebTestCase` which expose the following method:
+
+```
+loadElasticSearchFixtures(string $alias, array $classNames = [], bool $append = false)
+```
+
+- `$alias` - Alias defined above
+- `$classNames` - Array with classes names of fixtures to load
+- `$append` - If `false` the cache pool will be purged before loading your fixtures
+
+**Example**
+
+```
+use Kununu\TestingBundle\Test\FixturesAwareTestCase;
+
+final class IntegrationTest extends FixturesAwareTestCase
+{
+    public function testIntegration()
+    {
+        // Start with an empty index and loading data from Fixture1
+        $this->loadElasticSearchFixtures(
+            'my_index_alias',
+            [Fixture1::class]
+        );
+        
+        // Start from a empty index
+        $this->loadElasticSearchFixtures(
+            'my_index_alias',
+            []
+        );
+        
+        // Do not purge index before loading fixtures
+        $this->loadElasticSearchFixtures(
+            'my_index_alias',
+            [Fixture1::class],
+            true
+        );
+    }
+}
+```
+
 ## Making a Request
 
 The class `WebTestCase` exposes two methods that help you testing your controllers:
@@ -168,6 +221,11 @@ kununu_testing:
         connection_name:
             excluded_tables:
                 - table_to_exclude_from_purge
+                
+    elastic_search:
+        my_index_alias: # Alias to be use to load fixtures for the configured index using the defined service
+            service: 'Kununu\TestingBundle\Tests\App\ElasticSearch' # Service Id of an instance of Elasticsearch\Client 
+            index_name: 'my_index_name' # name of your index
 ```
 
 ## Tests
@@ -183,3 +241,4 @@ vendor/phpunit/phpunit/phpunit tests [--exclude-group integration]
 ```
 
 **If you want to run the integration tests you will need the extension `ext-pdo_sqlite`.**
+**If you want to run the integration tests you will need to have an Elasticsearch cluster running. To change the hosts of the cluster please go to `tests/App/config/packages/parameters.yml`.**

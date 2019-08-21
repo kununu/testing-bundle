@@ -21,7 +21,7 @@ final class Orchestrator
         $this->loader = $loader;
     }
 
-    public function execute(array $fixturesClassNames, bool $append) : void
+    public function execute(array $fixturesClassNames, bool $append): void
     {
         foreach ($fixturesClassNames as $className) {
             $this->loader->loadFromClassName($className);

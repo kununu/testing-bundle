@@ -2,69 +2,78 @@
 
 namespace Kununu\TestingBundle\Tests\DependencyInjection\Compiler;
 
-use Kununu\DataFixtures\Executor\CachePoolExecutor;
-use Kununu\DataFixtures\Loader\CachePoolFixturesLoader;
-use Kununu\DataFixtures\Purger\CachePoolPurger;
-use Kununu\TestingBundle\DependencyInjection\Compiler\CachePoolCompilerPass;
+use Kununu\DataFixtures\Executor\ElasticSearchExecutor;
+use Kununu\DataFixtures\Loader\ElasticSearchFixturesLoader;
+use Kununu\DataFixtures\Purger\ElasticSearchPurger;
+use Kununu\TestingBundle\DependencyInjection\Compiler\ElasticSearchCompilerPass;
 use Kununu\TestingBundle\Service\Orchestrator;
 use Matthias\SymfonyDependencyInjectionTest\PhpUnit\AbstractCompilerPassTestCase;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Reference;
 
-final class CachePoolCompilerPassTest extends AbstractCompilerPassTestCase
+final class ElasticSearchCompilerPassTest extends AbstractCompilerPassTestCase
 {
-    public function testThatCreatesOrchestratorForEachServiceTaggedAsCachePool(): void
+    public function testThatCreatesOrchestratorForEachDoctrineConnection(): void
     {
-        $cachePoolsIds = [
-            'cache_pool.service_1',
-            'cache_pool.service_2',
+        $indexes = [
+            'alias_1' => ['index_name' => 'index1', 'service' => 'elastic_search_service_1'],
+            'alias_2' => ['index_name' => 'index2', 'service' => 'elastic_search_service_1'],
+            'alias_3' => ['index_name' => 'index1', 'service' => 'elastic_search_service_2'],
         ];
 
-        foreach ($cachePoolsIds as $cachePoolId) {
-            $cachePoolDefinition = new Definition();
-            $cachePoolDefinition->addTag('cache.pool');
-            $this->setDefinition($cachePoolId, $cachePoolDefinition);
-        }
+        $this->setParameter('kununu_testing.elastic_search', $indexes);
 
         $this->compile();
 
-        foreach ($cachePoolsIds as $cachePoolId) {
-            $purgerId = sprintf('kununu_testing.orchestrator.cache_pools.%s.purger', $cachePoolId);
-            $executorId = sprintf('kununu_testing.orchestrator.cache_pools.%s.executor', $cachePoolId);
-            $loaderId = sprintf('kununu_testing.orchestrator.cache_pools.%s.loader', $cachePoolId);
-            $orchestratorId = sprintf('kununu_testing.orchestrator.cache_pools.%s', $cachePoolId);
+        foreach ($indexes as $alias => $config) {
+            $purgerId = sprintf('kununu_testing.orchestrator.elastic_search.%s.purger', $alias);
+            $executorId = sprintf('kununu_testing.orchestrator.elastic_search.%s.executor', $alias);
+            $loaderId = sprintf('kununu_testing.orchestrator.elastic_search.%s.loader', $alias);
+            $orchestratorId = sprintf('kununu_testing.orchestrator.elastic_search.%s', $alias);
+
+            $indexName = $config['index_name'];
+            $elasticSearchClient = $config['service'];
 
             $this->assertContainerBuilderHasServiceDefinitionWithArgument(
                 $purgerId,
                 0,
-                new Reference($cachePoolId)
+                new Reference($elasticSearchClient)
+            );
+            $this->assertContainerBuilderHasServiceDefinitionWithArgument(
+                $purgerId,
+                1,
+                $indexName
             );
             $this->assertContainerBuilderHasService(
                 $purgerId,
-                CachePoolPurger::class
+                ElasticSearchPurger::class
             );
             $this->assertTrue($this->container->getDefinition($purgerId)->isPrivate());
 
             $this->assertContainerBuilderHasServiceDefinitionWithArgument(
                 $executorId,
                 0,
-                new Reference($cachePoolId)
+                new Reference($elasticSearchClient)
             );
             $this->assertContainerBuilderHasServiceDefinitionWithArgument(
                 $executorId,
                 1,
+                $indexName
+            );
+            $this->assertContainerBuilderHasServiceDefinitionWithArgument(
+                $executorId,
+                2,
                 new Reference($purgerId)
             );
             $this->assertContainerBuilderHasService(
                 $executorId,
-                CachePoolExecutor::class
+                ElasticSearchExecutor::class
             );
             $this->assertTrue($this->container->getDefinition($executorId)->isPrivate());
 
             $this->assertContainerBuilderHasService(
                 $loaderId,
-                CachePoolFixturesLoader::class
+                ElasticSearchFixturesLoader::class
             );
             $this->assertTrue($this->container->getDefinition($loaderId)->isPrivate());
 
@@ -93,6 +102,6 @@ final class CachePoolCompilerPassTest extends AbstractCompilerPassTestCase
 
     protected function registerCompilerPass(ContainerBuilder $container): void
     {
-        $container->addCompilerPass(new CachePoolCompilerPass());
+        $container->addCompilerPass(new ElasticSearchCompilerPass());
     }
 }

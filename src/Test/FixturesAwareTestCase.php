@@ -8,7 +8,7 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase as BaseWebTestCase;
 
 abstract class FixturesAwareTestCase extends BaseWebTestCase
 {
-    final protected function loadDbFixtures(string $connectionName, array $classNames = [], bool $append = false)
+    final protected function loadDbFixtures(string $connectionName, array $classNames = [], bool $append = false): void
     {
         /** @var Orchestrator $orchestrator */
         $orchestrator = $this->getContainer()->get(sprintf('kununu_testing.orchestrator.connections.%s', $connectionName));
@@ -16,7 +16,7 @@ abstract class FixturesAwareTestCase extends BaseWebTestCase
         $orchestrator->execute($classNames, $append);
     }
 
-    final protected function loadCachePoolFixtures(string $cachePoolServiceId, array $classNames = [], bool $append = false) : void
+    final protected function loadCachePoolFixtures(string $cachePoolServiceId, array $classNames = [], bool $append = false): void
     {
         /** @var Orchestrator $orchestrator */
         $orchestrator = $this->getContainer()->get(sprintf('kununu_testing.orchestrator.cache_pools.%s', $cachePoolServiceId));
@@ -24,7 +24,15 @@ abstract class FixturesAwareTestCase extends BaseWebTestCase
         $orchestrator->execute($classNames, $append);
     }
 
-    final protected function getContainer() : ContainerInterface
+    final protected function loadElasticSearchFixtures(string $alias, array $classNames = [], bool $append = false): void
+    {
+        /** @var Orchestrator $orchestrator */
+        $orchestrator = $this->getContainer()->get(sprintf('kununu_testing.orchestrator.elastic_search.%s', $alias));
+
+        $orchestrator->execute($classNames, $append);
+    }
+
+    final protected function getContainer(): ContainerInterface
     {
         if (!static::$kernel || !static::$container) {
             static::createClient();

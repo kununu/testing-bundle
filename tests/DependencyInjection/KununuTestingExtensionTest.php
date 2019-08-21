@@ -7,20 +7,20 @@ use Matthias\SymfonyDependencyInjectionTest\PhpUnit\AbstractExtensionTestCase;
 
 final class KununuTestingExtensionTest extends AbstractExtensionTestCase
 {
-    public function testThatWhenConnectionsAreConfiguredThenParametersWithConnectionConfigsAreSet()
+    public function testThatWhenConnectionsAreConfiguredThenParametersWithConnectionConfigsAreSet(): void
     {
         $this->load([
             'connections' => [
                 'default' => [
-                    'excluded_tables' => ['table1', 'table2']
+                    'excluded_tables' => ['table1', 'table2'],
                 ],
                 'monolithic' => [
-                    'excluded_tables' => ['table1', 'table3']
+                    'excluded_tables' => ['table1', 'table3'],
                 ],
                 'other_connection' => [
-                    'excluded_tables' => []
-                ]
-            ]
+                    'excluded_tables' => [],
+                ],
+            ],
         ]);
 
         $this->assertContainerBuilderHasParameter(
@@ -39,10 +39,48 @@ final class KununuTestingExtensionTest extends AbstractExtensionTestCase
         );
     }
 
+    public function testThatWhenElasticSearchIsConfiguredThenParametersWithConfigsAreSet(): void
+    {
+        $this->load([
+            'elastic_search' => [
+                'alias_1' => [
+                    'index_name' => 'index_1',
+                    'service'    => 'service_1',
+                ],
+                'alias_2' => [
+                    'index_name' => 'index_2',
+                    'service'    => 'service_1',
+                ],
+                'alias_3' => [
+                    'index_name' => 'index_1',
+                    'service'    => 'service_2',
+                ],
+            ],
+        ]);
+
+        $this->assertContainerBuilderHasParameter(
+            'kununu_testing.elastic_search',
+            [
+                'alias_1' => [
+                    'index_name' => 'index_1',
+                    'service'    => 'service_1',
+                ],
+                'alias_2' => [
+                    'index_name' => 'index_2',
+                    'service'    => 'service_1',
+                ],
+                'alias_3' => [
+                    'index_name' => 'index_1',
+                    'service'    => 'service_2',
+                ],
+            ]
+        );
+    }
+
     protected function getContainerExtensions(): array
     {
         return [
-            new KununuTestingExtension()
+            new KununuTestingExtension(),
         ];
     }
 }

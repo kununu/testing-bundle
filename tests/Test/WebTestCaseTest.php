@@ -11,7 +11,7 @@ use Kununu\TestingBundle\Test\WebTestCase;
  */
 final class WebTestCaseTest extends WebTestCase
 {
-    public function testDoRequest()
+    public function testDoRequest(): void
     {
         $response = $this->doRequest(
             RequestBuilder::aGetRequest()->withUri('/app/response')
@@ -20,7 +20,7 @@ final class WebTestCaseTest extends WebTestCase
         $this->assertEquals('{"key":"value"}', $response->getContent());
     }
 
-    public function testThatExtendsFixturesAwareTestCase()
+    public function testThatExtendsFixturesAwareTestCase(): void
     {
         $this->assertTrue(is_subclass_of($this, FixturesAwareTestCase::class));
     }

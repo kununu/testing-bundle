@@ -7,7 +7,7 @@ use Symfony\Component\DependencyInjection\Extension\Extension;
 
 final class KununuTestingExtension extends Extension
 {
-    public function load(array $configs, ContainerBuilder $container)
+    public function load(array $configs, ContainerBuilder $container): void
     {
         $configuration = new Configuration();
 
@@ -20,6 +20,10 @@ final class KununuTestingExtension extends Extension
                     $connectionConfigs
                 );
             }
+        }
+
+        if (!empty($config['elastic_search'])) {
+            $container->setParameter('kununu_testing.elastic_search', $config['elastic_search']);
         }
     }
 }

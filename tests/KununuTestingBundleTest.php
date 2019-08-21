@@ -4,17 +4,18 @@ namespace Kununu\TestingBundle\Tests;
 
 use Kununu\TestingBundle\DependencyInjection\Compiler\CachePoolCompilerPass;
 use Kununu\TestingBundle\DependencyInjection\Compiler\DoctrineCompilerPass;
+use Kununu\TestingBundle\DependencyInjection\Compiler\ElasticSearchCompilerPass;
 use Kununu\TestingBundle\KununuTestingBundle;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 final class KununuTestingBundleTest extends TestCase
 {
-    public function testBuild()
+    public function testBuild(): void
     {
         $containerMock = $this->getMockBuilder(ContainerBuilder::class)->getMock();
         $containerMock
-            ->expects($this->exactly(2))
+            ->expects($this->exactly(3))
             ->method('addCompilerPass')
             ->withConsecutive(
                 [
@@ -25,6 +26,11 @@ final class KununuTestingBundleTest extends TestCase
                 [
                     $this->callback(function($subject) {
                         return $subject instanceof DoctrineCompilerPass;
+                    }),
+                ],
+                [
+                    $this->callback(function($subject) {
+                        return $subject instanceof ElasticSearchCompilerPass;
                     }),
                 ]
             );

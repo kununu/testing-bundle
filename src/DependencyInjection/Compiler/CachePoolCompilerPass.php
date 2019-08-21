@@ -16,7 +16,7 @@ final class CachePoolCompilerPass implements CompilerPassInterface
 {
     private const SERVICE_PREFIX = 'kununu_testing.orchestrator.cache_pools';
 
-    public function process(ContainerBuilder $container)
+    public function process(ContainerBuilder $container): void
     {
         $cachePoolServices = $container->findTaggedServiceIds('cache.pool');
 
@@ -29,23 +29,23 @@ final class CachePoolCompilerPass implements CompilerPassInterface
         }
     }
 
-    private function buildCachePoolOrchestrator(ContainerBuilder $container, string $id) : void
+    private function buildCachePoolOrchestrator(ContainerBuilder $container, string $id): void
     {
         /** @var CacheItemPoolInterface $cachePool */
         $cachePool = new Reference($id);
 
         // Purger Definition for the CachePool with provided $id
-        $purgerId = sprintf('%s.%s.purger',self::SERVICE_PREFIX, $id);
+        $purgerId = sprintf('%s.%s.purger', self::SERVICE_PREFIX, $id);
         $purgerDefinition = new Definition(CachePoolPurger::class, [$cachePool]);
         $container->setDefinition($purgerId, $purgerDefinition);
 
         // Executor Definition for the CachePool with provided $id
-        $executorId = sprintf('%s.%s.executor',self::SERVICE_PREFIX, $id);
+        $executorId = sprintf('%s.%s.executor', self::SERVICE_PREFIX, $id);
         $executorDefinition = new Definition(CachePoolExecutor::class, [$cachePool, new Reference($purgerId)]);
         $container->setDefinition($executorId, $executorDefinition);
 
         // Loader Definition for the CachePool with provided $id
-        $loaderId = sprintf('%s.%s.loader',self::SERVICE_PREFIX, $id);
+        $loaderId = sprintf('%s.%s.loader', self::SERVICE_PREFIX, $id);
         $loaderDefinition = new Definition(CachePoolFixturesLoader::class);
         $container->setDefinition($loaderId, $loaderDefinition);
 

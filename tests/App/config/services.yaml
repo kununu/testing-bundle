@@ -1,0 +1,8 @@
+services:
+
+    Kununu\TestingBundle\Tests\App\ElasticSearch\ClientFactory:
+
+    Kununu\TestingBundle\Tests\App\ElasticSearch:
+        factory: ['@Kununu\TestingBundle\Tests\App\ElasticSearch\ClientFactory', getInstance]
+        arguments:
+            - ['%elasticsearch_url%']
