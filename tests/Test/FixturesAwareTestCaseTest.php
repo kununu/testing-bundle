@@ -16,7 +16,6 @@ use Kununu\TestingBundle\Tests\App\Fixtures\Connection\ConnectionSqlFixture1;
 use Kununu\TestingBundle\Tests\App\Fixtures\ElasticSearch\ElasticSearchFixture1;
 use Kununu\TestingBundle\Tests\App\Fixtures\ElasticSearch\ElasticSearchFixture2;
 use Psr\Cache\CacheItemPoolInterface;
-use RuntimeException;
 
 /**
  * @group integration
@@ -35,13 +34,13 @@ final class FixturesAwareTestCaseTest extends FixturesAwareTestCase
     /** @var ElasticSearch */
     private $elasticSearch;
 
-    public function testLoadElasticSearchFixturesWithoutAppend()
+    public function testLoadElasticSearchFixturesWithoutAppend(): void
     {
         $this->elasticSearch->index(
             [
                 'index' => 'my_index',
                 'id'    => 'document_to_purge',
-                'body'  => ['field' => 'value1']
+                'body'  => ['field' => 'value1'],
             ]
         );
 
@@ -57,11 +56,10 @@ final class FixturesAwareTestCaseTest extends FixturesAwareTestCase
         try {
             $purgedDocument = $this->elasticSearch->get(['index' => 'my_index', 'id' => 'document_to_purge']);
         } catch (Missing404Exception $missing404Exception) {
-
         }
 
         if (!empty($purgedDocument)) {
-            throw new RuntimeException('Document should not exist!');
+            $this->fail('Document should not exist!');
         }
 
         $document1 = $this->elasticSearch->get(['index' => 'my_index', 'id' => 'my_id_1']);
@@ -71,13 +69,13 @@ final class FixturesAwareTestCaseTest extends FixturesAwareTestCase
         $this->assertEquals('value_2', $document2['_source']['field']);
     }
 
-    public function testLoadElasticSearchFixturesWithAppend()
+    public function testLoadElasticSearchFixturesWithAppend(): void
     {
         $this->elasticSearch->index(
             [
                 'index' => 'my_index',
                 'id'    => 'document_to_not_purge',
-                'body'  => ['field' => 'value1']
+                'body'  => ['field' => 'value1'],
             ]
         );
 
@@ -98,7 +96,7 @@ final class FixturesAwareTestCaseTest extends FixturesAwareTestCase
         $this->assertEquals('value_2', $document2['_source']['field']);
     }
 
-    public function testLoadCachePoolFixturesWithoutAppend()
+    public function testLoadCachePoolFixturesWithoutAppend(): void
     {
         $cachePool1ItemToPurge1 = $this->cachePool->getItem('cache_pool_1_key_to_purge_1');
         $cachePool1ItemToPurge1->set('value_to_purge_1');
@@ -106,7 +104,7 @@ final class FixturesAwareTestCaseTest extends FixturesAwareTestCase
 
         $this->loadCachePoolFixtures(
             'app.cache.first',
-            [CachePoolFixture1::class,CachePoolFixture2::class]
+            [CachePoolFixture1::class, CachePoolFixture2::class]
         );
 
         $cachePool1ItemAfterPurge1 = $this->cachePool->getItem('cache_pool_1_key_to_purge_1');
@@ -120,7 +118,7 @@ final class FixturesAwareTestCaseTest extends FixturesAwareTestCase
         $this->assertEquals('value_3', $cachePool1Item3->get());
     }
 
-    public function testLoadCachePoolFixturesWithAppend()
+    public function testLoadCachePoolFixturesWithAppend(): void
     {
         $cachePool1ItemToNotPurge1 = $this->cachePool->getItem('cache_pool_1_key_to_not_purge_1');
         $cachePool1ItemToNotPurge1->set('value_to_not_purge_1');
@@ -128,7 +126,7 @@ final class FixturesAwareTestCaseTest extends FixturesAwareTestCase
 
         $this->loadCachePoolFixtures(
             'app.cache.first',
-            [CachePoolFixture1::class,CachePoolFixture2::class],
+            [CachePoolFixture1::class, CachePoolFixture2::class],
             true
         );
 
@@ -143,7 +141,7 @@ final class FixturesAwareTestCaseTest extends FixturesAwareTestCase
         $this->assertEquals('value_3', $cachePool1Item3->get());
     }
 
-    public function testLoadDbFixturesWithAppend()
+    public function testLoadDbFixturesWithAppend(): void
     {
         $this->loadDbFixtures(
             'default',
@@ -157,16 +155,16 @@ final class FixturesAwareTestCaseTest extends FixturesAwareTestCase
             true
         );
 
-        $this->assertEquals(4, (int)$this->defaultConnection->fetchColumn('SELECT COUNT(*) FROM table_1'));
-        $this->assertEquals(4, (int)$this->defaultConnection->fetchColumn('SELECT COUNT(*) FROM table_2'));
-        $this->assertEquals(1, (int)$this->defaultConnection->fetchColumn('SELECT COUNT(*) FROM table_to_exclude'));
+        $this->assertEquals(4, (int) $this->defaultConnection->fetchColumn('SELECT COUNT(*) FROM table_1'));
+        $this->assertEquals(4, (int) $this->defaultConnection->fetchColumn('SELECT COUNT(*) FROM table_2'));
+        $this->assertEquals(1, (int) $this->defaultConnection->fetchColumn('SELECT COUNT(*) FROM table_to_exclude'));
 
-        $this->assertEquals(4, (int)$this->monolithicConnection->fetchColumn('SELECT COUNT(*) FROM table_1'));
-        $this->assertEquals(4, (int)$this->monolithicConnection->fetchColumn('SELECT COUNT(*) FROM table_2'));
-        $this->assertEquals(1, (int)$this->monolithicConnection->fetchColumn('SELECT COUNT(*) FROM table_to_exclude'));
+        $this->assertEquals(4, (int) $this->monolithicConnection->fetchColumn('SELECT COUNT(*) FROM table_1'));
+        $this->assertEquals(4, (int) $this->monolithicConnection->fetchColumn('SELECT COUNT(*) FROM table_2'));
+        $this->assertEquals(1, (int) $this->monolithicConnection->fetchColumn('SELECT COUNT(*) FROM table_to_exclude'));
     }
 
-    public function testLoadDbFixturesWithoutAppend()
+    public function testLoadDbFixturesWithoutAppend(): void
     {
         $this->loadDbFixtures(
             'default',
@@ -180,13 +178,13 @@ final class FixturesAwareTestCaseTest extends FixturesAwareTestCase
             false
         );
 
-        $this->assertEquals(3, (int)$this->defaultConnection->fetchColumn('SELECT COUNT(*) FROM table_1'));
-        $this->assertEquals(3, (int)$this->defaultConnection->fetchColumn('SELECT COUNT(*) FROM table_2'));
-        $this->assertEquals(1, (int)$this->defaultConnection->fetchColumn('SELECT COUNT(*) FROM table_to_exclude'));
+        $this->assertEquals(3, (int) $this->defaultConnection->fetchColumn('SELECT COUNT(*) FROM table_1'));
+        $this->assertEquals(3, (int) $this->defaultConnection->fetchColumn('SELECT COUNT(*) FROM table_2'));
+        $this->assertEquals(1, (int) $this->defaultConnection->fetchColumn('SELECT COUNT(*) FROM table_to_exclude'));
 
-        $this->assertEquals(3, (int)$this->monolithicConnection->fetchColumn('SELECT COUNT(*) FROM table_1'));
-        $this->assertEquals(3, (int)$this->monolithicConnection->fetchColumn('SELECT COUNT(*) FROM table_2'));
-        $this->assertEquals(1, (int)$this->monolithicConnection->fetchColumn('SELECT COUNT(*) FROM table_to_exclude'));
+        $this->assertEquals(3, (int) $this->monolithicConnection->fetchColumn('SELECT COUNT(*) FROM table_1'));
+        $this->assertEquals(3, (int) $this->monolithicConnection->fetchColumn('SELECT COUNT(*) FROM table_2'));
+        $this->assertEquals(1, (int) $this->monolithicConnection->fetchColumn('SELECT COUNT(*) FROM table_to_exclude'));
     }
 
     protected function setUp(): void
@@ -202,21 +200,21 @@ final class FixturesAwareTestCaseTest extends FixturesAwareTestCase
         $this->recreateConnectionDatabase($this->monolithicConnection);
     }
 
-    private function recreateConnectionDatabase(Connection $connection) : void
+    private function recreateConnectionDatabase(Connection $connection): void
     {
         $table1 = new Table('table_1', [
             new Column('name', Type::getType('string')),
-            new Column('description', Type::getType('string'))
+            new Column('description', Type::getType('string')),
         ]);
 
         $table2 = new Table('table_2', [
             new Column('name', Type::getType('string')),
-            new Column('description', Type::getType('string'))
+            new Column('description', Type::getType('string')),
         ]);
 
         $tableToExclude = new Table('table_to_exclude', [
             new Column('name', Type::getType('string')),
-            new Column('description', Type::getType('string'))
+            new Column('description', Type::getType('string')),
         ]);
 
         $schemaManager = $connection->getSchemaManager();
