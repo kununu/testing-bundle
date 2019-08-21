@@ -20,7 +20,7 @@ abstract class WebTestCase extends FixturesAwareTestCase
         $response = $this->client->getResponse();
 
         // Since there is no content, then there is also no content-type header.
-        if ($response->getStatusCode() !== Response::HTTP_NO_CONTENT) {
+        if (Response::HTTP_NO_CONTENT !== $response->getStatusCode()) {
             $this->assertTrue(
                 $response->headers->contains(
                     'Content-type',
@@ -32,7 +32,7 @@ abstract class WebTestCase extends FixturesAwareTestCase
         return $response;
     }
 
-    private function initClient() : void
+    private function initClient(): void
     {
         if (!$this->client) {
             $this->client = static::createClient();

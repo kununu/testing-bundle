@@ -16,7 +16,7 @@ final class DoctrineCompilerPass implements CompilerPassInterface
 {
     private const SERVICE_PREFIX = 'kununu_testing.orchestrator.connections';
 
-    public function process(ContainerBuilder $container)
+    public function process(ContainerBuilder $container): void
     {
         if (!$container->hasParameter('doctrine.connections')) {
             return;
@@ -29,7 +29,7 @@ final class DoctrineCompilerPass implements CompilerPassInterface
         }
     }
 
-    private function buildConnectionOrchestrator(ContainerBuilder $container, string $connName, string $id) : void
+    private function buildConnectionOrchestrator(ContainerBuilder $container, string $connName, string $id): void
     {
         $excludedTables = [];
 
@@ -44,17 +44,17 @@ final class DoctrineCompilerPass implements CompilerPassInterface
         $connection = new Reference($id);
 
         // Purger Definition for the Connection with provided $id
-        $purgerId = sprintf('%s.%s.purger',self::SERVICE_PREFIX, $connName);
+        $purgerId = sprintf('%s.%s.purger', self::SERVICE_PREFIX, $connName);
         $purgerDefinition = new Definition(ConnectionPurger::class, [$connection, $excludedTables]);
         $container->setDefinition($purgerId, $purgerDefinition);
 
         // Executor Definition for the Connection with provided $id
-        $executorId = sprintf('%s.%s.executor',self::SERVICE_PREFIX, $connName);
+        $executorId = sprintf('%s.%s.executor', self::SERVICE_PREFIX, $connName);
         $executorDefinition = new Definition(ConnectionExecutor::class, [$connection, new Reference($purgerId)]);
         $container->setDefinition($executorId, $executorDefinition);
 
         // Loader Definition for the Connection with provided $id
-        $loaderId = sprintf('%s.%s.loader',self::SERVICE_PREFIX, $connName);
+        $loaderId = sprintf('%s.%s.loader', self::SERVICE_PREFIX, $connName);
         $loaderDefinition = new Definition(ConnectionFixturesLoader::class);
         $container->setDefinition($loaderId, $loaderDefinition);
 

@@ -7,7 +7,7 @@ use PHPUnit\Framework\TestCase;
 
 final class RequestBuilderTest extends TestCase
 {
-    public function testBuildGetRequest()
+    public function testBuildGetRequest(): void
     {
         $request = RequestBuilder::aGetRequest();
 
@@ -21,7 +21,7 @@ final class RequestBuilderTest extends TestCase
         $this->assertNull($content);
     }
 
-    public function testBuildPostRequest()
+    public function testBuildPostRequest(): void
     {
         $request = RequestBuilder::aPostRequest();
 
@@ -35,7 +35,7 @@ final class RequestBuilderTest extends TestCase
         $this->assertNull($content);
     }
 
-    public function testBuildDeleteRequest()
+    public function testBuildDeleteRequest(): void
     {
         $request = RequestBuilder::aDeleteRequest();
 
@@ -49,7 +49,7 @@ final class RequestBuilderTest extends TestCase
         $this->assertNull($content);
     }
 
-    public function testBuildRequestWithMethod()
+    public function testBuildRequestWithMethod(): void
     {
         $request = RequestBuilder::aGetRequest();
         $request
@@ -59,7 +59,7 @@ final class RequestBuilderTest extends TestCase
         $this->assertEquals('POST', $method);
     }
 
-    public function testBuildRequestWithUri()
+    public function testBuildRequestWithUri(): void
     {
         $request = RequestBuilder::aGetRequest();
         $request
@@ -69,7 +69,7 @@ final class RequestBuilderTest extends TestCase
         $this->assertEquals('/v1/uri', $uri);
     }
 
-    public function testBuildRequestWithContent()
+    public function testBuildRequestWithContent(): void
     {
         $request = RequestBuilder::aGetRequest();
         $request
@@ -79,7 +79,7 @@ final class RequestBuilderTest extends TestCase
         $this->assertEquals(json_encode(['data' => ['key' => 'value']]), $content);
     }
 
-    public function testBuildRequestWithRawContent()
+    public function testBuildRequestWithRawContent(): void
     {
         $request = RequestBuilder::aGetRequest();
         $request
@@ -89,7 +89,7 @@ final class RequestBuilderTest extends TestCase
         $this->assertEquals('just a content', $content);
     }
 
-    public function testBuildRequestWithAuthorization()
+    public function testBuildRequestWithAuthorization(): void
     {
         $request = RequestBuilder::aGetRequest();
         $request

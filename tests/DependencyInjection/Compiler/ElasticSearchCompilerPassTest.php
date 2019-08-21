@@ -13,7 +13,7 @@ use Symfony\Component\DependencyInjection\Reference;
 
 final class ElasticSearchCompilerPassTest extends AbstractCompilerPassTestCase
 {
-    public function testThatCreatesOrchestratorForEachDoctrineConnection()
+    public function testThatCreatesOrchestratorForEachDoctrineConnection(): void
     {
         $indexes = [
             'alias_1' => ['index_name' => 'index1', 'service' => 'elastic_search_service_1'],

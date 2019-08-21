@@ -14,7 +14,7 @@ use Symfony\Component\DependencyInjection\Reference;
 
 final class CachePoolCompilerPassTest extends AbstractCompilerPassTestCase
 {
-    public function testThatCreatesOrchestratorForEachServiceTaggedAsCachePool()
+    public function testThatCreatesOrchestratorForEachServiceTaggedAsCachePool(): void
     {
         $cachePoolsIds = [
             'cache_pool.service_1',

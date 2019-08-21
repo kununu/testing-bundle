@@ -10,7 +10,7 @@ final class ConfigurationTest extends TestCase
 {
     use ConfigurationTestCaseTrait;
 
-    public function testEmptyConfiguration()
+    public function testEmptyConfiguration(): void
     {
         $this->assertProcessedConfigurationEquals(
             [],
@@ -24,7 +24,7 @@ final class ConfigurationTest extends TestCase
      * @param array $configurationValues
      * @param array $expectedProcessedConfiguration
      */
-    public function testProcessedConfigurationForConnectionsNode(array $configurationValues, array $expectedProcessedConfiguration)
+    public function testProcessedConfigurationForConnectionsNode(array $configurationValues, array $expectedProcessedConfiguration): void
     {
         $this->assertProcessedConfigurationEquals(
             $configurationValues,
@@ -38,62 +38,62 @@ final class ConfigurationTest extends TestCase
         return [
             'no_configuration' => [
                 [
-                    []
+                    [],
                 ],
                 [
-                    'connections' => []
-                ]
+                    'connections' => [],
+                ],
             ],
             'connection_without_excluded_tables' => [
                 [
                     [
                         'connections' => [
-                            'default' => []
-                        ]
-                    ]
+                            'default' => [],
+                        ],
+                    ],
                 ],
                 [
                     'connections' => [
                         'default' => [
-                            'excluded_tables' => []
-                        ]
-                    ]
-                ]
+                            'excluded_tables' => [],
+                        ],
+                    ],
+                ],
             ],
             'connection_with_excluded_tables' => [
                 [
                     [
                         'connections' => [
                             'default' => [
-                                'excluded_tables' => ['table1', 'table2']
-                            ]
-                        ]
-                    ]
+                                'excluded_tables' => ['table1', 'table2'],
+                            ],
+                        ],
+                    ],
                 ],
                 [
                     'connections' => [
                         'default' => [
-                            'excluded_tables' => ['table1', 'table2']
-                        ]
-                    ]
-                ]
+                            'excluded_tables' => ['table1', 'table2'],
+                        ],
+                    ],
+                ],
             ],
             'multiple_connections_without_excluded_tables' => [
                 [
                     [
                         'connections' => [
-                            'default' => [],
-                            'monolithic' => []
-                        ]
-                    ]
+                            'default'    => [],
+                            'monolithic' => [],
+                        ],
+                    ],
                 ],
                 [
                     'connections' => [
                         'default' => [
-                            'excluded_tables' => []
+                            'excluded_tables' => [],
                         ],
                         'monolithic' => [
-                            'excluded_tables' => []
+                            'excluded_tables' => [],
                         ],
                     ],
                 ],
@@ -103,10 +103,10 @@ final class ConfigurationTest extends TestCase
                     [
                         'connections' => [
                             'default' => [
-                                'excluded_tables' => ['table1', 'table2']
+                                'excluded_tables' => ['table1', 'table2'],
                             ],
                             'monolithic' => [
-                                'excluded_tables' => ['table1', 'table3', 'table4']
+                                'excluded_tables' => ['table1', 'table3', 'table4'],
                             ],
                         ],
                     ],
@@ -117,7 +117,7 @@ final class ConfigurationTest extends TestCase
                             'excluded_tables' => ['table1', 'table2'],
                         ],
                         'monolithic' => [
-                            'excluded_tables' => ['table1', 'table3', 'table4']
+                            'excluded_tables' => ['table1', 'table3', 'table4'],
                         ],
                     ],
                 ],
@@ -130,7 +130,7 @@ final class ConfigurationTest extends TestCase
      *
      * @param array $configurationValues
      */
-    public function testConnectionsNodeIsInvalidIfAtLeastOneConnectionIsNotProvided(array $configurationValues)
+    public function testConnectionsNodeIsInvalidIfAtLeastOneConnectionIsNotProvided(array $configurationValues): void
     {
         $this->assertConfigurationIsInvalid(
             $configurationValues,
@@ -144,17 +144,17 @@ final class ConfigurationTest extends TestCase
             'connections_as_null' => [
                 [
                     [
-                        'connections' => null
+                        'connections' => null,
                     ],
-                ]
+                ],
             ],
             'connections_as_empty_array' => [
                 [
                     [
-                        'connections' => []
+                        'connections' => [],
                     ],
-                ]
-            ]
+                ],
+            ],
         ];
     }
 
@@ -164,7 +164,7 @@ final class ConfigurationTest extends TestCase
      * @param array $configurationValues
      * @param array $expectedProcessedConfiguration
      */
-    public function testProcessedConfigurationForElasticSearchNode(array $configurationValues, array $expectedProcessedConfiguration)
+    public function testProcessedConfigurationForElasticSearchNode(array $configurationValues, array $expectedProcessedConfiguration): void
     {
         $this->assertProcessedConfigurationEquals(
             $configurationValues,
@@ -178,11 +178,11 @@ final class ConfigurationTest extends TestCase
         return [
             'no_configuration' => [
                 [
-                    []
+                    [],
                 ],
                 [
-                    'elastic_search' => []
-                ]
+                    'elastic_search' => [],
+                ],
             ],
             'with_configuration' => [
                 [
@@ -190,15 +190,15 @@ final class ConfigurationTest extends TestCase
                         'elastic_search' => [
                             'alias_1' => [
                                 'index_name' => 'index_1',
-                                'service' => 'service_1'
+                                'service'    => 'service_1',
                             ],
                             'alias_2' => [
                                 'index_name' => 'index_2',
-                                'service' => 'service_1'
+                                'service'    => 'service_1',
                             ],
                             'alias_3' => [
                                 'index_name' => 'index_1',
-                                'service' => 'service_2'
+                                'service'    => 'service_2',
                             ],
                         ],
                     ],
@@ -207,15 +207,15 @@ final class ConfigurationTest extends TestCase
                     'elastic_search' => [
                         'alias_1' => [
                             'index_name' => 'index_1',
-                            'service' => 'service_1'
+                            'service'    => 'service_1',
                         ],
                         'alias_2' => [
                             'index_name' => 'index_2',
-                            'service' => 'service_1'
+                            'service'    => 'service_1',
                         ],
                         'alias_3' => [
                             'index_name' => 'index_1',
-                            'service' => 'service_2'
+                            'service'    => 'service_2',
                         ],
                     ],
                 ],
@@ -228,7 +228,7 @@ final class ConfigurationTest extends TestCase
      *
      * @param array $configurationValues
      */
-    public function testElasticSearchNodeIsInvalidIfAtLeastOneItemIsNotProvided(array $configurationValues)
+    public function testElasticSearchNodeIsInvalidIfAtLeastOneItemIsNotProvided(array $configurationValues): void
     {
         $this->assertConfigurationIsInvalid(
             $configurationValues,
@@ -242,17 +242,17 @@ final class ConfigurationTest extends TestCase
             'elastic_search_as_null' => [
                 [
                     [
-                        'elastic_search' => null
+                        'elastic_search' => null,
                     ],
-                ]
+                ],
             ],
             'elastic_search_as_empty_array' => [
                 [
                     [
-                        'elastic_search' => []
+                        'elastic_search' => [],
                     ],
-                ]
-            ]
+                ],
+            ],
         ];
     }
 

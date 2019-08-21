@@ -17,7 +17,7 @@ final class OrchestratorTest extends TestCase
      *
      * @param bool $append
      */
-    public function testThatExecutesAsExpected(bool $append)
+    public function testThatExecutesAsExpected(bool $append): void
     {
         $fixture1 = $this->getMockBuilder(FixtureInterface::class)->setMockClassName('Mock1')->getMock();
         $fixture2 = $this->getMockBuilder(FixtureInterface::class)->setMockClassName('Mock2')->getMock();
@@ -51,8 +51,8 @@ final class OrchestratorTest extends TestCase
     public function executesAsExpectedDataProvider()
     {
         return [
-            'with_append' => [true],
-            'without_append' => [false]
+            'with_append'    => [true],
+            'without_append' => [false],
         ];
     }
 }

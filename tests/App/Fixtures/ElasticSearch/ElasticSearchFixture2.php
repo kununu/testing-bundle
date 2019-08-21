@@ -13,7 +13,7 @@ final class ElasticSearchFixture2 implements ElasticSearchFixtureInterface
             [
                 'index' => $indexName,
                 'id'    => 'my_id_2',
-                'body'  => ['field' => 'value_2']
+                'body'  => ['field' => 'value_2'],
             ]
         );
     }

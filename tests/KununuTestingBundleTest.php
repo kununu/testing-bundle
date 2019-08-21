@@ -11,7 +11,7 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 final class KununuTestingBundleTest extends TestCase
 {
-    public function testBuild()
+    public function testBuild(): void
     {
         $containerMock = $this->getMockBuilder(ContainerBuilder::class)->getMock();
         $containerMock

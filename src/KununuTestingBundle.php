@@ -10,7 +10,7 @@ use Symfony\Component\HttpKernel\Bundle\Bundle;
 
 final class KununuTestingBundle extends Bundle
 {
-    public function build(ContainerBuilder $container)
+    public function build(ContainerBuilder $container): void
     {
         parent::build($container);
 
