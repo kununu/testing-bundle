@@ -6,6 +6,7 @@ use Doctrine\DBAL\Connection;
 use Kununu\DataFixtures\Executor\ConnectionExecutor;
 use Kununu\DataFixtures\Loader\ConnectionFixturesLoader;
 use Kununu\DataFixtures\Purger\ConnectionPurger;
+use Kununu\TestingBundle\Command\LoadDatabaseFixturesCommand;
 use Kununu\TestingBundle\Service\Orchestrator;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -14,7 +15,11 @@ use Symfony\Component\DependencyInjection\Reference;
 
 final class DoctrineCompilerPass implements CompilerPassInterface
 {
-    private const SERVICE_PREFIX = 'kununu_testing.orchestrator.connections';
+    private const ORCHESTRATOR_SERVICE_PREFIX = 'kununu_testing.orchestrator.connections';
+    private const LOAD_FIXTURES_COMMAND_SERVICE_PREFIX = 'kununu_testing.command.load_fixtures.connections';
+
+    private const LOAD_FIXTURES_COMMAND_PREFIX = 'kununu_testing:load_fixtures:connections';
+
 
     public function process(ContainerBuilder $container): void
     {
@@ -26,6 +31,7 @@ final class DoctrineCompilerPass implements CompilerPassInterface
 
         foreach ($connections as $connName => $connId) {
             $this->buildConnectionOrchestrator($container, $connName, $connId);
+            $this->buildConnectionLoadFixturesCommand($container, $connName);
         }
     }
 
@@ -44,17 +50,17 @@ final class DoctrineCompilerPass implements CompilerPassInterface
         $connection = new Reference($id);
 
         // Purger Definition for the Connection with provided $id
-        $purgerId = sprintf('%s.%s.purger', self::SERVICE_PREFIX, $connName);
+        $purgerId = sprintf('%s.%s.purger', self::ORCHESTRATOR_SERVICE_PREFIX, $connName);
         $purgerDefinition = new Definition(ConnectionPurger::class, [$connection, $excludedTables]);
         $container->setDefinition($purgerId, $purgerDefinition);
 
         // Executor Definition for the Connection with provided $id
-        $executorId = sprintf('%s.%s.executor', self::SERVICE_PREFIX, $connName);
+        $executorId = sprintf('%s.%s.executor', self::ORCHESTRATOR_SERVICE_PREFIX, $connName);
         $executorDefinition = new Definition(ConnectionExecutor::class, [$connection, new Reference($purgerId)]);
         $container->setDefinition($executorId, $executorDefinition);
 
         // Loader Definition for the Connection with provided $id
-        $loaderId = sprintf('%s.%s.loader', self::SERVICE_PREFIX, $connName);
+        $loaderId = sprintf('%s.%s.loader', self::ORCHESTRATOR_SERVICE_PREFIX, $connName);
         $loaderDefinition = new Definition(ConnectionFixturesLoader::class);
         $container->setDefinition($loaderId, $loaderDefinition);
 
@@ -68,6 +74,25 @@ final class DoctrineCompilerPass implements CompilerPassInterface
         );
         $connectionOrchestratorDefinition->setPublic(true);
 
-        $container->setDefinition(sprintf('%s.%s', self::SERVICE_PREFIX, $connName), $connectionOrchestratorDefinition);
+        $container->setDefinition(
+            sprintf('%s.%s', self::ORCHESTRATOR_SERVICE_PREFIX, $connName),
+            $connectionOrchestratorDefinition
+        );
+    }
+
+    private function buildConnectionLoadFixturesCommand(ContainerBuilder $container, string $connName): void
+    {
+        $connectionLoadFixturesDefinition = new Definition(LoadDatabaseFixturesCommand::class, [$connName]);
+        $connectionLoadFixturesDefinition->setPublic(true);
+        $connectionLoadFixturesDefinition->setTags(
+            ['console.command' => [['command' => sprintf('%s:%s', self::LOAD_FIXTURES_COMMAND_PREFIX, $connName)]]]
+        );
+
+        var_dump(sprintf('%s.%s', self::LOAD_FIXTURES_COMMAND_SERVICE_PREFIX, $connName));
+
+        $container->setDefinition(
+            sprintf('%s.%s', self::LOAD_FIXTURES_COMMAND_SERVICE_PREFIX, $connName),
+            $connectionLoadFixturesDefinition
+        );
     }
 }
