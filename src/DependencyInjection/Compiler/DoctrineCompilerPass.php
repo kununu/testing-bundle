@@ -20,7 +20,6 @@ final class DoctrineCompilerPass implements CompilerPassInterface
 
     private const LOAD_FIXTURES_COMMAND_PREFIX = 'kununu_testing:load_fixtures:connections';
 
-
     public function process(ContainerBuilder $container): void
     {
         if (!$container->hasParameter('doctrine.connections')) {
