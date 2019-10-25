@@ -88,8 +88,6 @@ final class DoctrineCompilerPass implements CompilerPassInterface
             ['console.command' => [['command' => sprintf('%s:%s', self::LOAD_FIXTURES_COMMAND_PREFIX, $connName)]]]
         );
 
-        var_dump(sprintf('%s.%s', self::LOAD_FIXTURES_COMMAND_SERVICE_PREFIX, $connName));
-
         $container->setDefinition(
             sprintf('%s.%s', self::LOAD_FIXTURES_COMMAND_SERVICE_PREFIX, $connName),
             $connectionLoadFixturesDefinition
