@@ -1,6 +1,7 @@
 # kununu testing-bundle
 
 At kununu we do functional and integration tests. [LiipFunctionalTestBundle](https://github.com/liip/LiipFunctionalTestBundle) and [DoctrineTestBundle](https://github.com/dmaicher/doctrine-test-bundle) are great options however they do not match our requirements and heavily depend on [Doctrine ORM](https://github.com/doctrine/orm).
+Also we have the necessity to load database fixtures for DEV/TEST/E2E environments.
 The main requirements that we had to solve that this bundle addresses are:
 - **Database schema is not touched when loading fixtures**. This requirement excludes LiipFunctionalTestBundle because it drops and creates the schema when loading fixtures. Another drawback of LiipFunctionalTestBundle is that it relies on Doctrine Mapping Metadata to recreate the schema which for us is a limitation since we do not always map everything but instead use Migrations.
 - **We really want to hit the database**. This requirement excludes DoctrineTestBundle because it wraps your fixtures in a transaction.
@@ -71,7 +72,7 @@ final class IntegrationTest extends FixturesAwareTestCase
 
 ### Connection Fixtures
 
-All Doctrine Connections are elegible to be used to load fixtures.
+All Doctrine Connections are eligible to be used to load fixtures.
 For example, assuming you are using the [Doctrine Bundle](https://github.com/doctrine/DoctrineBundle).
 
 ```
@@ -125,6 +126,34 @@ final class IntegrationTest extends FixturesAwareTestCase
     }
 }
 ```
+
+#### Command to load database fixtures
+
+This bundles can automatically create a command to load database fixtures.
+
+```
+php bin/console kununu_testing:load_fixtures:connections:CONNECTION_NAME --append
+```
+
+There is the need to define the files with the fixtures in the configuration of the bundle
+
+```
+kununu_testing.yaml
+
+kununu_testing:
+    connections:
+        default:
+            load_command_fixtures_classes_namespace:
+                - 'Kununu\TestingBundle\Tests\App\Fixtures\Connection\ConnectionFixture3' # FQDN for a fixtures class
+```
+
+Then the fixtures can be loaded running:
+
+```
+php bin/console kununu_testing:load_fixtures:connections:default
+```
+
+If `--append` is not
 
 ### Elasticsearch Fixtures
 
@@ -219,6 +248,8 @@ final class WebTestCaseTest extends WebTestCase
 kununu_testing:
     connections:
         connection_name:
+            load_command_fixtures_classes_namespace:
+                - 'Kununu\TestingBundle\Tests\App\Fixtures\Connection\ConnectionFixture3' # FQDN for a fixtures class
             excluded_tables:
                 - table_to_exclude_from_purge
                 

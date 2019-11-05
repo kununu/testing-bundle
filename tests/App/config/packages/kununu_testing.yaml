@@ -2,7 +2,7 @@ kununu_testing:
     connections:
         default:
             load_command_fixtures_classes_namespace:
-                - 'Kununu\TestingBundle\Tests\App\Fixtures\Connection\ConnectionFixture1'
+                - 'Kununu\TestingBundle\Tests\App\Fixtures\Connection\ConnectionFixture3'
             excluded_tables:
                 - table_to_exclude
         monolithic:

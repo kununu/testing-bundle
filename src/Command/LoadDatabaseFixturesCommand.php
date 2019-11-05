@@ -3,21 +3,25 @@
 namespace Kununu\TestingBundle\Command;
 
 use Kununu\TestingBundle\Service\Orchestrator;
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
-final class LoadDatabaseFixturesCommand extends ContainerAwareCommand
+final class LoadDatabaseFixturesCommand extends Command
 {
     private $connectionName;
+    private $orchestrator;
+    private $loadCommandFixturesClassesNamespace;
 
-    public function __construct(string $connectionName, string $name = null)
+    public function __construct(string $connectionName, Orchestrator $orchestrator, array $loadCommandFixturesClassesNamespace)
     {
-        parent::__construct(sprintf('testing-bundle:connection:%s:load_fixtures', $connectionName));
+        parent::__construct(sprintf('kununu_testing:load_fixtures:connections:%s', $connectionName));
 
-        $this->connectionName = $connectionName;
+        $this->connectionName                      = $connectionName;
+        $this->orchestrator                        = $orchestrator;
+        $this->loadCommandFixturesClassesNamespace = $loadCommandFixturesClassesNamespace;
     }
 
     protected function configure(): void
@@ -26,20 +30,11 @@ final class LoadDatabaseFixturesCommand extends ContainerAwareCommand
 
         $this
             ->setDescription('Load Database Fixtures')
-            ->addOption('append', null, InputOption::VALUE_NONE, 'Append the data fixtures instead of deleting all data from the database first.')
-        ;
+            ->addOption('append', null, InputOption::VALUE_NONE, 'Append the data fixtures instead of deleting all data from the database first.');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): void
     {
-        $connectionConfig = $this->getContainer()->getParameter(sprintf('kununu_testing.connections.%s', $this->connectionName));
-
-        if (empty($connectionConfig['load_command_fixtures_classes_namespace'])) {
-            $output->writeln(sprintf('No fixtures classes are defined for connection "%s"', $this->connectionName));
-
-            return;
-        }
-
         $appendOption = $input->getOption('append');
 
         $ui = new SymfonyStyle($input, $output);
@@ -53,10 +48,7 @@ final class LoadDatabaseFixturesCommand extends ContainerAwareCommand
             return;
         }
 
-        /** @var Orchestrator $orchestrator */
-        $orchestrator = $this->getContainer()->get(sprintf('kununu_testing.orchestrator.connections.%s', $this->connectionName));
-
-        $orchestrator->execute($connectionConfig['load_command_fixtures_classes_namespace'], $appendOption);
+        $this->orchestrator->execute($this->loadCommandFixturesClassesNamespace, $appendOption);
 
         $output->writeln(sprintf('Fixtures loaded with success for connection "%s"', $this->connectionName));
     }

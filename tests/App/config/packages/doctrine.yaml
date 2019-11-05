@@ -6,6 +6,11 @@ doctrine:
                 path: "%kernel.cache_dir%/default.db"
                 charset: UTF8
 
+            persistence:
+                driver: pdo_sqlite
+                path: "%kernel.cache_dir%/persistence.db"
+                charset: UTF8
+
             monolithic:
                 driver: pdo_sqlite
                 path: "%kernel.cache_dir%/monolithic.db"
