@@ -132,13 +132,13 @@ final class IntegrationTest extends FixturesAwareTestCase
 This bundles can automatically create a command to load database fixtures.
 
 ```
-php bin/console kununu_testing:load_fixtures:connections:CONNECTION_NAME --append
+php bin/console kununu_testing:load_fixtures:connections:CONNECTION_NAME [--append]
 ```
 
 There is the need to define the files with the fixtures in the configuration of the bundle
 
 ```
-kununu_testing.yaml
+# kununu_testing.yaml
 
 kununu_testing:
     connections:
@@ -150,10 +150,10 @@ kununu_testing:
 Then the fixtures can be loaded running:
 
 ```
-php bin/console kununu_testing:load_fixtures:connections:default
+php bin/console kununu_testing:load_fixtures:connections:default --append
 ```
 
-If `--append` is not
+If `--append` option is not used, then the database will be truncated. A prompt appears to confirm database truncation.
 
 ### Elasticsearch Fixtures
 
