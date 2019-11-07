@@ -15,13 +15,13 @@ use Symfony\Component\DependencyInjection\Reference;
 
 final class DoctrineCompilerPass implements CompilerPassInterface
 {
-    private const EXCLUDED_TABLES_CONFIG = 'excluded_tables';
+    private const EXCLUDED_TABLES_CONFIG                         = 'excluded_tables';
     private const LOAD_COMMAND_FIXTURES_CLASSES_NAMESPACE_CONFIG = 'load_command_fixtures_classes_namespace';
 
-    private const ORCHESTRATOR_SERVICE_PREFIX          = 'kununu_testing.orchestrator.connections';
+    private const ORCHESTRATOR_SERVICE_PREFIX = 'kununu_testing.orchestrator.connections';
 
     private const LOAD_FIXTURES_COMMAND_SERVICE_PREFIX = 'kununu_testing.command.load_fixtures.connections';
-    private const LOAD_FIXTURES_COMMAND_PREFIX = 'kununu_testing:load_fixtures:connections';
+    private const LOAD_FIXTURES_COMMAND_PREFIX         = 'kununu_testing:load_fixtures:connections';
 
     public function process(ContainerBuilder $container): void
     {
@@ -46,9 +46,13 @@ final class DoctrineCompilerPass implements CompilerPassInterface
         }
     }
 
-    private function buildConnectionOrchestrator(ContainerBuilder $container, string $connName, array $connConfigs, string $id): string
-    {
-        $excludedTables = !empty($connConfigs[self::EXCLUDED_TABLES_CONFIG]) ? $connConfigs[self::EXCLUDED_TABLES_CONFIG] : [];
+    private function buildConnectionOrchestrator(
+        ContainerBuilder $container,
+        string $connName,
+        array $connConfigs,
+        string $id
+    ): string {
+        $excludedTables = empty($connConfigs[self::EXCLUDED_TABLES_CONFIG])? [] : $connConfigs[self::EXCLUDED_TABLES_CONFIG];
 
         /** @var Connection $connection */
         $connection = new Reference($id);
@@ -108,7 +112,9 @@ final class DoctrineCompilerPass implements CompilerPassInterface
         );
         $connectionLoadFixturesDefinition->setPublic(true);
         $connectionLoadFixturesDefinition->setTags(
-            ['console.command' => [['command' => sprintf('%s:%s', self::LOAD_FIXTURES_COMMAND_PREFIX, $connName)]]]
+            ['console.command' => [
+                ['command' => sprintf('%s:%s', self::LOAD_FIXTURES_COMMAND_PREFIX, $connName)]]
+            ]
         );
 
         $container->setDefinition(

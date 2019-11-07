@@ -13,15 +13,15 @@ final class LoadDatabaseFixturesCommand extends Command
 {
     private $connectionName;
     private $orchestrator;
-    private $loadCommandFixturesClassesNamespace;
+    private $fixturesClassNames;
 
-    public function __construct(string $connectionName, Orchestrator $orchestrator, array $loadCommandFixturesClassesNamespace)
+    public function __construct(string $connectionName, Orchestrator $orchestrator, array $fixturesClassNames)
     {
         parent::__construct(sprintf('kununu_testing:load_fixtures:connections:%s', $connectionName));
 
-        $this->connectionName                      = $connectionName;
-        $this->orchestrator                        = $orchestrator;
-        $this->loadCommandFixturesClassesNamespace = $loadCommandFixturesClassesNamespace;
+        $this->connectionName     = $connectionName;
+        $this->orchestrator       = $orchestrator;
+        $this->fixturesClassNames = $fixturesClassNames;
     }
 
     protected function configure(): void
@@ -48,7 +48,7 @@ final class LoadDatabaseFixturesCommand extends Command
             return;
         }
 
-        $this->orchestrator->execute($this->loadCommandFixturesClassesNamespace, $appendOption);
+        $this->orchestrator->execute($this->fixturesClassNames, $appendOption);
 
         $output->writeln(sprintf('Fixtures loaded with success for connection "%s"', $this->connectionName));
     }

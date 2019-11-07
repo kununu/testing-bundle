@@ -1,7 +1,9 @@
 # kununu testing-bundle
 
 At kununu we do functional and integration tests. [LiipFunctionalTestBundle](https://github.com/liip/LiipFunctionalTestBundle) and [DoctrineTestBundle](https://github.com/dmaicher/doctrine-test-bundle) are great options however they do not match our requirements and heavily depend on [Doctrine ORM](https://github.com/doctrine/orm).
+
 Also we have the necessity to load database fixtures for DEV/TEST/E2E environments.
+
 The main requirements that we had to solve that this bundle addresses are:
 - **Database schema is not touched when loading fixtures**. This requirement excludes LiipFunctionalTestBundle because it drops and creates the schema when loading fixtures. Another drawback of LiipFunctionalTestBundle is that it relies on Doctrine Mapping Metadata to recreate the schema which for us is a limitation since we do not always map everything but instead use Migrations.
 - **We really want to hit the database**. This requirement excludes DoctrineTestBundle because it wraps your fixtures in a transaction.
@@ -271,5 +273,5 @@ kununu test lib testing-bundle [--exclude-group integration]
 vendor/phpunit/phpunit/phpunit tests [--exclude-group integration]
 ```
 
-**If you want to run the integration tests you will need the extension `ext-pdo_sqlite`.**
+**If you want to run the integration tests you will need the extension `ext-pdo_sqlite` (For installing int ubuntu run `apt update && apt install php-sqlite3`).**
 **If you want to run the integration tests you will need to have an Elasticsearch cluster running. To change the hosts of the cluster please go to `tests/App/config/packages/parameters.yml`.**
