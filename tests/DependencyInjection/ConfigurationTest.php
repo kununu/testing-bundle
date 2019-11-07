@@ -44,7 +44,7 @@ final class ConfigurationTest extends TestCase
                     'connections' => [],
                 ],
             ],
-            'connection_without_excluded_tables' => [
+            'connection_with_empty_configuration' => [
                 [
                     [
                         'connections' => [
@@ -55,7 +55,8 @@ final class ConfigurationTest extends TestCase
                 [
                     'connections' => [
                         'default' => [
-                            'excluded_tables' => [],
+                            'load_command_fixtures_classes_namespace' => [],
+                            'excluded_tables'                         => [],
                         ],
                     ],
                 ],
@@ -73,12 +74,38 @@ final class ConfigurationTest extends TestCase
                 [
                     'connections' => [
                         'default' => [
-                            'excluded_tables' => ['table1', 'table2'],
+                            'load_command_fixtures_classes_namespace' => [],
+                            'excluded_tables'                         => ['table1', 'table2'],
                         ],
                     ],
                 ],
             ],
-            'multiple_connections_without_excluded_tables' => [
+            'connection_with_load_command_fixtures_classes_namespace' => [
+                [
+                    [
+                        'connections' => [
+                            'default' => [
+                                'load_command_fixtures_classes_namespace' => [
+                                    'App/DataFixtures/Fixture1',
+                                    'App/DataFixtures/Fixture2'
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+                [
+                    'connections' => [
+                        'default' => [
+                            'load_command_fixtures_classes_namespace' => [
+                                'App/DataFixtures/Fixture1',
+                                'App/DataFixtures/Fixture2'
+                            ],
+                            'excluded_tables'                         => [],
+                        ],
+                    ],
+                ],
+            ],
+            'multiple_connections_configuration_settings_empty' => [
                 [
                     [
                         'connections' => [
@@ -90,22 +117,31 @@ final class ConfigurationTest extends TestCase
                 [
                     'connections' => [
                         'default' => [
-                            'excluded_tables' => [],
+                            'load_command_fixtures_classes_namespace' => [],
+                            'excluded_tables'                         => [],
                         ],
                         'monolithic' => [
-                            'excluded_tables' => [],
+                            'load_command_fixtures_classes_namespace' => [],
+                            'excluded_tables'                         => [],
                         ],
                     ],
                 ],
             ],
-            'multiple_connections_with_excluded_tables' => [
+            'multiple_connections_with_config' => [
                 [
                     [
                         'connections' => [
                             'default' => [
+                                'load_command_fixtures_classes_namespace' => [
+                                    'App/DataFixtures/Fixture1',
+                                    'App/DataFixtures/Fixture2'
+                                ],
                                 'excluded_tables' => ['table1', 'table2'],
                             ],
                             'monolithic' => [
+                                'load_command_fixtures_classes_namespace' => [
+                                    'App/DataFixtures/Fixture4',
+                                ],
                                 'excluded_tables' => ['table1', 'table3', 'table4'],
                             ],
                         ],
@@ -114,10 +150,17 @@ final class ConfigurationTest extends TestCase
                 [
                     'connections' => [
                         'default' => [
-                            'excluded_tables' => ['table1', 'table2'],
+                            'load_command_fixtures_classes_namespace' => [
+                                'App/DataFixtures/Fixture1',
+                                'App/DataFixtures/Fixture2'
+                            ],
+                            'excluded_tables'                         => ['table1', 'table2'],
                         ],
                         'monolithic' => [
-                            'excluded_tables' => ['table1', 'table3', 'table4'],
+                            'load_command_fixtures_classes_namespace' => [
+                                'App/DataFixtures/Fixture4',
+                            ],
+                            'excluded_tables'                         => ['table1', 'table3', 'table4'],
                         ],
                     ],
                 ],
