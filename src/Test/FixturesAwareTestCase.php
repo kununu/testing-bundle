@@ -64,9 +64,6 @@ abstract class FixturesAwareTestCase extends BaseWebTestCase
 
     private function getOrchestrator(string $type, string $key): Orchestrator
     {
-        /** @var Orchestrator $orchestrator */
-        $orchestrator = $this->getContainer()->get(sprintf('kununu_testing.orchestrator.%s.%s', $type, $key));
-
-        return $orchestrator;
+        return $this->getContainer()->get(sprintf('kununu_testing.orchestrator.%s.%s', $type, $key));
     }
 }
