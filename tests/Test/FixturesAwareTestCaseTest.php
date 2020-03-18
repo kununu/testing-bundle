@@ -46,6 +46,12 @@ final class FixturesAwareTestCaseTest extends FixturesAwareTestCase
 
         $this->elasticSearch->get(['index' => 'my_index', 'id' => 'document_to_purge']);
 
+        $this->registerInitializableFixtureForElasticSearch(
+            'my_index_alias',
+            ElasticSearchFixture1::class,
+            1,
+            ['a' => 'name']
+        );
         $this->loadElasticSearchFixtures(
             'my_index_alias',
             [ElasticSearchFixture1::class, ElasticSearchFixture2::class]
@@ -102,6 +108,11 @@ final class FixturesAwareTestCaseTest extends FixturesAwareTestCase
         $cachePool1ItemToPurge1->set('value_to_purge_1');
         $this->cachePool->save($cachePool1ItemToPurge1);
 
+        $this->registerInitializableFixtureForCachePool(
+            'app.cache.first',
+            CachePoolFixture1::class,
+            $this->monolithicConnection
+        );
         $this->loadCachePoolFixtures(
             'app.cache.first',
             [CachePoolFixture1::class, CachePoolFixture2::class]
@@ -143,6 +154,19 @@ final class FixturesAwareTestCaseTest extends FixturesAwareTestCase
 
     public function testLoadDbFixturesWithAppend(): void
     {
+        $this->registerInitializableFixtureForDb(
+            'default',
+            ConnectionFixture1::class,
+            'default_connection',
+            true
+        );
+        $this->registerInitializableFixtureForDb(
+            'monolithic',
+            ConnectionFixture1::class,
+            'monolithic_connection',
+            false
+        );
+
         $this->loadDbFixtures(
             'default',
             [ConnectionFixture1::class, ConnectionFixture1::class, ConnectionSqlFixture1::class],
