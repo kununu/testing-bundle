@@ -19,8 +19,8 @@ final class LoadDatabaseFixturesCommand extends Command
     {
         parent::__construct(sprintf('kununu_testing:load_fixtures:connections:%s', $connectionName));
 
-        $this->connectionName     = $connectionName;
-        $this->orchestrator       = $orchestrator;
+        $this->connectionName = $connectionName;
+        $this->orchestrator = $orchestrator;
         $this->fixturesClassNames = $fixturesClassNames;
     }
 

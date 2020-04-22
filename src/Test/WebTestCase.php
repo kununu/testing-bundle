@@ -7,7 +7,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 abstract class WebTestCase extends FixturesAwareTestCase
 {
-    /** @var KernelBrowser $client */
+    /** @var KernelBrowser */
     private $client;
 
     final protected function doRequest(RequestBuilder $builder): Response

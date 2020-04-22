@@ -17,19 +17,27 @@ final class CachePoolCompilerPassTest extends AbstractCompilerPassTestCase
     public function testThatCreatesOrchestratorForEachServiceTaggedAsCachePool(): void
     {
         $cachePoolsIds = [
-            'cache_pool.service_1',
-            'cache_pool.service_2',
+            'cache_pool.service_1'           => [],
+            'cache_pool.service_2'           => [],
+            'cache_pool.service_3.decorated' => [
+                'name' => 'cache_pool.service_3',
+            ],
         ];
 
-        foreach ($cachePoolsIds as $cachePoolId) {
+        foreach ($cachePoolsIds as $cachePoolId => $tagAttributes) {
             $cachePoolDefinition = new Definition();
-            $cachePoolDefinition->addTag('cache.pool');
+            $cachePoolDefinition->addTag('cache.pool', $tagAttributes);
             $this->setDefinition($cachePoolId, $cachePoolDefinition);
         }
 
         $this->compile();
 
-        foreach ($cachePoolsIds as $cachePoolId) {
+        foreach ($cachePoolsIds as $cachePoolId => $tagAttributes) {
+            // It means the original definition was decorated. Check CachePoolCompilerPass class for more details.
+            if (!empty($tagAttributes['name'])) {
+                $cachePoolId = $tagAttributes['name'];
+            }
+
             $purgerId = sprintf('kununu_testing.orchestrator.cache_pools.%s.purger', $cachePoolId);
             $executorId = sprintf('kununu_testing.orchestrator.cache_pools.%s.executor', $cachePoolId);
             $loaderId = sprintf('kununu_testing.orchestrator.cache_pools.%s.loader', $cachePoolId);
