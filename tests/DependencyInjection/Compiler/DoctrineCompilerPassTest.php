@@ -132,9 +132,9 @@ final class DoctrineCompilerPassTest extends AbstractCompilerPassTestCase
      */
     private function assertOrchestratorServiceExists(string $connName, string $connId, array $excludeTables): string
     {
-        $purgerId       = sprintf('kununu_testing.orchestrator.connections.%s.purger', $connName);
-        $executorId     = sprintf('kununu_testing.orchestrator.connections.%s.executor', $connName);
-        $loaderId       = sprintf('kununu_testing.orchestrator.connections.%s.loader', $connName);
+        $purgerId = sprintf('kununu_testing.orchestrator.connections.%s.purger', $connName);
+        $executorId = sprintf('kununu_testing.orchestrator.connections.%s.executor', $connName);
+        $loaderId = sprintf('kununu_testing.orchestrator.connections.%s.loader', $connName);
         $orchestratorId = sprintf('kununu_testing.orchestrator.connections.%s', $connName);
 
         $this->assertContainerBuilderHasServiceDefinitionWithArgument(
@@ -202,9 +202,9 @@ final class DoctrineCompilerPassTest extends AbstractCompilerPassTestCase
 
     private function assertOrchestratorServiceDoesNotExist(string $connName): void
     {
-        $purgerId       = sprintf('kununu_testing.orchestrator.connections.%s.purger', $connName);
-        $executorId     = sprintf('kununu_testing.orchestrator.connections.%s.executor', $connName);
-        $loaderId       = sprintf('kununu_testing.orchestrator.connections.%s.loader', $connName);
+        $purgerId = sprintf('kununu_testing.orchestrator.connections.%s.purger', $connName);
+        $executorId = sprintf('kununu_testing.orchestrator.connections.%s.executor', $connName);
+        $loaderId = sprintf('kununu_testing.orchestrator.connections.%s.loader', $connName);
         $orchestratorId = sprintf('kununu_testing.orchestrator.connections.%s', $connName);
 
         $this->assertContainerBuilderNotHasService($purgerId);

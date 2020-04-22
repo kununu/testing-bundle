@@ -15,13 +15,13 @@ use Symfony\Component\DependencyInjection\Reference;
 
 final class DoctrineCompilerPass implements CompilerPassInterface
 {
-    private const EXCLUDED_TABLES_CONFIG                         = 'excluded_tables';
+    private const EXCLUDED_TABLES_CONFIG = 'excluded_tables';
     private const LOAD_COMMAND_FIXTURES_CLASSES_NAMESPACE_CONFIG = 'load_command_fixtures_classes_namespace';
 
     private const ORCHESTRATOR_SERVICE_PREFIX = 'kununu_testing.orchestrator.connections';
 
     private const LOAD_FIXTURES_COMMAND_SERVICE_PREFIX = 'kununu_testing.command.load_fixtures.connections';
-    private const LOAD_FIXTURES_COMMAND_PREFIX         = 'kununu_testing:load_fixtures:connections';
+    private const LOAD_FIXTURES_COMMAND_PREFIX = 'kununu_testing:load_fixtures:connections';
 
     public function process(ContainerBuilder $container): void
     {
@@ -35,7 +35,7 @@ final class DoctrineCompilerPass implements CompilerPassInterface
             $connConfigsParameterName = sprintf('kununu_testing.connections.%s', $connName);
 
             // Connection is not configured for kununu\testing-bundle
-            if (! $container->hasParameter($connConfigsParameterName)) {
+            if (!$container->hasParameter($connConfigsParameterName)) {
                 continue;
             }
 
@@ -52,7 +52,7 @@ final class DoctrineCompilerPass implements CompilerPassInterface
         array $connConfigs,
         string $id
     ): string {
-        $excludedTables = empty($connConfigs[self::EXCLUDED_TABLES_CONFIG])? [] : $connConfigs[self::EXCLUDED_TABLES_CONFIG];
+        $excludedTables = empty($connConfigs[self::EXCLUDED_TABLES_CONFIG]) ? [] : $connConfigs[self::EXCLUDED_TABLES_CONFIG];
 
         /** @var Connection $connection */
         $connection = new Reference($id);
@@ -96,7 +96,7 @@ final class DoctrineCompilerPass implements CompilerPassInterface
         string $orchestratorId
     ): void {
         // Connection does not have fixtures configured for LoadDatabaseFixturesCommand
-        if (! isset($connConfigs[self::LOAD_COMMAND_FIXTURES_CLASSES_NAMESPACE_CONFIG]) ||
+        if (!isset($connConfigs[self::LOAD_COMMAND_FIXTURES_CLASSES_NAMESPACE_CONFIG]) ||
             empty($connConfigs[self::LOAD_COMMAND_FIXTURES_CLASSES_NAMESPACE_CONFIG])
         ) {
             return;
@@ -107,13 +107,13 @@ final class DoctrineCompilerPass implements CompilerPassInterface
             [
                 $connName,
                 new Reference($orchestratorId),
-                $connConfigs[self::LOAD_COMMAND_FIXTURES_CLASSES_NAMESPACE_CONFIG]
+                $connConfigs[self::LOAD_COMMAND_FIXTURES_CLASSES_NAMESPACE_CONFIG],
             ]
         );
         $connectionLoadFixturesDefinition->setPublic(true);
         $connectionLoadFixturesDefinition->setTags(
             ['console.command' => [
-                ['command' => sprintf('%s:%s', self::LOAD_FIXTURES_COMMAND_PREFIX, $connName)]]
+                ['command' => sprintf('%s:%s', self::LOAD_FIXTURES_COMMAND_PREFIX, $connName)], ],
             ]
         );
 

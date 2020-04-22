@@ -55,7 +55,7 @@ final class LoadDatabaseFixturesCommandTest extends FixturesAwareTestCase
         $commandTester = new CommandTester($command);
         $commandTester->execute([
             'command'  => $command->getName(),
-            '--append' => null
+            '--append' => null,
         ]);
 
         $this->assertEquals(2, $this->defaultConnection->executeQuery('select count(1) from table_1')->fetchColumn());
@@ -121,7 +121,7 @@ final class LoadDatabaseFixturesCommandTest extends FixturesAwareTestCase
         static::bootKernel();
 
         $this->defaultConnection = static::$container->get('doctrine.dbal.default_connection');
-        $this->application       = new Application(static::$kernel);
+        $this->application = new Application(static::$kernel);
     }
 
     private function recreateConnectionDatabase(Connection $connection): void

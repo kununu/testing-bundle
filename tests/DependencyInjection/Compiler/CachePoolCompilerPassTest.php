@@ -17,8 +17,8 @@ final class CachePoolCompilerPassTest extends AbstractCompilerPassTestCase
     public function testThatCreatesOrchestratorForEachServiceTaggedAsCachePool(): void
     {
         $cachePoolsIds = [
-            'cache_pool.service_1' => [],
-            'cache_pool.service_2' => [],
+            'cache_pool.service_1'           => [],
+            'cache_pool.service_2'           => [],
             'cache_pool.service_3.decorated' => [
                 'name' => 'cache_pool.service_3',
             ],
@@ -33,7 +33,6 @@ final class CachePoolCompilerPassTest extends AbstractCompilerPassTestCase
         $this->compile();
 
         foreach ($cachePoolsIds as $cachePoolId => $tagAttributes) {
-
             // It means the original definition was decorated. Check CachePoolCompilerPass class for more details.
             if (!empty($tagAttributes['name'])) {
                 $cachePoolId = $tagAttributes['name'];

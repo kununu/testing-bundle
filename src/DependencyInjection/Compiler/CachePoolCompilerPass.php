@@ -23,11 +23,9 @@ final class CachePoolCompilerPass implements CompilerPassInterface
         $ids = [];
 
         foreach ($cachePoolServices as $id => $tags) {
-
             $definition = $container->getDefinition($id);
 
             if (!$definition->isAbstract()) {
-
                 // Cache Pools can be decorated. For example, when using the tags option, the cache pool adapter is decorated.
                 // In this case the attributes of this tag contain the original name of the cache pool
                 // So we need to rely on those names and give aliases using this names to the $id
