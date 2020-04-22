@@ -31,6 +31,15 @@ final class FixturesAwareTestCaseTest extends FixturesAwareTestCase
     /** @var CacheItemPoolInterface */
     private $cachePool;
 
+    /** @var CacheItemPoolInterface */
+    private $tagAwareCachePool;
+
+    /** @var CacheItemPoolInterface */
+    private $tagAwarePoolCachePool;
+
+    /** @var CacheItemPoolInterface */
+    private $chainCachePool;
+
     /** @var ElasticSearch */
     private $elasticSearch;
 
@@ -152,6 +161,162 @@ final class FixturesAwareTestCaseTest extends FixturesAwareTestCase
         $this->assertEquals('value_3', $cachePool1Item3->get());
     }
 
+    public function testLoadTagAwareCachePoolFixturesWithoutAppend(): void
+    {
+        $cachePool1ItemToPurge1 = $this->tagAwareCachePool->getItem('cache_pool_1_key_to_purge_1');
+
+        $cachePool1ItemToPurge1->set('value_to_purge_1');
+        $this->tagAwareCachePool->save($cachePool1ItemToPurge1);
+
+        $this->registerInitializableFixtureForCachePool(
+            'app.cache.third',
+            CachePoolFixture1::class,
+            $this->monolithicConnection
+        );
+
+        $this->loadCachePoolFixtures(
+            'app.cache.third',
+            [CachePoolFixture1::class, CachePoolFixture2::class]
+        );
+
+        $cachePool1ItemAfterPurge1 = $this->tagAwareCachePool->getItem('cache_pool_1_key_to_purge_1');
+        $cachePool1Item1 = $this->tagAwareCachePool->getItem('key_1');
+        $cachePool1Item2 = $this->tagAwareCachePool->getItem('key_2');
+        $cachePool1Item3 = $this->tagAwareCachePool->getItem('key_3');
+
+        $this->assertNull($cachePool1ItemAfterPurge1->get());
+        $this->assertEquals('value_1', $cachePool1Item1->get());
+        $this->assertEquals('value_2', $cachePool1Item2->get());
+        $this->assertEquals('value_3', $cachePool1Item3->get());
+    }
+
+    public function testLoadTagAwareCachePoolFixturesWithAppend(): void
+    {
+        $cachePool1ItemToNotPurge1 = $this->tagAwareCachePool->getItem('cache_pool_1_key_to_not_purge_1');
+        $cachePool1ItemToNotPurge1->set('value_to_not_purge_1');
+        $this->tagAwareCachePool->save($cachePool1ItemToNotPurge1);
+
+        $this->loadCachePoolFixtures(
+            'app.cache.third',
+            [CachePoolFixture1::class, CachePoolFixture2::class],
+            true
+        );
+
+        $cachePool1ItemAfterToNotPurge1 = $this->tagAwareCachePool->getItem('cache_pool_1_key_to_not_purge_1');
+        $cachePool1Item1 = $this->tagAwareCachePool->getItem('key_1');
+        $cachePool1Item2 = $this->tagAwareCachePool->getItem('key_2');
+        $cachePool1Item3 = $this->tagAwareCachePool->getItem('key_3');
+
+        $this->assertEquals('value_to_not_purge_1', $cachePool1ItemAfterToNotPurge1->get());
+        $this->assertEquals('value_1', $cachePool1Item1->get());
+        $this->assertEquals('value_2', $cachePool1Item2->get());
+        $this->assertEquals('value_3', $cachePool1Item3->get());
+    }
+
+    public function testLoadTagAwarePoolCachePoolFixturesWithoutAppend(): void
+    {
+        $cachePool1ItemToPurge1 = $this->tagAwarePoolCachePool->getItem('cache_pool_1_key_to_purge_1');
+
+        $cachePool1ItemToPurge1->set('value_to_purge_1');
+        $this->tagAwarePoolCachePool->save($cachePool1ItemToPurge1);
+
+        $this->registerInitializableFixtureForCachePool(
+            'app.cache.fourth',
+            CachePoolFixture1::class,
+            $this->monolithicConnection
+        );
+
+        $this->loadCachePoolFixtures(
+            'app.cache.fourth',
+            [CachePoolFixture1::class, CachePoolFixture2::class]
+        );
+
+        $cachePool1ItemAfterPurge1 = $this->tagAwarePoolCachePool->getItem('cache_pool_1_key_to_purge_1');
+        $cachePool1Item1 = $this->tagAwarePoolCachePool->getItem('key_1');
+        $cachePool1Item2 = $this->tagAwarePoolCachePool->getItem('key_2');
+        $cachePool1Item3 = $this->tagAwarePoolCachePool->getItem('key_3');
+
+        $this->assertNull($cachePool1ItemAfterPurge1->get());
+        $this->assertEquals('value_1', $cachePool1Item1->get());
+        $this->assertEquals('value_2', $cachePool1Item2->get());
+        $this->assertEquals('value_3', $cachePool1Item3->get());
+    }
+
+    public function testLoadTagAwarePoolCachePoolFixturesWithAppend(): void
+    {
+        $cachePool1ItemToNotPurge1 = $this->tagAwarePoolCachePool->getItem('cache_pool_1_key_to_not_purge_1');
+        $cachePool1ItemToNotPurge1->set('value_to_not_purge_1');
+        $this->tagAwarePoolCachePool->save($cachePool1ItemToNotPurge1);
+
+        $this->loadCachePoolFixtures(
+            'app.cache.fourth',
+            [CachePoolFixture1::class, CachePoolFixture2::class],
+            true
+        );
+
+        $cachePool1ItemAfterToNotPurge1 = $this->tagAwarePoolCachePool->getItem('cache_pool_1_key_to_not_purge_1');
+        $cachePool1Item1 = $this->tagAwarePoolCachePool->getItem('key_1');
+        $cachePool1Item2 = $this->tagAwarePoolCachePool->getItem('key_2');
+        $cachePool1Item3 = $this->tagAwarePoolCachePool->getItem('key_3');
+
+        $this->assertEquals('value_to_not_purge_1', $cachePool1ItemAfterToNotPurge1->get());
+        $this->assertEquals('value_1', $cachePool1Item1->get());
+        $this->assertEquals('value_2', $cachePool1Item2->get());
+        $this->assertEquals('value_3', $cachePool1Item3->get());
+    }
+
+    public function testLoadChainCachePoolFixturesWithoutAppend(): void
+    {
+        $cachePool1ItemToPurge1 = $this->chainCachePool->getItem('cache_pool_1_key_to_purge_1');
+
+        $cachePool1ItemToPurge1->set('value_to_purge_1');
+        $this->chainCachePool->save($cachePool1ItemToPurge1);
+
+        $this->registerInitializableFixtureForCachePool(
+            'app.cache.fifth',
+            CachePoolFixture1::class,
+            $this->monolithicConnection
+        );
+
+        $this->loadCachePoolFixtures(
+            'app.cache.fifth',
+            [CachePoolFixture1::class, CachePoolFixture2::class]
+        );
+
+        $cachePool1ItemAfterPurge1 = $this->chainCachePool->getItem('cache_pool_1_key_to_purge_1');
+        $cachePool1Item1 = $this->chainCachePool->getItem('key_1');
+        $cachePool1Item2 = $this->chainCachePool->getItem('key_2');
+        $cachePool1Item3 = $this->chainCachePool->getItem('key_3');
+
+        $this->assertNull($cachePool1ItemAfterPurge1->get());
+        $this->assertEquals('value_1', $cachePool1Item1->get());
+        $this->assertEquals('value_2', $cachePool1Item2->get());
+        $this->assertEquals('value_3', $cachePool1Item3->get());
+    }
+
+    public function testLoadChainPoolCachePoolFixturesWithAppend(): void
+    {
+        $cachePool1ItemToNotPurge1 = $this->chainCachePool->getItem('cache_pool_1_key_to_not_purge_1');
+        $cachePool1ItemToNotPurge1->set('value_to_not_purge_1');
+        $this->chainCachePool->save($cachePool1ItemToNotPurge1);
+
+        $this->loadCachePoolFixtures(
+            'app.cache.fifth',
+            [CachePoolFixture1::class, CachePoolFixture2::class],
+            true
+        );
+
+        $cachePool1ItemAfterToNotPurge1 = $this->chainCachePool->getItem('cache_pool_1_key_to_not_purge_1');
+        $cachePool1Item1 = $this->chainCachePool->getItem('key_1');
+        $cachePool1Item2 = $this->chainCachePool->getItem('key_2');
+        $cachePool1Item3 = $this->chainCachePool->getItem('key_3');
+
+        $this->assertEquals('value_to_not_purge_1', $cachePool1ItemAfterToNotPurge1->get());
+        $this->assertEquals('value_1', $cachePool1Item1->get());
+        $this->assertEquals('value_2', $cachePool1Item2->get());
+        $this->assertEquals('value_3', $cachePool1Item3->get());
+    }
+
     public function testLoadDbFixturesWithAppend(): void
     {
         $this->registerInitializableFixtureForDb(
@@ -216,6 +381,10 @@ final class FixturesAwareTestCaseTest extends FixturesAwareTestCase
         parent::setUp();
 
         $this->cachePool = $this->getContainer()->get('app.cache.first');
+        $this->tagAwareCachePool = $this->getContainer()->get('app.cache.third');
+        $this->tagAwarePoolCachePool = $this->getContainer()->get('app.cache.fourth');
+        $this->chainCachePool = $this->getContainer()->get('app.cache.fifth');
+
         $this->defaultConnection = $this->getContainer()->get('doctrine.dbal.default_connection');
         $this->monolithicConnection = $this->getContainer()->get('doctrine.dbal.monolithic_connection');
         $this->elasticSearch = $this->getContainer()->get('Kununu\TestingBundle\Tests\App\ElasticSearch');

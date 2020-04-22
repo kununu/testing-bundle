@@ -11,6 +11,7 @@
         "symfony/http-kernel": "^4.3"
     },
     "require-dev": {
+        "kununu/scripts": "^1.0",
         "phpunit/phpunit": "^8.1",
         "matthiasnoback/symfony-dependency-injection-test": "^4.0",
         "doctrine/doctrine-bundle": "^1.10",
@@ -38,6 +39,11 @@
         {
             "type": "vcs",
             "url": "https://github.com/kununu/data-fixtures.git",
+            "no-api": true
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/kununu/kununu-scripts.git",
             "no-api": true
         }
     ]

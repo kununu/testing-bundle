@@ -1,2 +1,2 @@
 parameters:
-    elasticsearch_url: ''
+    elasticsearch_url: 'http://172.17.0.36:9200'
