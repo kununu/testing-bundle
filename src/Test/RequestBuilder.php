@@ -48,6 +48,13 @@ final class RequestBuilder
         return [$this->method, $this->uri, $this->parameters, $this->files, $this->server, $this->content];
     }
 
+    public function withParameters(array $parameters): self
+    {
+        $this->parameters = $parameters;
+
+        return $this;
+    }
+
     public function withMethod(string $method): self
     {
         $this->method = $method;
