@@ -35,6 +35,21 @@ final class RequestBuilderTest extends TestCase
         $this->assertNull($content);
     }
 
+    public function testBuildPostRequestWithParameters(): void
+    {
+        $request = RequestBuilder::aPostRequest();
+        $request->withParameters(['parameters']);
+
+        list($method, $uri, $parameters, $files, $server, $content) = $request->build();
+
+        $this->assertEquals('POST', $method);
+        $this->assertNull($uri);
+        $this->assertEquals(['parameters'], $parameters);
+        $this->assertEmpty($files);
+        $this->assertEmpty($server);
+        $this->assertNull($content);
+    }
+
     public function testBuildPutRequest(): void
     {
         $request = RequestBuilder::aPutRequest();
