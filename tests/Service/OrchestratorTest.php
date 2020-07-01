@@ -32,6 +32,9 @@ final class OrchestratorTest extends TestCase
             ->expects($this->once())
             ->method('getFixtures')
             ->willReturn([$fixture1, $fixture2]);
+        $loader
+            ->expects($this->once())
+            ->method('clearFixtures');
 
         /** @var ExecutorInterface|MockObject $executor */
         $executor = $this->createMock(ExecutorInterface::class);
@@ -46,6 +49,7 @@ final class OrchestratorTest extends TestCase
         $orchestrator = new Orchestrator($executor, $purger, $loader);
 
         $orchestrator->execute(['Mock1', 'Mock2'], $append);
+        $orchestrator->clearFixtures();
     }
 
     public function executesAsExpectedDataProvider()
