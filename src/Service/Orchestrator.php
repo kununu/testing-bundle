@@ -34,4 +34,9 @@ final class Orchestrator
     {
         $this->loader->registerInitializableFixture($className, ...$args);
     }
+
+    public function clearFixtures(): void
+    {
+        $this->loader->clearFixtures();
+    }
 }

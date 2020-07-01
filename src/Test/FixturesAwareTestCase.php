@@ -8,9 +8,13 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase as BaseWebTestCase;
 
 abstract class FixturesAwareTestCase extends BaseWebTestCase
 {
+    private const KEY_CONNECTIONS = 'connections';
+    private const KEY_CACHE_POOLS = 'cache_pools';
+    private const KEY_ELASTICSEARCH = 'elastic_search';
+
     final protected function loadDbFixtures(string $connectionName, array $classNames = [], bool $append = false): void
     {
-        $this->getOrchestrator('connections', $connectionName)->execute($classNames, $append);
+        $this->getOrchestrator(self::KEY_CONNECTIONS, $connectionName)->execute($classNames, $append);
     }
 
     final protected function loadCachePoolFixtures(
@@ -18,7 +22,7 @@ abstract class FixturesAwareTestCase extends BaseWebTestCase
         array $classNames = [],
         bool $append = false
     ): void {
-        $this->getOrchestrator('cache_pools', $cachePoolServiceId)->execute($classNames, $append);
+        $this->getOrchestrator(self::KEY_CACHE_POOLS, $cachePoolServiceId)->execute($classNames, $append);
     }
 
     final protected function loadElasticSearchFixtures(
@@ -26,7 +30,7 @@ abstract class FixturesAwareTestCase extends BaseWebTestCase
         array $classNames = [],
         bool $append = false
     ): void {
-        $this->getOrchestrator('elastic_search', $alias)->execute($classNames, $append);
+        $this->getOrchestrator(self::KEY_ELASTICSEARCH, $alias)->execute($classNames, $append);
     }
 
     final protected function registerInitializableFixtureForDb(
@@ -34,7 +38,7 @@ abstract class FixturesAwareTestCase extends BaseWebTestCase
         string $className,
         ...$args
     ): void {
-        $this->getOrchestrator('connections', $connectionName)->registerInitializableFixture($className, ...$args);
+        $this->getOrchestrator(self::KEY_CONNECTIONS, $connectionName)->registerInitializableFixture($className, ...$args);
     }
 
     final protected function registerInitializableFixtureForCachePool(
@@ -42,7 +46,7 @@ abstract class FixturesAwareTestCase extends BaseWebTestCase
         string $className,
         ...$args
     ): void {
-        $this->getOrchestrator('cache_pools', $cachePoolServiceId)->registerInitializableFixture($className, ...$args);
+        $this->getOrchestrator(self::KEY_CACHE_POOLS, $cachePoolServiceId)->registerInitializableFixture($className, ...$args);
     }
 
     final protected function registerInitializableFixtureForElasticSearch(
@@ -50,7 +54,7 @@ abstract class FixturesAwareTestCase extends BaseWebTestCase
         string $className,
         ...$args
     ): void {
-        $this->getOrchestrator('elastic_search', $alias)->registerInitializableFixture($className, ...$args);
+        $this->getOrchestrator(self::KEY_ELASTICSEARCH, $alias)->registerInitializableFixture($className, ...$args);
     }
 
     final protected function getContainer(): ContainerInterface
@@ -60,6 +64,27 @@ abstract class FixturesAwareTestCase extends BaseWebTestCase
         }
 
         return static::$container;
+    }
+
+    final protected function clearDbFixtures(string $connectionName): self
+    {
+        $this->getOrchestrator(self::KEY_CONNECTIONS, $connectionName)->clearFixtures();
+
+        return $this;
+    }
+
+    final protected function clearCachePoolFixtures(string $cachePoolServiceId): self
+    {
+        $this->getOrchestrator(self::KEY_CACHE_POOLS, $cachePoolServiceId)->clearFixtures();
+
+        return $this;
+    }
+
+    final protected function clearElasticSearchFixtures(string $alias): self
+    {
+        $this->getOrchestrator(self::KEY_ELASTICSEARCH, $alias)->clearFixtures();
+
+        return $this;
     }
 
     private function getOrchestrator(string $type, string $key): Orchestrator
