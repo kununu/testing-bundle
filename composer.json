@@ -14,7 +14,7 @@
         "kununu/scripts": "^1.0",
         "phpunit/phpunit": "^8.1",
         "matthiasnoback/symfony-dependency-injection-test": "^4.0",
-        "doctrine/doctrine-bundle": "^1.10",
+        "doctrine/doctrine-bundle": "^1.10 || ^2.0",
         "symfony/browser-kit": "^4.3",
         "elasticsearch/elasticsearch": "~7.0"
     },
