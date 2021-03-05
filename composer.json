@@ -11,7 +11,7 @@
         "symfony/http-kernel": "^4.3"
     },
     "require-dev": {
-        "doctrine/doctrine-bundle": "^1.10",
+        "doctrine/doctrine-bundle": "^1.10 || ^2.0",
         "elasticsearch/elasticsearch": "~7.0",
         "guzzlehttp/guzzle": "^7.2",
         "kununu/scripts": "^1.1",
