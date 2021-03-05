@@ -210,6 +210,69 @@ final class IntegrationTest extends FixturesAwareTestCase
 }
 ```
 
+## Initializable Fixtures
+
+Since this bundle is using the [KununuDataFixtures](https://github.com/kununu/data-fixtures) package, it also has support for initializable features, allowing you to inject arguments into your feature classes (see documentation at the KununuDataFixtures package).
+
+In order to do that your Fixtures class must implement the `InitializableFixtureInterface`, and according to your fixture type you need to register the initialization arguments before loading the fixtures.
+
+### CachePool Fixtures
+
+```
+$this->registerInitializableFixtureForCachePool(
+	'app.cache.first',
+	YourCachePoolFixtureClass::class,
+	$yourArg1,
+	...,
+	$yourArgN
+);
+
+$this->loadCachePoolFixtures(
+	'app.cache.first',
+    [
+    	YourCachePoolFixtureClass::class
+    ]
+);
+
+```
+### Connection Fixtures
+
+```
+$this->registerInitializableFixtureForDb(
+	'default',
+	YourConnectionFixtureClass::class,
+	yourArg1,
+	...,
+    $yourArgN
+);
+
+$this->loadDbFixtures(
+	'default',
+	[
+		YourConnectionFixtureClass::class
+	]
+);
+```
+
+### Elasticsearch Fixtures
+
+```
+$this->registerInitializableFixtureForElasticSearch(
+	'my_index_alias',
+	YourElasticsearchFixtureClass::class,
+	$yourArg1,
+	...,
+	$yourArgN
+);
+
+$this->loadElasticSearchFixtures(
+	'my_index_alias',
+	[
+		YourElasticsearchFixtureClass::class
+	]
+);
+```
+
 ## Making a Request
 
 The class `WebTestCase` exposes two methods that help you testing your controllers:

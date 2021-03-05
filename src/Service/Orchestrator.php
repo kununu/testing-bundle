@@ -29,4 +29,14 @@ final class Orchestrator
 
         $this->executor->execute($this->loader->getFixtures(), $append);
     }
+
+    public function registerInitializableFixture(string $className, ...$args): void
+    {
+        $this->loader->registerInitializableFixture($className, ...$args);
+    }
+
+    public function clearFixtures(): void
+    {
+        $this->loader->clearFixtures();
+    }
 }

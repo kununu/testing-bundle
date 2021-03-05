@@ -18,7 +18,7 @@ final class KununuTestingExtensionTest extends AbstractExtensionTestCase
                     'load_command_fixtures_classes_namespace' => ['App\DataFixtures\Fixture1'],
                 ],
                 'monolithic' => [
-                    'excluded_tables' => ['table1', 'table3'],
+                    'excluded_tables'                         => ['table1', 'table3'],
                     'load_command_fixtures_classes_namespace' => ['App\DataFixtures\Fixture2'],
                 ],
                 'other_connection' => [
@@ -42,7 +42,7 @@ final class KununuTestingExtensionTest extends AbstractExtensionTestCase
             'kununu_testing.connections.monolithic',
             [
                 'excluded_tables'                         => ['table1', 'table3'],
-                'load_command_fixtures_classes_namespace' => ['App\DataFixtures\Fixture2']
+                'load_command_fixtures_classes_namespace' => ['App\DataFixtures\Fixture2'],
             ]
         );
 

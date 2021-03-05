@@ -87,7 +87,7 @@ final class ConfigurationTest extends TestCase
                             'default' => [
                                 'load_command_fixtures_classes_namespace' => [
                                     'App/DataFixtures/Fixture1',
-                                    'App/DataFixtures/Fixture2'
+                                    'App/DataFixtures/Fixture2',
                                 ],
                             ],
                         ],
@@ -98,7 +98,7 @@ final class ConfigurationTest extends TestCase
                         'default' => [
                             'load_command_fixtures_classes_namespace' => [
                                 'App/DataFixtures/Fixture1',
-                                'App/DataFixtures/Fixture2'
+                                'App/DataFixtures/Fixture2',
                             ],
                             'excluded_tables'                         => [],
                         ],
@@ -134,7 +134,7 @@ final class ConfigurationTest extends TestCase
                             'default' => [
                                 'load_command_fixtures_classes_namespace' => [
                                     'App/DataFixtures/Fixture1',
-                                    'App/DataFixtures/Fixture2'
+                                    'App/DataFixtures/Fixture2',
                                 ],
                                 'excluded_tables' => ['table1', 'table2'],
                             ],
@@ -152,7 +152,7 @@ final class ConfigurationTest extends TestCase
                         'default' => [
                             'load_command_fixtures_classes_namespace' => [
                                 'App/DataFixtures/Fixture1',
-                                'App/DataFixtures/Fixture2'
+                                'App/DataFixtures/Fixture2',
                             ],
                             'excluded_tables'                         => ['table1', 'table2'],
                         ],

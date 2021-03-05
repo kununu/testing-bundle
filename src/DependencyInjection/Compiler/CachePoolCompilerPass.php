@@ -20,12 +20,34 @@ final class CachePoolCompilerPass implements CompilerPassInterface
     {
         $cachePoolServices = $container->findTaggedServiceIds('cache.pool');
 
+        $ids = [];
+
         foreach ($cachePoolServices as $id => $tags) {
             $definition = $container->getDefinition($id);
 
             if (!$definition->isAbstract()) {
-                $this->buildCachePoolOrchestrator($container, $id);
+                // Cache Pools can be decorated. For example, when using the tags option, the cache pool adapter is decorated.
+                // In this case the attributes of this tag contain the original name of the cache pool
+                // So we need to rely on those names and give aliases using this names to the $id
+                $attributes = $definition->getTag('cache.pool');
+
+                $isDecorated = false;
+
+                foreach ($attributes as $attribute) {
+                    if (isset($attribute['name']) && !empty($name = $attribute['name'])) {
+                        $ids[] = $name;
+                        $isDecorated = true;
+                    }
+                }
+
+                if (!$isDecorated) {
+                    $ids[] = $id;
+                }
             }
+        }
+
+        foreach ($ids as $id) {
+            $this->buildCachePoolOrchestrator($container, $id);
         }
     }
 
