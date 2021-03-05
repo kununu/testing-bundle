@@ -11,16 +11,19 @@
         "symfony/http-kernel": "^4.3"
     },
     "require-dev": {
-        "kununu/scripts": "^1.0",
-        "phpunit/phpunit": "^8.1",
-        "matthiasnoback/symfony-dependency-injection-test": "^4.0",
         "doctrine/doctrine-bundle": "^1.10",
-        "symfony/browser-kit": "^4.3",
-        "elasticsearch/elasticsearch": "~7.0"
+        "elasticsearch/elasticsearch": "~7.0",
+        "guzzlehttp/guzzle": "^7.2",
+        "kununu/scripts": "^1.1",
+        "matthiasnoback/symfony-dependency-injection-test": "^4.0",
+        "phpunit/phpunit": "^8.1",
+        "symfony/browser-kit": "^4.3"
     },
     "suggest": {
         "ext-pdo_sqlite": "To run Integration Tests.",
-        "elasticsearch/elasticsearch": "To run Integration Tests."
+        "doctrine/doctrine-bundle": "To run Integration Tests.",
+        "elasticsearch/elasticsearch": "To run Integration Tests.",
+        "guzzlehttp/guzzle": "To use DisableSSLCompilerPass."
     },
     "autoload": {
         "psr-4": {

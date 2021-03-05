@@ -1,4 +1,5 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
 
 namespace Kununu\TestingBundle\DependencyInjection;
 
@@ -10,12 +11,34 @@ final class Configuration implements ConfigurationInterface
     public function getConfigTreeBuilder()
     {
         $treeBuilder = new TreeBuilder('kununu_testing');
-
         $rootNode = $treeBuilder->getRootNode();
 
         $rootNode
             ->fixXmlConfig('connection')
             ->children()
+                ->arrayNode('ssl_check')
+                    ->children()
+                        ->booleanNode('disable')
+                            ->info('Disable SSL check for requests made with a Guzzle client on selected hosts')
+                            ->defaultFalse()
+                        ->end()
+                        ->arrayNode('clients')
+                            ->info('Guzzle client services ids')
+                            ->scalarPrototype()
+                            ->end()
+                        ->end()
+                        ->arrayNode('domains')
+                            ->info('Domains for which to disable SSL checks')
+                            ->scalarPrototype()
+                            ->end()
+                        ->end()
+                        ->scalarNode('env_var')
+                            ->info('Environment variable that has the hostname')
+                            ->cannotBeEmpty()
+                            ->defaultValue('VIRTUAL_HOST')
+                        ->end()
+                    ->end()
+                ->end()
                 ->arrayNode('connections')
                     ->requiresAtLeastOneElement()
                     ->useAttributeAsKey('name')

@@ -1,4 +1,5 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
 
 namespace Kununu\TestingBundle\Service;
 
@@ -9,9 +10,7 @@ use Kununu\DataFixtures\Purger\PurgerInterface;
 final class Orchestrator
 {
     private $executor;
-
     private $purger;
-
     private $loader;
 
     public function __construct(ExecutorInterface $executor, PurgerInterface $purger, LoaderInterface $loader)

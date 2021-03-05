@@ -1,20 +1,25 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
 
 namespace Kununu\TestingBundle\DependencyInjection;
 
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\Extension;
 
-final class KununuTestingExtension extends Extension
+final class KununuTestingExtension extends Extension implements ExtensionConfiguration
 {
+    public const ALIAS = 'kununu_testing';
+
+    private $config = [];
+
     public function load(array $configs, ContainerBuilder $container): void
     {
         $configuration = new Configuration();
 
-        $config = $this->processConfiguration($configuration, $configs);
+        $this->config = $this->processConfiguration($configuration, $configs);
 
-        if (!empty($config['connections'])) {
-            foreach ($config['connections'] as $connId => $connectionConfigs) {
+        if (!empty($this->config['connections'])) {
+            foreach ($this->config['connections'] as $connId => $connectionConfigs) {
                 $container->setParameter(
                     sprintf('kununu_testing.connections.%s', $connId),
                     $connectionConfigs
@@ -22,8 +27,13 @@ final class KununuTestingExtension extends Extension
             }
         }
 
-        if (!empty($config['elastic_search'])) {
-            $container->setParameter('kununu_testing.elastic_search', $config['elastic_search']);
+        if (!empty($this->config['elastic_search'])) {
+            $container->setParameter('kununu_testing.elastic_search', $this->config['elastic_search']);
         }
+    }
+
+    public function getConfig(): array
+    {
+        return $this->config;
     }
 }
