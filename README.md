@@ -303,7 +303,19 @@ final class WebTestCaseTest extends WebTestCase
     }
 }
 ```
+### Disable SSL validations
 
+If your code uses any http client (e.g. Guzzle) to perform Http requests and your test environment (for example, when the test are executed in a CI environment) has issues with SSL validation of certificates you might have the necessity of skipping SSL validations.
+
+This bundle include a compiler pass (`DisableSSLCompilerPass`) that can be configured to do this to your Http clients services (see configuration sections for all options).
+
+Currently this compiler pass only supports Guzzle and those clients have an option to disable such checks, but you only want to disable the check on certain envs (in production environment for sure you would not want to do this!).
+
+So you can configure it to disable checks (disable configuration parameter) and then say which clients services are to be changed and the domains that are to be affected.
+
+Suppose you run your tests at subdomain of `app.myserver.com` (let's say `tests.app.myserver.com`) then you add the `.app.myserver.com` to the list of domains in the bundle configuration. 
+
+By default the compiler pass will try to use the `VIRTUAL_HOST` environment variable, but if you setup has another var for that you can also configure the bundle to use that env var.
 
 ## Configuration
 
@@ -322,6 +334,17 @@ kununu_testing:
         my_index_alias: # Alias to be use to load fixtures for the configured index using the defined service
             service: 'Kununu\TestingBundle\Tests\App\ElasticSearch' # Service Id of an instance of Elasticsearch\Client 
             index_name: 'my_index_name' # name of your index
+
+    ssl_check_disable:
+        enable: true
+        # Currently only Guzzle clients are supported!
+        clients:
+            - 'my.guzzle.client.1'
+            - 'my.http.client.2'
+        domains:
+            - '.my.test.domain.com'
+            - '.second.test.domain.com'
+        env_var: 'MY_HOSTNAME_ENV_VAR'
 ```
 
 ## Tests

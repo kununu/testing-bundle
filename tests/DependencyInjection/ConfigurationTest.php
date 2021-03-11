@@ -1,4 +1,5 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
 
 namespace Kununu\TestingBundle\Tests\DependencyInjection;
 
@@ -33,7 +34,7 @@ final class ConfigurationTest extends TestCase
         );
     }
 
-    public function processedConfigurationForConnectionsNodeDataProvider()
+    public function processedConfigurationForConnectionsNodeDataProvider(): array
     {
         return [
             'no_configuration' => [
@@ -181,7 +182,7 @@ final class ConfigurationTest extends TestCase
         );
     }
 
-    public function connectionsNodeIsInvalidIfAtLeastOneConnectionIsNotProvidedDataProvider()
+    public function connectionsNodeIsInvalidIfAtLeastOneConnectionIsNotProvidedDataProvider(): array
     {
         return [
             'connections_as_null' => [
@@ -216,7 +217,7 @@ final class ConfigurationTest extends TestCase
         );
     }
 
-    public function processedConfigurationForElasticSearchNodeDataProvider()
+    public function processedConfigurationForElasticSearchNodeDataProvider(): array
     {
         return [
             'no_configuration' => [
@@ -279,7 +280,7 @@ final class ConfigurationTest extends TestCase
         );
     }
 
-    public function elasticSearchNodeIsInvalidIfAtLeastOneItemIsNotProvidedDataProvider()
+    public function elasticSearchNodeIsInvalidIfAtLeastOneItemIsNotProvidedDataProvider(): array
     {
         return [
             'elastic_search_as_null' => [
@@ -299,7 +300,7 @@ final class ConfigurationTest extends TestCase
         ];
     }
 
-    protected function getConfiguration()
+    protected function getConfiguration(): Configuration
     {
         return new Configuration();
     }
