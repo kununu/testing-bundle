@@ -5,6 +5,7 @@ namespace Kununu\TestingBundle;
 
 use Kununu\TestingBundle\DependencyInjection\Compiler\CachePoolCompilerPass;
 use Kununu\TestingBundle\DependencyInjection\Compiler\DisableSSLCompilerPass;
+use Kununu\TestingBundle\DependencyInjection\Compiler\DisableSSLGuzzleAdapter;
 use Kununu\TestingBundle\DependencyInjection\Compiler\DoctrineCompilerPass;
 use Kununu\TestingBundle\DependencyInjection\Compiler\ElasticSearchCompilerPass;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -19,6 +20,8 @@ final class KununuTestingBundle extends Bundle
         $container->addCompilerPass(new CachePoolCompilerPass());
         $container->addCompilerPass(new DoctrineCompilerPass());
         $container->addCompilerPass(new ElasticSearchCompilerPass());
-        $container->addCompilerPass(new DisableSSLCompilerPass());
+        $container->addCompilerPass(new DisableSSLCompilerPass(
+            new DisableSSLGuzzleAdapter()
+        ));
     }
 }

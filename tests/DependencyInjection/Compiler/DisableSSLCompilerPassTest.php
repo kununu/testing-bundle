@@ -5,6 +5,7 @@ namespace Kununu\TestingBundle\Tests\DependencyInjection\Compiler;
 
 use GuzzleHttp\Client;
 use Kununu\TestingBundle\DependencyInjection\Compiler\DisableSSLCompilerPass;
+use Kununu\TestingBundle\DependencyInjection\Compiler\DisableSSLGuzzleAdapter;
 use Kununu\TestingBundle\DependencyInjection\KununuTestingExtension;
 use Matthias\SymfonyDependencyInjectionTest\PhpUnit\AbstractCompilerPassTestCase;
 use stdClass;
@@ -100,8 +101,8 @@ final class DisableSSLCompilerPassTest extends AbstractCompilerPassTestCase
             'extension_config_dont_disable_ssl'                  => [
                 $extension,
                 [
-                    'ssl_check' => [
-                        'disable' => false,
+                    'ssl_check_disable' => [
+                        'enable' => false,
                     ],
                 ],
                 '',
@@ -110,8 +111,8 @@ final class DisableSSLCompilerPassTest extends AbstractCompilerPassTestCase
             'extension_config_disable_ssl_no_domains_configured' => [
                 $extension,
                 [
-                    'ssl_check' => [
-                        'disable' => true,
+                    'ssl_check_disable' => [
+                        'enable' => true,
                     ],
                 ],
                 'host.kununu.it',
@@ -120,8 +121,8 @@ final class DisableSSLCompilerPassTest extends AbstractCompilerPassTestCase
             'extension_config_disable_ssl_no_host'               => [
                 $extension,
                 [
-                    'ssl_check' => [
-                        'disable' => true,
+                    'ssl_check_disable' => [
+                        'enable' => true,
                     ],
                 ],
                 '',
@@ -130,8 +131,8 @@ final class DisableSSLCompilerPassTest extends AbstractCompilerPassTestCase
             'extension_config_disable_ssl_no_host_match'         => [
                 $extension,
                 [
-                    'ssl_check' => [
-                        'disable' => true,
+                    'ssl_check_disable' => [
+                        'enable'  => true,
                         'domains' => [
                             'kununu.com',
                         ],
@@ -143,8 +144,8 @@ final class DisableSSLCompilerPassTest extends AbstractCompilerPassTestCase
             'extension_config_disable_ssl_host_match'            => [
                 $extension,
                 [
-                    'ssl_check' => [
-                        'disable' => true,
+                    'ssl_check_disable' => [
+                        'enable'  => true,
                         'clients' => [
                             self::CLIENT_1_ID,
                             self::CLIENT_1_ID,
@@ -168,7 +169,9 @@ final class DisableSSLCompilerPassTest extends AbstractCompilerPassTestCase
 
     protected function registerCompilerPass(ContainerBuilder $container): void
     {
-        $container->addCompilerPass(new DisableSSLCompilerPass());
+        $container->addCompilerPass(new DisableSSLCompilerPass(
+            new DisableSSLGuzzleAdapter()
+        ));
     }
 
     protected function setUp(): void

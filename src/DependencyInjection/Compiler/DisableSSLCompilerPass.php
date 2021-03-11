@@ -3,21 +3,26 @@ declare(strict_types=1);
 
 namespace Kununu\TestingBundle\DependencyInjection\Compiler;
 
-use GuzzleHttp\Client;
 use Kununu\TestingBundle\DependencyInjection\ExtensionConfiguration;
 use Kununu\TestingBundle\DependencyInjection\KununuTestingExtension;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\Exception\OutOfBoundsException;
+use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Exception\ServiceNotFoundException;
 
 final class DisableSSLCompilerPass implements CompilerPassInterface
 {
-    private $disable = false;
+    private $adapters;
+    private $enable = false;
     private $hostEnvVar;
     private $host;
     private $clients = [];
     private $domains = [];
+
+    public function __construct(DisableSSLAdapter ...$adapters)
+    {
+        $this->adapters = $adapters;
+    }
 
     public function process(ContainerBuilder $container): void
     {
@@ -32,28 +37,33 @@ final class DisableSSLCompilerPass implements CompilerPassInterface
 
         $this->parseConfig($extension->getConfig());
 
-        if (!$this->disable || !$this->isRunningOnTestHost()) {
+        if (!$this->enable || !$this->isRunningOnTestHost()) {
             return;
         }
 
         foreach ($this->clients as $clientId) {
             try {
                 $client = $container->getDefinition($clientId);
-                if (!is_string($class = $client->getClass()) || Client::class !== $class) {
+                if (!is_string($class = $client->getClass()) || $this->changedClientDefinition($client, $class)) {
                     continue;
                 }
             } catch (ServiceNotFoundException $e) {
                 continue;
             }
-
-            try {
-                $args = $client->getArgument(0);
-            } catch (OutOfBoundsException $e) {
-                $args = [];
-            }
-
-            $client->setArgument(0, array_merge($args, ['verify' => false]));
         }
+    }
+
+    private function changedClientDefinition(Definition $clientDefinition, string $class): bool
+    {
+        foreach ($this->adapters as $adapter) {
+            if ($adapter->getClientClass() === $class) {
+                $adapter->changeDefinition($clientDefinition);
+
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private function isRunningOnTestHost(): bool
@@ -84,9 +94,9 @@ final class DisableSSLCompilerPass implements CompilerPassInterface
 
     private function parseConfig(array $config): void
     {
-        $config = $config['ssl_check'] ?? [];
+        $config = $config['ssl_check_disable'] ?? [];
 
-        $this->disable = (bool) ($config['disable'] ?? false);
+        $this->enable = (bool) ($config['enable'] ?? false);
         $this->clients = array_unique($config['clients'] ?? []);
         $this->domains = array_unique($config['domains'] ?? []);
         $this->hostEnvVar = $config['env_var'] ?? 'VIRTUAL_HOST';
