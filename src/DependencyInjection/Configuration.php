@@ -71,6 +71,15 @@ final class Configuration implements ConfigurationInterface
                         ->end()
                     ->end()
                 ->end()
+                ->arrayNode('cache')
+                    ->addDefaultsIfNotSet()
+                    ->children()
+                        ->booleanNode('enable')
+                            ->info('Enable creating orchestrators for cache pools')
+                            ->defaultTrue()
+                        ->end()
+                    ->end()
+                ->end()
             ->end()
         ;
 

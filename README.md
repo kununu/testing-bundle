@@ -15,7 +15,7 @@ It also provides some utilities to use use in your tests.
 
 ### CachePool Fixtures
 
-All services tagged with `cache.pool` are elegible to be used to load fixtures.
+All services tagged with `cache.pool` are eligible to be used to load fixtures.
 
 For example, assuming you are using the [Cache Component](https://symfony.com/doc/current/components/cache.html):
 
@@ -71,6 +71,8 @@ final class IntegrationTest extends FixturesAwareTestCase
     }
 }
 ```
+
+You can also disable the creation of orchestrators services for cache pools if you don't want to use fixtures on caches (see configuration file example).
 
 ### Connection Fixtures
 
@@ -345,6 +347,10 @@ kununu_testing:
             - '.my.test.domain.com'
             - '.second.test.domain.com'
         env_var: 'MY_HOSTNAME_ENV_VAR'
+
+    cache:
+        # Enable or disable the generation of orchestrators for cache pools in the app
+        enable: true
 ```
 
 ## Tests

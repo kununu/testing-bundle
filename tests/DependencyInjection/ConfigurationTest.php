@@ -15,7 +15,7 @@ final class ConfigurationTest extends TestCase
     {
         $this->assertProcessedConfigurationEquals(
             [],
-            ['connections' => [], 'elastic_search' => []]
+            ['connections' => [], 'elastic_search' => [], 'cache' => ['enable' => true]]
         );
     }
 
@@ -37,7 +37,7 @@ final class ConfigurationTest extends TestCase
     public function processedConfigurationForConnectionsNodeDataProvider(): array
     {
         return [
-            'no_configuration' => [
+            'no_configuration'                                        => [
                 [
                     [],
                 ],
@@ -45,7 +45,7 @@ final class ConfigurationTest extends TestCase
                     'connections' => [],
                 ],
             ],
-            'connection_with_empty_configuration' => [
+            'connection_with_empty_configuration'                     => [
                 [
                     [
                         'connections' => [
@@ -62,7 +62,7 @@ final class ConfigurationTest extends TestCase
                     ],
                 ],
             ],
-            'connection_with_excluded_tables' => [
+            'connection_with_excluded_tables'                         => [
                 [
                     [
                         'connections' => [
@@ -106,7 +106,7 @@ final class ConfigurationTest extends TestCase
                     ],
                 ],
             ],
-            'multiple_connections_configuration_settings_empty' => [
+            'multiple_connections_configuration_settings_empty'       => [
                 [
                     [
                         'connections' => [
@@ -117,7 +117,7 @@ final class ConfigurationTest extends TestCase
                 ],
                 [
                     'connections' => [
-                        'default' => [
+                        'default'    => [
                             'load_command_fixtures_classes_namespace' => [],
                             'excluded_tables'                         => [],
                         ],
@@ -128,29 +128,29 @@ final class ConfigurationTest extends TestCase
                     ],
                 ],
             ],
-            'multiple_connections_with_config' => [
+            'multiple_connections_with_config'                        => [
                 [
                     [
                         'connections' => [
-                            'default' => [
+                            'default'    => [
                                 'load_command_fixtures_classes_namespace' => [
                                     'App/DataFixtures/Fixture1',
                                     'App/DataFixtures/Fixture2',
                                 ],
-                                'excluded_tables' => ['table1', 'table2'],
+                                'excluded_tables'                         => ['table1', 'table2'],
                             ],
                             'monolithic' => [
                                 'load_command_fixtures_classes_namespace' => [
                                     'App/DataFixtures/Fixture4',
                                 ],
-                                'excluded_tables' => ['table1', 'table3', 'table4'],
+                                'excluded_tables'                         => ['table1', 'table3', 'table4'],
                             ],
                         ],
                     ],
                 ],
                 [
                     'connections' => [
-                        'default' => [
+                        'default'    => [
                             'load_command_fixtures_classes_namespace' => [
                                 'App/DataFixtures/Fixture1',
                                 'App/DataFixtures/Fixture2',
@@ -185,7 +185,7 @@ final class ConfigurationTest extends TestCase
     public function connectionsNodeIsInvalidIfAtLeastOneConnectionIsNotProvidedDataProvider(): array
     {
         return [
-            'connections_as_null' => [
+            'connections_as_null'        => [
                 [
                     [
                         'connections' => null,
@@ -220,7 +220,7 @@ final class ConfigurationTest extends TestCase
     public function processedConfigurationForElasticSearchNodeDataProvider(): array
     {
         return [
-            'no_configuration' => [
+            'no_configuration'   => [
                 [
                     [],
                 ],
@@ -283,7 +283,7 @@ final class ConfigurationTest extends TestCase
     public function elasticSearchNodeIsInvalidIfAtLeastOneItemIsNotProvidedDataProvider(): array
     {
         return [
-            'elastic_search_as_null' => [
+            'elastic_search_as_null'        => [
                 [
                     [
                         'elastic_search' => null,
