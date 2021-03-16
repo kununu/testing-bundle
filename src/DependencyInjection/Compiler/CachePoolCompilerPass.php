@@ -6,6 +6,8 @@ namespace Kununu\TestingBundle\DependencyInjection\Compiler;
 use Kununu\DataFixtures\Executor\CachePoolExecutor;
 use Kununu\DataFixtures\Loader\CachePoolFixturesLoader;
 use Kununu\DataFixtures\Purger\CachePoolPurger;
+use Kununu\TestingBundle\DependencyInjection\ExtensionConfiguration;
+use Kununu\TestingBundle\DependencyInjection\KununuTestingExtension;
 use Kununu\TestingBundle\Service\Orchestrator;
 use Psr\Cache\CacheItemPoolInterface;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
@@ -19,10 +21,29 @@ final class CachePoolCompilerPass implements CompilerPassInterface
 
     public function process(ContainerBuilder $container): void
     {
-        $cachePoolServices = $container->findTaggedServiceIds('cache.pool');
+        if (!$this->canBuildOrchestrators($container)) {
+            return;
+        }
 
+        foreach ($this->getOrchestratorsIds($container, $container->findTaggedServiceIds('cache.pool')) as $id) {
+            $this->buildCachePoolOrchestrator($container, $id);
+        }
+    }
+
+    private function canBuildOrchestrators(ContainerBuilder $container): bool
+    {
+        if (!$container->hasExtension(KununuTestingExtension::ALIAS) ||
+            !($extension = $container->getExtension(KununuTestingExtension::ALIAS)) instanceof ExtensionConfiguration
+        ) {
+            return false;
+        }
+
+        return (bool) ($extension->getConfig()['cache']['enable'] ?? true);
+    }
+
+    private function getOrchestratorsIds(ContainerBuilder $container, array $cachePoolServices): array
+    {
         $ids = [];
-
         foreach ($cachePoolServices as $id => $tags) {
             $definition = $container->getDefinition($id);
 
@@ -47,9 +68,7 @@ final class CachePoolCompilerPass implements CompilerPassInterface
             }
         }
 
-        foreach ($ids as $id) {
-            $this->buildCachePoolOrchestrator($container, $id);
-        }
+        return $ids;
     }
 
     private function buildCachePoolOrchestrator(ContainerBuilder $container, string $id): void

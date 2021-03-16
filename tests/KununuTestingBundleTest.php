@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace Kununu\TestingBundle\Tests;
 
 use Kununu\TestingBundle\DependencyInjection\Compiler\CachePoolCompilerPass;
-use Kununu\TestingBundle\DependencyInjection\Compiler\DisableSSLCompilerPass;
 use Kununu\TestingBundle\DependencyInjection\Compiler\DoctrineCompilerPass;
 use Kununu\TestingBundle\DependencyInjection\Compiler\ElasticSearchCompilerPass;
 use Kununu\TestingBundle\KununuTestingBundle;
@@ -17,7 +16,7 @@ final class KununuTestingBundleTest extends TestCase
     {
         $containerMock = $this->getMockBuilder(ContainerBuilder::class)->getMock();
         $containerMock
-            ->expects($this->exactly(4))
+            ->expects($this->exactly(3))
             ->method('addCompilerPass')
             ->withConsecutive(
                 [
@@ -33,11 +32,6 @@ final class KununuTestingBundleTest extends TestCase
                 [
                     $this->callback(function($subject) {
                         return $subject instanceof ElasticSearchCompilerPass;
-                    }),
-                ],
-                [
-                    $this->callback(function($subject) {
-                        return $subject instanceof DisableSSLCompilerPass;
                     }),
                 ]
             );
