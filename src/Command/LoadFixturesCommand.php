@@ -18,9 +18,10 @@ abstract class LoadFixturesCommand extends Command
 
     public function __construct(string $alias, Orchestrator $orchestrator, array $fixturesClassNames)
     {
+        $this->alias = $alias;
+
         parent::__construct(static::getNameByAlias($alias));
 
-        $this->alias = $alias;
         $this->orchestrator = $orchestrator;
         $this->fixturesClassNames = $fixturesClassNames;
     }
@@ -37,7 +38,7 @@ abstract class LoadFixturesCommand extends Command
         parent::configure();
 
         $this
-            ->setDescription(sprintf('Load "%s" fixtures', static::getFixtureType()))
+            ->setDescription(sprintf('Load "%s" default fixtures for alias "%s"', static::getFixtureType(), $this->alias))
             ->addOption('append', null, InputOption::VALUE_NONE, 'Append the fixtures instead of purging the storage');
     }
 
