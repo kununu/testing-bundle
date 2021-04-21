@@ -69,11 +69,6 @@ final class CachePoolCompilerPassTest extends AbstractCompilerPassTestCase
                 $this->assertContainerBuilderHasServiceDefinitionWithArgument(
                     $orchestratorId,
                     1,
-                    new Reference($purgerId)
-                );
-                $this->assertContainerBuilderHasServiceDefinitionWithArgument(
-                    $orchestratorId,
-                    2,
                     new Reference($loaderId)
                 );
                 $this->assertContainerBuilderHasService(

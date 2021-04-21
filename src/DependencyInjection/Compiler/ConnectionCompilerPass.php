@@ -7,22 +7,20 @@ use Doctrine\DBAL\Connection;
 use Kununu\DataFixtures\Executor\ConnectionExecutor;
 use Kununu\DataFixtures\Loader\ConnectionFixturesLoader;
 use Kununu\DataFixtures\Purger\ConnectionPurger;
-use Kununu\TestingBundle\Command\LoadDatabaseFixturesCommand;
+use Kununu\TestingBundle\Command\LoadConnectionFixturesCommand;
 use Kununu\TestingBundle\Service\Orchestrator;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Reference;
 
-final class DoctrineCompilerPass implements CompilerPassInterface
+final class ConnectionCompilerPass implements CompilerPassInterface
 {
+    use LoadFixturesCommandsTrait;
+
     private const EXCLUDED_TABLES_CONFIG = 'excluded_tables';
     private const LOAD_COMMAND_FIXTURES_CLASSES_NAMESPACE_CONFIG = 'load_command_fixtures_classes_namespace';
-
     private const ORCHESTRATOR_SERVICE_PREFIX = 'kununu_testing.orchestrator.connections';
-
-    private const LOAD_FIXTURES_COMMAND_SERVICE_PREFIX = 'kununu_testing.command.load_fixtures.connections';
-    private const LOAD_FIXTURES_COMMAND_PREFIX = 'kununu_testing:load_fixtures:connections';
 
     public function process(ContainerBuilder $container): void
     {
@@ -40,20 +38,40 @@ final class DoctrineCompilerPass implements CompilerPassInterface
                 continue;
             }
 
-            $connConfigs = $container->getParameter($connConfigsParameterName);
-
-            $orchestratorId = $this->buildConnectionOrchestrator($container, $connName, $connConfigs, $connId);
-            $this->buildConnectionLoadFixturesCommand($container, $connName, $connConfigs, $orchestratorId);
+            $this->buildContainerDefinitions(
+                $container,
+                $connId,
+                $connName,
+                $container->getParameter($connConfigsParameterName)
+            );
         }
+    }
+
+    private function buildContainerDefinitions(
+        ContainerBuilder $container,
+        string $connId,
+        string $connName,
+        array $connConfig
+    ) : void
+    {
+        $orchestratorId = $this->buildConnectionOrchestrator($container,$connId, $connName, $connConfig);
+
+        $this->buildLoadFixturesCommand(
+            $container,
+            $orchestratorId,
+            LoadConnectionFixturesCommand::class,
+            $connName,
+            $connConfig[self::LOAD_COMMAND_FIXTURES_CLASSES_NAMESPACE_CONFIG] ?? []
+        );
     }
 
     private function buildConnectionOrchestrator(
         ContainerBuilder $container,
+        string $id,
         string $connName,
-        array $connConfigs,
-        string $id
+        array $connConfig
     ): string {
-        $excludedTables = empty($connConfigs[self::EXCLUDED_TABLES_CONFIG]) ? [] : $connConfigs[self::EXCLUDED_TABLES_CONFIG];
+        $excludedTables = $connConfig[self::EXCLUDED_TABLES_CONFIG] ?? [];
 
         /** @var Connection $connection */
         $connection = new Reference($id);
@@ -77,7 +95,6 @@ final class DoctrineCompilerPass implements CompilerPassInterface
             Orchestrator::class,
             [
                 new Reference($executorId),
-                new Reference($purgerId),
                 new Reference($loaderId),
             ]
         );
@@ -88,39 +105,5 @@ final class DoctrineCompilerPass implements CompilerPassInterface
         $container->setDefinition($orchestratorId, $connectionOrchestratorDefinition);
 
         return $orchestratorId;
-    }
-
-    private function buildConnectionLoadFixturesCommand(
-        ContainerBuilder $container,
-        string $connName,
-        array $connConfigs,
-        string $orchestratorId
-    ): void {
-        // Connection does not have fixtures configured for LoadDatabaseFixturesCommand
-        if (!isset($connConfigs[self::LOAD_COMMAND_FIXTURES_CLASSES_NAMESPACE_CONFIG]) ||
-            empty($connConfigs[self::LOAD_COMMAND_FIXTURES_CLASSES_NAMESPACE_CONFIG])
-        ) {
-            return;
-        }
-
-        $connectionLoadFixturesDefinition = new Definition(
-            LoadDatabaseFixturesCommand::class,
-            [
-                $connName,
-                new Reference($orchestratorId),
-                $connConfigs[self::LOAD_COMMAND_FIXTURES_CLASSES_NAMESPACE_CONFIG],
-            ]
-        );
-        $connectionLoadFixturesDefinition->setPublic(true);
-        $connectionLoadFixturesDefinition->setTags(
-            ['console.command' => [
-                ['command' => sprintf('%s:%s', self::LOAD_FIXTURES_COMMAND_PREFIX, $connName)], ],
-            ]
-        );
-
-        $container->setDefinition(
-            sprintf('%s.%s', self::LOAD_FIXTURES_COMMAND_SERVICE_PREFIX, $connName),
-            $connectionLoadFixturesDefinition
-        );
     }
 }

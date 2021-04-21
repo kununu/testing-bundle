@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace Kununu\TestingBundle\Tests\App\Fixtures\ElasticSearch;
 
 use Elasticsearch\Client;
-use Kununu\DataFixtures\Adapter\ElasticSearchFixtureInterface;
+use Kununu\DataFixtures\Adapter\ElasticsearchFixtureInterface;
 
 final class ElasticSearchFixture2 implements ElasticSearchFixtureInterface
 {

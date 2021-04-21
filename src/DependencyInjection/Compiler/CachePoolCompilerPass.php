@@ -95,7 +95,6 @@ final class CachePoolCompilerPass implements CompilerPassInterface
             Orchestrator::class,
             [
                 new Reference($executorId),
-                new Reference($purgerId),
                 new Reference($loaderId),
             ]
         );

@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace Kununu\TestingBundle\Tests\Test;
 
 use Doctrine\DBAL\Connection;
-use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Doctrine\DBAL\Schema\Column;
 use Doctrine\DBAL\Schema\Table;
 use Doctrine\DBAL\Types\Type;
@@ -14,8 +13,6 @@ use Kununu\TestingBundle\Test\FixturesAwareTestCase;
 use Kununu\TestingBundle\Tests\App\Fixtures\CachePool\CachePoolFixture1;
 use Kununu\TestingBundle\Tests\App\Fixtures\CachePool\CachePoolFixture2;
 use Kununu\TestingBundle\Tests\App\Fixtures\Connection\ConnectionFixture1;
-use Kununu\TestingBundle\Tests\App\Fixtures\Connection\ConnectionFixture5;
-use Kununu\TestingBundle\Tests\App\Fixtures\Connection\ConnectionFixture6;
 use Kununu\TestingBundle\Tests\App\Fixtures\Connection\ConnectionSqlFixture1;
 use Kununu\TestingBundle\Tests\App\Fixtures\ElasticSearch\ElasticSearchFixture1;
 use Kununu\TestingBundle\Tests\App\Fixtures\ElasticSearch\ElasticSearchFixture2;
@@ -348,13 +345,13 @@ final class FixturesAwareTestCaseTest extends FixturesAwareTestCase
             true
         );
 
-        $this->assertEquals(4, (int) $this->defaultConnection->fetchColumn('SELECT COUNT(*) FROM table_1'));
-        $this->assertEquals(4, (int) $this->defaultConnection->fetchColumn('SELECT COUNT(*) FROM table_2'));
-        $this->assertEquals(1, (int) $this->defaultConnection->fetchColumn('SELECT COUNT(*) FROM table_to_exclude'));
+        $this->assertEquals(4, (int) $this->defaultConnection->fetchOne('SELECT COUNT(*) FROM table_1'));
+        $this->assertEquals(4, (int) $this->defaultConnection->fetchOne('SELECT COUNT(*) FROM table_2'));
+        $this->assertEquals(1, (int) $this->defaultConnection->fetchOne('SELECT COUNT(*) FROM table_to_exclude'));
 
-        $this->assertEquals(4, (int) $this->monolithicConnection->fetchColumn('SELECT COUNT(*) FROM table_1'));
-        $this->assertEquals(4, (int) $this->monolithicConnection->fetchColumn('SELECT COUNT(*) FROM table_2'));
-        $this->assertEquals(1, (int) $this->monolithicConnection->fetchColumn('SELECT COUNT(*) FROM table_to_exclude'));
+        $this->assertEquals(4, (int) $this->monolithicConnection->fetchOne('SELECT COUNT(*) FROM table_1'));
+        $this->assertEquals(4, (int) $this->monolithicConnection->fetchOne('SELECT COUNT(*) FROM table_2'));
+        $this->assertEquals(1, (int) $this->monolithicConnection->fetchOne('SELECT COUNT(*) FROM table_to_exclude'));
     }
 
     public function testLoadDbFixturesWithoutAppend(): void
@@ -371,37 +368,13 @@ final class FixturesAwareTestCaseTest extends FixturesAwareTestCase
             false
         );
 
-        $this->assertEquals(3, (int) $this->defaultConnection->fetchColumn('SELECT COUNT(*) FROM table_1'));
-        $this->assertEquals(3, (int) $this->defaultConnection->fetchColumn('SELECT COUNT(*) FROM table_2'));
-        $this->assertEquals(1, (int) $this->defaultConnection->fetchColumn('SELECT COUNT(*) FROM table_to_exclude'));
+        $this->assertEquals(3, (int) $this->defaultConnection->fetchOne('SELECT COUNT(*) FROM table_1'));
+        $this->assertEquals(3, (int) $this->defaultConnection->fetchOne('SELECT COUNT(*) FROM table_2'));
+        $this->assertEquals(1, (int) $this->defaultConnection->fetchOne('SELECT COUNT(*) FROM table_to_exclude'));
 
-        $this->assertEquals(3, (int) $this->monolithicConnection->fetchColumn('SELECT COUNT(*) FROM table_1'));
-        $this->assertEquals(3, (int) $this->monolithicConnection->fetchColumn('SELECT COUNT(*) FROM table_2'));
-        $this->assertEquals(1, (int) $this->monolithicConnection->fetchColumn('SELECT COUNT(*) FROM table_to_exclude'));
-    }
-
-    public function testClearFixtures(): void
-    {
-        $this->loadDbFixtures('default', [ConnectionFixture5::class]);
-        $this->assertEquals(1, (int) $this->defaultConnection->fetchColumn('SELECT COUNT(*) FROM table_3'));
-
-        // Since orchestrator is being obtained from container the fixtures loader will still have the previous fixture.
-        // This means that it will execute it first and then the new fixture which in this case will lead to a duplicate key
-        // error on database
-        $this->expectException(UniqueConstraintViolationException::class);
-        $this->loadDbFixtures('default', [ConnectionFixture6::class]);
-
-        // Now repeat the process but do a force clear of the fixtures and the duplicate key error should not occur
-        $this->loadDbFixtures('default', [ConnectionFixture5::class]);
-        $this->assertEquals(1, (int) $this->defaultConnection->fetchColumn('SELECT COUNT(*) FROM table_3'));
-
-        $this
-            ->clearCachePoolFixtures('app.cache.first')
-            ->clearElasticSearchFixtures('my_index_alias')
-            ->clearDbFixtures('default');
-
-        $this->loadDbFixtures('default', [ConnectionFixture6::class]);
-        $this->assertEquals(1, (int) $this->defaultConnection->fetchColumn('SELECT COUNT(*) FROM table_3'));
+        $this->assertEquals(3, (int) $this->monolithicConnection->fetchOne('SELECT COUNT(*) FROM table_1'));
+        $this->assertEquals(3, (int) $this->monolithicConnection->fetchOne('SELECT COUNT(*) FROM table_2'));
+        $this->assertEquals(1, (int) $this->monolithicConnection->fetchOne('SELECT COUNT(*) FROM table_to_exclude'));
     }
 
     protected function setUp(): void
@@ -417,11 +390,17 @@ final class FixturesAwareTestCaseTest extends FixturesAwareTestCase
         $this->monolithicConnection = $this->getContainer()->get('doctrine.dbal.monolithic_connection');
         $this->elasticSearch = $this->getContainer()->get('Kununu\TestingBundle\Tests\App\ElasticSearch');
 
-        $this->recreateConnectionDatabase($this->defaultConnection);
-        $this->recreateConnectionDatabase($this->monolithicConnection);
+        $this->recreateConnectionDatabase(
+            $this->defaultConnection,
+            $this->getContainer()->getParameter('doctrine_default_connection_path')
+        );
+        $this->recreateConnectionDatabase(
+            $this->monolithicConnection,
+            $this->getContainer()->getParameter('doctrine_monolithic_connection_path')
+        );
     }
 
-    private function recreateConnectionDatabase(Connection $connection): void
+    private function recreateConnectionDatabase(Connection $connection, string $databaseName): void
     {
         $table1 = new Table('table_1', [
             new Column('name', Type::getType('string')),
@@ -443,16 +422,20 @@ final class FixturesAwareTestCaseTest extends FixturesAwareTestCase
             new Column('description', Type::getType('string')),
         ]);
 
-        $schemaManager = $connection->getSchemaManager();
-        $schemaManager->dropAndCreateDatabase($connection->getDatabase());
+        $schemaManager = $connection->createSchemaManager();
+
+        // Workaround with Sqlite since dropAndCreateDatabase is not working.
+        // @todo Investigate further and open PR in doctrine repository to fix it
+        $schemaManager->dropDatabase($databaseName);
+        $schemaManager->createDatabase($connection->getDatabase());
         $schemaManager->createTable($table1);
         $schemaManager->createTable($table2);
         $schemaManager->createTable($table3);
         $schemaManager->createTable($tableToExclude);
 
-        $connection->exec('INSERT INTO `table_1` (`name`, `description`) VALUES (\'name\', \'description\');');
-        $connection->exec('INSERT INTO `table_2` (`name`, `description`) VALUES (\'name\', \'description\');');
-        $connection->exec('INSERT INTO `table_3` (`name`, `description`) VALUES (\'name\', \'description\');');
-        $connection->exec('INSERT INTO `table_to_exclude` (`name`, `description`) VALUES (\'name\', \'description\');');
+        $connection->executeStatement('INSERT INTO `table_1` (`name`, `description`) VALUES (\'name\', \'description\');');
+        $connection->executeStatement('INSERT INTO `table_2` (`name`, `description`) VALUES (\'name\', \'description\');');
+        $connection->executeStatement('INSERT INTO `table_3` (`name`, `description`) VALUES (\'name\', \'description\');');
+        $connection->executeStatement('INSERT INTO `table_to_exclude` (`name`, `description`) VALUES (\'name\', \'description\');');
     }
 }

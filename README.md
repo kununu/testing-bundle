@@ -212,6 +212,34 @@ final class IntegrationTest extends FixturesAwareTestCase
 }
 ```
 
+#### Command to load Elasticsearch fixtures
+
+This bundles can automatically create a command to load Elasticsearch fixtures.
+
+```
+php bin/console kununu_testing:load_fixtures:elastic_search:MY_INDEX_ALIAS [--append]
+```
+
+There is the need to define the files with the fixtures in the configuration of the bundle
+
+```
+# kununu_testing.yaml
+
+kununu_testing:
+    elastic_search:
+        my_index_alias:
+            load_command_fixtures_classes_namespace:
+                - 'Kununu\TestingBundle\Tests\App\Fixtures\ElasticSearch\ElasticSearchFixture2' # FQDN for a fixtures class
+```
+
+Then the fixtures can be loaded running:
+
+```
+php bin/console kununu_testing:load_fixtures:elastic_search:my_index_alias --append
+```
+
+If `--append` option is not used, then the Elasticsearch index will be truncated. A prompt appears to confirm index truncation.
+
 ## Initializable Fixtures
 
 Since this bundle is using the [KununuDataFixtures](https://github.com/kununu/data-fixtures) package, it also has support for initializable features, allowing you to inject arguments into your feature classes (see documentation at the KununuDataFixtures package).
