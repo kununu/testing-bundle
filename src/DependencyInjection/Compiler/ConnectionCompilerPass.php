@@ -52,12 +52,12 @@ final class ConnectionCompilerPass implements CompilerPassInterface
         string $connId,
         string $connName,
         array $connConfig
-    ) : void
-    {
-        $orchestratorId = $this->buildConnectionOrchestrator($container,$connId, $connName, $connConfig);
+    ): void {
+        $orchestratorId = $this->buildConnectionOrchestrator($container, $connId, $connName, $connConfig);
 
         $this->buildLoadFixturesCommand(
             $container,
+            'connections',
             $orchestratorId,
             LoadConnectionFixturesCommand::class,
             $connName,

@@ -20,15 +20,10 @@ abstract class LoadFixturesCommand extends Command
     {
         $this->alias = $alias;
 
-        parent::__construct(static::getNameByAlias($alias));
+        parent::__construct(sprintf('kununu_testing:load_fixtures:%s:%s', static::getFixtureType(), $alias));
 
         $this->orchestrator = $orchestrator;
         $this->fixturesClassNames = $fixturesClassNames;
-    }
-
-    final public static function getNameByAlias(string $alias): string
-    {
-        return sprintf('kununu_testing:load_fixtures:%s:%s', static::getFixtureType(), $alias);
     }
 
     abstract protected static function getFixtureType(): string;
@@ -42,7 +37,7 @@ abstract class LoadFixturesCommand extends Command
             ->addOption('append', null, InputOption::VALUE_NONE, 'Append the fixtures instead of purging the storage');
     }
 
-    final protected function execute(InputInterface $input, OutputInterface $output): void
+    final protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $fixtureType = static::getFixtureType();
 
@@ -56,7 +51,7 @@ abstract class LoadFixturesCommand extends Command
                 !$input->isInteractive()
             )
         ) {
-            return;
+            return 0;
         }
 
         $this->orchestrator->execute($this->fixturesClassNames, $appendOption);
@@ -68,5 +63,7 @@ abstract class LoadFixturesCommand extends Command
                 $this->alias
             )
         );
+
+        return 0;
     }
 }

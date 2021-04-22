@@ -48,7 +48,7 @@ final class OrchestratorTest extends TestCase
         $orchestrator->execute(['Mock1', 'Mock2'], $append);
     }
 
-    public function executesAsExpectedDataProvider()
+    public function executesAsExpectedDataProvider(): array
     {
         return [
             'with_append'    => [true],

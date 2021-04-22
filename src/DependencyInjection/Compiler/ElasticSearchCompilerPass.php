@@ -40,6 +40,7 @@ final class ElasticSearchCompilerPass implements CompilerPassInterface
 
         $this->buildLoadFixturesCommand(
             $containerBuilder,
+            'elastic_search',
             $orchestratorId,
             LoadElasticsearchFixturesCommand::class,
             $alias,

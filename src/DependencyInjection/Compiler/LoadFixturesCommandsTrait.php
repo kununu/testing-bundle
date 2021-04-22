@@ -11,6 +11,7 @@ trait LoadFixturesCommandsTrait
 {
     private function buildLoadFixturesCommand(
         ContainerBuilder $container,
+        string $fixtureType,
         string $orchestratorId,
         string $commandClassName,
         string $alias,
@@ -29,7 +30,7 @@ trait LoadFixturesCommandsTrait
             ]
         );
 
-        $commandName = call_user_func([$commandClassName, 'getNameByAlias'], $alias);
+        $commandName = sprintf('kununu_testing:load_fixtures:%s:%s', $fixtureType, $alias);
 
         $loadFixturesCommandDefinition->setPublic(true);
         $loadFixturesCommandDefinition->setTags([
