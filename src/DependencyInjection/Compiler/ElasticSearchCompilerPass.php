@@ -7,6 +7,7 @@ use Elasticsearch\Client;
 use Kununu\DataFixtures\Executor\ElasticSearchExecutor;
 use Kununu\DataFixtures\Loader\ElasticSearchFixturesLoader;
 use Kununu\DataFixtures\Purger\ElasticSearchPurger;
+use Kununu\TestingBundle\Command\LoadElasticsearchFixturesCommand;
 use Kununu\TestingBundle\Service\Orchestrator;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -15,7 +16,10 @@ use Symfony\Component\DependencyInjection\Reference;
 
 final class ElasticSearchCompilerPass implements CompilerPassInterface
 {
+    use LoadFixturesCommandsTrait;
+
     private const SERVICE_PREFIX = 'kununu_testing.orchestrator.elastic_search';
+    private const LOAD_COMMAND_FIXTURES_CLASSES_NAMESPACE_CONFIG = 'load_command_fixtures_classes_namespace';
 
     public function process(ContainerBuilder $container): void
     {
@@ -26,12 +30,29 @@ final class ElasticSearchCompilerPass implements CompilerPassInterface
         $indexes = $container->getParameter('kununu_testing.elastic_search');
 
         foreach ($indexes as $alias => $config) {
-            $this->buildElasticSearchOrchestrator($container, $alias, $config['index_name'], $config['service']);
+            $this->buildContainerDefinitions($container, $alias, $config);
         }
     }
 
-    private function buildElasticSearchOrchestrator(ContainerBuilder $container, string $alias, string $indexName, string $id): void
+    private function buildContainerDefinitions(ContainerBuilder $containerBuilder, string $alias, array $config): void
     {
+        $orchestratorId = $this->buildElasticSearchOrchestrator($containerBuilder, $alias, $config);
+
+        $this->buildLoadFixturesCommand(
+            $containerBuilder,
+            'elastic_search',
+            $orchestratorId,
+            LoadElasticsearchFixturesCommand::class,
+            $alias,
+            $config[self::LOAD_COMMAND_FIXTURES_CLASSES_NAMESPACE_CONFIG] ?? []
+        );
+    }
+
+    private function buildElasticSearchOrchestrator(ContainerBuilder $container, string $alias, array $config): string
+    {
+        $indexName = $config['index_name'];
+        $id = $config['service'];
+
         /** @var Client $client */
         $client = new Reference($id);
 
@@ -54,12 +75,15 @@ final class ElasticSearchCompilerPass implements CompilerPassInterface
             Orchestrator::class,
             [
                 new Reference($executorId),
-                new Reference($purgerId),
                 new Reference($loaderId),
             ]
         );
         $connectionOrchestratorDefinition->setPublic(true);
 
-        $container->setDefinition(sprintf('%s.%s', self::SERVICE_PREFIX, $alias), $connectionOrchestratorDefinition);
+        $orchestratorId = sprintf('%s.%s', self::SERVICE_PREFIX, $alias);
+
+        $container->setDefinition($orchestratorId, $connectionOrchestratorDefinition);
+
+        return $orchestratorId;
     }
 }

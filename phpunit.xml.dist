@@ -20,6 +20,10 @@
         </whitelist>
     </filter>
 
+    <listeners>
+        <listener class="Symfony\Bridge\PhpUnit\SymfonyTestsListener"/>
+    </listeners>
+
     <logging>
         <log type="coverage-clover" target="tests/.results/tests-clover.xml"/>
         <log type="junit" target="tests/.results/tests-junit.xml"/>

@@ -10,5 +10,10 @@ kununu_testing:
                 - table_to_exclude
     elastic_search:
         my_index_alias:
+            load_command_fixtures_classes_namespace:
+                - 'Kununu\TestingBundle\Tests\App\Fixtures\ElasticSearch\ElasticSearchFixture2'
             service: 'Kununu\TestingBundle\Tests\App\ElasticSearch'
             index_name: 'my_index'
+        my_index_alias_2:
+            service: 'Kununu\TestingBundle\Tests\App\ElasticSearch'
+            index_name: 'my_index_2'

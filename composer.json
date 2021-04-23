@@ -11,12 +11,14 @@
         "symfony/http-kernel": "^4.3"
     },
     "require-dev": {
+        "ext-json": "*",
         "doctrine/doctrine-bundle": "^1.10 || ^2.0",
         "elasticsearch/elasticsearch": "~7.0",
         "kununu/scripts": "^1.1",
         "matthiasnoback/symfony-dependency-injection-test": "^4.0",
         "phpunit/phpunit": "^8.1",
-        "symfony/browser-kit": "^4.3"
+        "symfony/browser-kit": "^4.3",
+        "symfony/phpunit-bridge": "^5.2"
     },
     "suggest": {
         "ext-pdo_sqlite": "To run Integration Tests.",

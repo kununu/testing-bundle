@@ -1,9 +1,13 @@
+parameters:
+    doctrine_default_connection_path: "%kernel.cache_dir%/default.db"
+    doctrine_monolithic_connection_path: "%kernel.cache_dir%/monolithic.db"
+
 doctrine:
     dbal:
         connections:
             default:
                 driver: pdo_sqlite
-                path: "%kernel.cache_dir%/default.db"
+                path: "%doctrine_default_connection_path%"
                 charset: UTF8
 
             persistence:
@@ -13,5 +17,5 @@ doctrine:
 
             monolithic:
                 driver: pdo_sqlite
-                path: "%kernel.cache_dir%/monolithic.db"
+                path: "%doctrine_monolithic_connection_path%"
                 charset: UTF8

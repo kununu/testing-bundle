@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace Kununu\TestingBundle\Tests;
 
 use Kununu\TestingBundle\DependencyInjection\Compiler\CachePoolCompilerPass;
-use Kununu\TestingBundle\DependencyInjection\Compiler\DoctrineCompilerPass;
+use Kununu\TestingBundle\DependencyInjection\Compiler\ConnectionCompilerPass;
 use Kununu\TestingBundle\DependencyInjection\Compiler\ElasticSearchCompilerPass;
 use Kununu\TestingBundle\KununuTestingBundle;
 use PHPUnit\Framework\TestCase;
@@ -26,7 +26,7 @@ final class KununuTestingBundleTest extends TestCase
                 ],
                 [
                     $this->callback(function($subject) {
-                        return $subject instanceof DoctrineCompilerPass;
+                        return $subject instanceof ConnectionCompilerPass;
                     }),
                 ],
                 [

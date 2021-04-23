@@ -6,7 +6,6 @@ namespace Kununu\TestingBundle\Tests\Service;
 use Kununu\DataFixtures\Executor\ExecutorInterface;
 use Kununu\DataFixtures\FixtureInterface;
 use Kununu\DataFixtures\Loader\LoaderInterface;
-use Kununu\DataFixtures\Purger\PurgerInterface;
 use Kununu\TestingBundle\Service\Orchestrator;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -44,16 +43,12 @@ final class OrchestratorTest extends TestCase
             ->method('execute')
             ->with([$fixture1, $fixture2], $append);
 
-        /** @var PurgerInterface|MockObject $purger */
-        $purger = $this->createMock(PurgerInterface::class);
-
-        $orchestrator = new Orchestrator($executor, $purger, $loader);
+        $orchestrator = new Orchestrator($executor, $loader);
 
         $orchestrator->execute(['Mock1', 'Mock2'], $append);
-        $orchestrator->clearFixtures();
     }
 
-    public function executesAsExpectedDataProvider()
+    public function executesAsExpectedDataProvider(): array
     {
         return [
             'with_append'    => [true],
