@@ -128,4 +128,44 @@ final class RequestBuilderTest extends TestCase
         list(, , , , $server) = $request->build();
         $this->assertEquals('Bearer ACCESS_TOKEN_VALUE', $server['HTTP_AUTHORIZATION']);
     }
+
+    /**
+     * @dataProvider buildRequestWithHeaderDataProvider
+     */
+    public function testBuildRequestWithHeader(string $headerName, string $expectedHeaderName): void
+    {
+        $headerValue = 'value';
+
+        $request = RequestBuilder::aGetRequest();
+        $request
+            ->withHeader($headerName, $headerValue);
+
+        list(, , , , $server) = $request->build();
+        $this->assertEquals($headerValue, $server[$expectedHeaderName]);
+    }
+
+    public function buildRequestWithHeaderDataProvider(): array
+    {
+        return [
+            'with_http' => [
+                'HTTP_AuthOrization',
+                'HTTP_AUTHORIZATION',
+            ],
+            'without_http' => [
+                'AuthOrization',
+                'HTTP_AUTHORIZATION',
+            ],
+        ];
+    }
+
+    public function testBuildRequestWithServerParameters(): void
+    {
+        $request = RequestBuilder::aGetRequest();
+        $request
+            ->withServerParameter('REMOTE_ADDR', '127.0.0.1')
+            ->withServerParameter('HTTP_ACCEPT', 'application/json');
+
+        list(, , , , $server) = $request->build();
+        $this->assertEquals(['REMOTE_ADDR' => '127.0.0.1', 'HTTP_ACCEPT' => 'application/json'], $server);
+    }
 }

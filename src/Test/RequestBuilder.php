@@ -84,7 +84,25 @@ final class RequestBuilder
 
     public function withAuthorization(string $token): self
     {
-        $this->server['HTTP_AUTHORIZATION'] = sprintf('Bearer %s', $token);
+        return $this->withHeader('HTTP_AUTHORIZATION', sprintf('Bearer %s', $token));
+    }
+
+    public function withHeader(string $headerName, string $headerValue): self
+    {
+        $headerName = strtoupper($headerName);
+
+        if (substr($headerName, 0, 5) !== 'HTTP_') {
+            $headerName = sprintf('HTTP_%s', $headerName);
+        }
+
+        $this->server[$headerName] = $headerValue;
+
+        return $this;
+    }
+
+    public function withServerParameter(string $parameterName, string $parameterValue): self
+    {
+        $this->server[$parameterName] = $parameterValue;
 
         return $this;
     }
