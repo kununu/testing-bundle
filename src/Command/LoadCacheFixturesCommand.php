@@ -5,8 +5,13 @@ namespace Kununu\TestingBundle\Command;
 
 final class LoadCacheFixturesCommand extends LoadFixturesCommand
 {
-    protected static function getFixtureType(): string
+    protected function getFixtureType(): string
     {
         return 'cache_pools';
+    }
+
+    protected function getAliasWord(): string
+    {
+        return 'Cache Pool';
     }
 }

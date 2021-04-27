@@ -5,8 +5,13 @@ namespace Kununu\TestingBundle\Command;
 
 final class LoadElasticsearchFixturesCommand extends LoadFixturesCommand
 {
-    protected static function getFixtureType(): string
+    protected function getFixtureType(): string
     {
         return 'elastic_search';
+    }
+
+    protected function getAliasWord(): string
+    {
+        return 'Elasticsearch Index alias';
     }
 }

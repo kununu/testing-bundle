@@ -26,14 +26,16 @@ abstract class LoadFixturesCommand extends Command
         $this->fixturesClassNames = $fixturesClassNames;
     }
 
-    abstract protected static function getFixtureType(): string;
+    abstract protected function getFixtureType(): string;
+
+    abstract protected function getAliasWord(): string;
 
     final protected function configure(): void
     {
         parent::configure();
 
         $this
-            ->setDescription(sprintf('Load "%s" default fixtures for alias "%s"', static::getFixtureType(), $this->alias))
+            ->setDescription(sprintf('Load default fixtures for %s "%s"', $this->getAliasWord(), $this->alias))
             ->addOption('append', null, InputOption::VALUE_NONE, 'Append the fixtures instead of purging the storage');
     }
 
