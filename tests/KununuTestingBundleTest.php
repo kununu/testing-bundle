@@ -14,7 +14,7 @@ final class KununuTestingBundleTest extends TestCase
 {
     public function testBuild(): void
     {
-        $containerMock = $this->getMockBuilder(ContainerBuilder::class)->getMock();
+        $containerMock = $this->createMock(ContainerBuilder::class);
         $containerMock
             ->expects($this->exactly(3))
             ->method('addCompilerPass')

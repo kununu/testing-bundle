@@ -13,25 +13,31 @@ abstract class FixturesAwareTestCase extends BaseWebTestCase
     private const KEY_CACHE_POOLS = 'cache_pools';
     private const KEY_ELASTICSEARCH = 'elastic_search';
 
-    final protected function loadDbFixtures(string $connectionName, array $classNames = [], bool $append = false): void
-    {
-        $this->getOrchestrator(self::KEY_CONNECTIONS, $connectionName)->execute($classNames, $append);
+    final protected function loadDbFixtures(
+        string $connectionName,
+        array $classNames = [],
+        bool $append = false,
+        bool $clearFixtures = true
+    ): void {
+        $this->getOrchestrator(self::KEY_CONNECTIONS, $connectionName)->execute($classNames, $append, $clearFixtures);
     }
 
     final protected function loadCachePoolFixtures(
         string $cachePoolServiceId,
         array $classNames = [],
-        bool $append = false
+        bool $append = false,
+        bool $clearFixtures = true
     ): void {
-        $this->getOrchestrator(self::KEY_CACHE_POOLS, $cachePoolServiceId)->execute($classNames, $append);
+        $this->getOrchestrator(self::KEY_CACHE_POOLS, $cachePoolServiceId)->execute($classNames, $append, $clearFixtures);
     }
 
     final protected function loadElasticSearchFixtures(
         string $alias,
         array $classNames = [],
-        bool $append = false
+        bool $append = false,
+        bool $clearFixtures = true
     ): void {
-        $this->getOrchestrator(self::KEY_ELASTICSEARCH, $alias)->execute($classNames, $append);
+        $this->getOrchestrator(self::KEY_ELASTICSEARCH, $alias)->execute($classNames, $append, $clearFixtures);
     }
 
     final protected function registerInitializableFixtureForDb(

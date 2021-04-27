@@ -1,2 +1,2 @@
 parameters:
-    elasticsearch_url: ''
+    elasticsearch_url: "%env(KUNUNU_TESTING_BUNDLE_ELASTICSEARCH_URL)%"

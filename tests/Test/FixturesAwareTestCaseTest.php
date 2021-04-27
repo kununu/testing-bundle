@@ -16,6 +16,7 @@ use Kununu\TestingBundle\Tests\App\Fixtures\Connection\ConnectionFixture1;
 use Kununu\TestingBundle\Tests\App\Fixtures\Connection\ConnectionSqlFixture1;
 use Kununu\TestingBundle\Tests\App\Fixtures\ElasticSearch\ElasticSearchFixture1;
 use Kununu\TestingBundle\Tests\App\Fixtures\ElasticSearch\ElasticSearchFixture2;
+use Kununu\TestingBundle\Tests\StorageSetupTrait;
 use Psr\Cache\CacheItemPoolInterface;
 
 /**
@@ -23,6 +24,8 @@ use Psr\Cache\CacheItemPoolInterface;
  */
 final class FixturesAwareTestCaseTest extends FixturesAwareTestCase
 {
+    use StorageSetupTrait;
+
     /** @var Connection */
     private $defaultConnection;
 
@@ -390,18 +393,6 @@ final class FixturesAwareTestCaseTest extends FixturesAwareTestCase
         $this->monolithicConnection = $this->getContainer()->get('doctrine.dbal.monolithic_connection');
         $this->elasticSearch = $this->getContainer()->get('Kununu\TestingBundle\Tests\App\ElasticSearch');
 
-        $this->recreateConnectionDatabase(
-            $this->defaultConnection,
-            $this->getContainer()->getParameter('doctrine_default_connection_path')
-        );
-        $this->recreateConnectionDatabase(
-            $this->monolithicConnection,
-            $this->getContainer()->getParameter('doctrine_monolithic_connection_path')
-        );
-    }
-
-    private function recreateConnectionDatabase(Connection $connection, string $databaseName): void
-    {
         $table1 = new Table('table_1', [
             new Column('name', Type::getType('string')),
             new Column('description', Type::getType('string')),
@@ -422,20 +413,21 @@ final class FixturesAwareTestCaseTest extends FixturesAwareTestCase
             new Column('description', Type::getType('string')),
         ]);
 
-        $schemaManager = $connection->createSchemaManager();
+        $connections = [
+            $this->getContainer()->getParameter('doctrine_default_connection_path')    => $this->defaultConnection,
+            $this->getContainer()->getParameter('doctrine_monolithic_connection_path') => $this->monolithicConnection,
+        ];
 
-        // Workaround with Sqlite since dropAndCreateDatabase is not working.
-        // @todo Investigate further and open PR in doctrine repository to fix it
-        $schemaManager->dropDatabase($databaseName);
-        $schemaManager->createDatabase($connection->getDatabase());
-        $schemaManager->createTable($table1);
-        $schemaManager->createTable($table2);
-        $schemaManager->createTable($table3);
-        $schemaManager->createTable($tableToExclude);
-
-        $connection->executeStatement('INSERT INTO `table_1` (`name`, `description`) VALUES (\'name\', \'description\');');
-        $connection->executeStatement('INSERT INTO `table_2` (`name`, `description`) VALUES (\'name\', \'description\');');
-        $connection->executeStatement('INSERT INTO `table_3` (`name`, `description`) VALUES (\'name\', \'description\');');
-        $connection->executeStatement('INSERT INTO `table_to_exclude` (`name`, `description`) VALUES (\'name\', \'description\');');
+        /** @var Connection $connection */
+        foreach ($connections as $database => $connection) {
+            $this->recreateConnectionDatabase($connection, $database, $table1, $table2, $table3, $tableToExclude);
+            $this->insertData(
+                $connection,
+                'INSERT INTO `table_1` (`name`, `description`) VALUES (\'name\', \'description\');',
+                'INSERT INTO `table_2` (`name`, `description`) VALUES (\'name\', \'description\');',
+                'INSERT INTO `table_3` (`name`, `description`) VALUES (\'name\', \'description\');',
+                'INSERT INTO `table_to_exclude` (`name`, `description`) VALUES (\'name\', \'description\');'
+            );
+        }
     }
 }

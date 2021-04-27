@@ -14,8 +14,8 @@ final class ConnectionFixture1 implements ConnectionFixtureInterface, Initializa
 
     public function load(Connection $connection): void
     {
-        $connection->exec('INSERT INTO `table_1` (`name`, `description`) VALUES (\'name\', \'description\');');
-        $connection->exec('INSERT INTO `table_2` (`name`, `description`) VALUES (\'name\', \'description\');');
+        $connection->executeStatement('INSERT INTO `table_1` (`name`, `description`) VALUES (\'name\', \'description\');');
+        $connection->executeStatement('INSERT INTO `table_2` (`name`, `description`) VALUES (\'name\', \'description\');');
     }
 
     public function initializeFixture(...$args): void

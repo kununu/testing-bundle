@@ -1,15 +1,69 @@
 # kununu testing-bundle
 
-At kununu we do functional and integration tests. [LiipFunctionalTestBundle](https://github.com/liip/LiipFunctionalTestBundle) and [DoctrineTestBundle](https://github.com/dmaicher/doctrine-test-bundle) are great options however they do not match our requirements and heavily depend on [Doctrine ORM](https://github.com/doctrine/orm).
+At kununu we do functional and integration tests. [liip/LiipFunctionalTestBundle](https://github.com/liip/LiipFunctionalTestBundle) and [dmaicher/doctrine-test-bundle](https://github.com/dmaicher/doctrine-test-bundle) are great options however they do not match our requirements and heavily depend on [Doctrine ORM](https://github.com/doctrine/orm).
 
 Also we have the necessity to load database fixtures for DEV/TEST/E2E environments.
 
 The main requirements that we had to solve that this bundle addresses are:
+
 - **Database schema is not touched when loading fixtures**. This requirement excludes LiipFunctionalTestBundle because it drops and creates the schema when loading fixtures. Another drawback of LiipFunctionalTestBundle is that it relies on Doctrine Mapping Metadata to recreate the schema which for us is a limitation since we do not always map everything but instead use Migrations.
+
 - **We really want to hit the database**. This requirement excludes DoctrineTestBundle because it wraps your fixtures in a transaction.
 
-Apart from solving the requirements above, this bundle eases the use of [KununuDataFixtures](https://github.com/kununu/data-fixtures) package.
+Apart from solving the requirements above, this bundle eases the use of [kununu/data-fixtures](https://github.com/kununu/data-fixtures) package.
 It also provides some utilities to use use in your tests.
+
+## Install
+
+#### Require Bundle
+You can use this bundle by issuing the following command:
+
+```bash
+composer --dev require kununu/testing-bundle
+```
+
+#### Enable Bundle
+Edit the `config/bundles.php` file in your project and add the following to the return array:
+
+```
+<?php
+
+return [
+    ...
+    Kununu\TestingBundle\KununuTestingBundle::class => ['dev' => true, 'test' => true],
+];
+```
+
+This example means that the bundle will only be loaded for `dev`and `test`environments. Adjust to your project configuration and needs.
+
+## Configuration
+
+#### Add configuration
+
+Create file `kununu_testing.yaml` inside `config/packages`.
+
+See configurations details below for each feature type:
+
+```
+# kununu_testing.yaml
+
+kununu_testing:
+    connections:
+        connection_name:
+            load_command_fixtures_classes_namespace:
+                - 'Kununu\TestingBundle\Tests\App\Fixtures\Connection\ConnectionFixture3' # FQDN for a fixtures class
+            excluded_tables:
+                - table_to_exclude_from_purge
+                
+    elastic_search:
+        my_index_alias: # Alias to be use to load fixtures for the configured index using the defined service
+            service: 'Kununu\TestingBundle\Tests\App\ElasticSearch' # Service Id of an instance of Elasticsearch\Client 
+            index_name: 'my_index_name' # name of your index
+
+    cache:
+        # Enable or disable the generation of orchestrators for cache pools in the app
+        enable: true
+```
 
 ## Loading Fixtures in your tests
 
@@ -30,12 +84,13 @@ framework:
 In your tests you can extend the classes `FixturesAwareTestCase` or `WebTestCase` which expose the following method:
 
 ```
-loadCachePoolFixtures(string $cachePoolServiceId, array $classNames = [], bool $append = false)
+loadCachePoolFixtures(string $cachePoolServiceId, array $classNames = [], bool $append = false, bool $clearFixtures = true)
 ```
 
 - `$cachePoolServiceId` - Name of your pool as configured in the config above
 - `$classNames` - Array with classes names of fixtures to load
 - `$append` - If `false` the cache pool will be purged before loading your fixtures
+- `$clearFixtures` - If `true` it will clear any previous loaded fixtures classes
 
 **Example**
 
@@ -91,12 +146,13 @@ doctrine:
 In your tests you can extend the classes `FixturesAwareTestCase` or `WebTestCase` which expose the following method:
 
 ```
-loadDbFixtures(string $connectionName, array $classNames = [], bool $append = false)
+loadDbFixtures(string $connectionName, array $classNames = [], bool $append = false, bool $clearFixtures = true)
 ```
 
 - `$connectionName` - Name of your connection
 - `$classNames` - Array with classes names of fixtures to load
 - `$append` - If `false` the cache pool will be purged before loading your fixtures
+- `$clearFixtures` - If `true` it will clear any previous loaded fixtures classes
 
 **Example**
 
@@ -174,12 +230,13 @@ kununu_testing:
 In your tests you can extend the classes `FixturesAwareTestCase` or `WebTestCase` which expose the following method:
 
 ```
-loadElasticSearchFixtures(string $alias, array $classNames = [], bool $append = false)
+loadElasticSearchFixtures(string $alias, array $classNames = [], bool $append = false, bool $clearFixtures = true)
 ```
 
 - `$alias` - Alias defined above
 - `$classNames` - Array with classes names of fixtures to load
 - `$append` - If `false` the cache pool will be purged before loading your fixtures
+- `$clearFixtures` - If `true` it will clear any previous loaded fixtures classes
 
 **Example**
 
@@ -214,7 +271,7 @@ final class IntegrationTest extends FixturesAwareTestCase
 
 #### Command to load Elasticsearch fixtures
 
-This bundles can automatically create a command to load Elasticsearch fixtures.
+This bundle can automatically create a command to load Elasticsearch fixtures.
 
 ```
 php bin/console kununu_testing:load_fixtures:elastic_search:MY_INDEX_ALIAS [--append]
@@ -242,7 +299,7 @@ If `--append` option is not used, then the Elasticsearch index will be truncated
 
 ## Initializable Fixtures
 
-Since this bundle is using the [KununuDataFixtures](https://github.com/kununu/data-fixtures) package, it also has support for initializable features, allowing you to inject arguments into your feature classes (see documentation at the KununuDataFixtures package).
+Since this bundle is using the [kununu/data-fixtures](https://github.com/kununu/data-fixtures) package, it also has support for initializable features, allowing you to inject arguments into your feature classes (see documentation at the kununu/data-fixtures package).
 
 In order to do that your Fixtures class must implement the `InitializableFixtureInterface`, and according to your fixture type you need to register the initialization arguments before loading the fixtures.
 
@@ -334,29 +391,6 @@ final class WebTestCaseTest extends WebTestCase
 }
 ```
 
-## Configuration
-
-```
-# kununu_testing.yaml
-
-kununu_testing:
-    connections:
-        connection_name:
-            load_command_fixtures_classes_namespace:
-                - 'Kununu\TestingBundle\Tests\App\Fixtures\Connection\ConnectionFixture3' # FQDN for a fixtures class
-            excluded_tables:
-                - table_to_exclude_from_purge
-                
-    elastic_search:
-        my_index_alias: # Alias to be use to load fixtures for the configured index using the defined service
-            service: 'Kununu\TestingBundle\Tests\App\ElasticSearch' # Service Id of an instance of Elasticsearch\Client 
-            index_name: 'my_index_name' # name of your index
-
-    cache:
-        # Enable or disable the generation of orchestrators for cache pools in the app
-        enable: true
-```
-
 ## Tests
 
 Run the tests by doing:
@@ -371,4 +405,9 @@ vendor/phpunit/phpunit/phpunit tests [--exclude-group integration]
 
 **If you want to run the integration tests you will need the extension `ext-pdo_sqlite` (For installing int ubuntu run `apt update && apt install php-sqlite3`).**
 
-**If you want to run the integration tests you will need to have an Elasticsearch cluster running. To change the hosts of the cluster please go to `tests/App/config/packages/parameters.yml`.**
+**If you want to run the integration tests you will need to have an Elasticsearch cluster running.**
+
+Setup an environment variable called `KUNUNU_TESTING_BUNDLE_ELASTICSEARCH_URL` or run the tests with:
+```bash
+KUNUNU_TESTING_BUNDLE_ELASTICSEARCH_URL=http://my.elasticsearch.url:9200 vendor/bin/phpunit tests
+```

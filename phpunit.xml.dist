@@ -2,12 +2,9 @@
 <phpunit
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:noNamespaceSchemaLocation="./vendor/phpunit/phpunit/phpunit.xsd"
-        bootstrap="vendor/autoload.php"
+        bootstrap="tests/bootstrap.php"
         colors="true"
         beStrictAboutChangesToGlobalState="true">
-    <php>
-        <server name="KERNEL_CLASS" value="Kununu\TestingBundle\Tests\App\Kernel" />
-    </php>
     <testsuites>
         <testsuite name="TestingBundle Test Suite">
             <directory>./tests/</directory>
