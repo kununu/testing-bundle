@@ -15,7 +15,7 @@ final class ConfigurationTest extends TestCase
     {
         $this->assertProcessedConfigurationEquals(
             [],
-            ['connections' => [], 'elastic_search' => [], 'cache' => ['enable' => true]]
+            ['connections' => [], 'elastic_search' => [], 'cache' => ['enable' => true, 'pools' => []]]
         );
     }
 

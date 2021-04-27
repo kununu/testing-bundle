@@ -56,13 +56,22 @@ kununu_testing:
                 - table_to_exclude_from_purge
                 
     elastic_search:
-        my_index_alias: # Alias to be use to load fixtures for the configured index using the defined service
+        my_index_alias: # Alias to be used to load fixtures for the configured index using the defined service
+            load_command_fixtures_classes_namespace:
+                - 'Kununu\TestingBundle\Tests\App\Fixtures\ElasticSearch\ElasticSearchFixture2' # FQDN for a fixtures class
             service: 'Kununu\TestingBundle\Tests\App\ElasticSearch' # Service Id of an instance of Elasticsearch\Client 
             index_name: 'my_index_name' # name of your index
 
     cache:
         # Enable or disable the generation of orchestrators for cache pools in the app
         enable: true
+        pools:
+            app.cache.first: # Cache pool id for wich a Symfony command will be registered to load fixtures to
+                load_command_fixtures_classes_namespace:
+                    # FQDN for fixtures classes
+                    - 'Kununu\TestingBundle\Tests\App\Fixtures\CachePool\CachePoolFixture1'
+                    - 'Kununu\TestingBundle\Tests\App\Fixtures\CachePool\CachePoolFixture2'
+
 ```
 
 ## Loading Fixtures in your tests
@@ -129,6 +138,36 @@ final class IntegrationTest extends FixturesAwareTestCase
 
 You can also disable the creation of orchestrators services for cache pools if you don't want to use fixtures on caches (see configuration file example).
 
+#### Command to load Cache fixtures
+
+This bundle can automatically create a command to load Cache fixtures.
+
+```
+php bin/console kununu_testing:load_fixtures:cache_pools:MY_CACHE_ID [--append]
+```
+
+There is the need to define the files with the fixtures in the configuration of the bundle
+
+```
+# kununu_testing.yaml
+
+kununu_testing:
+    cache:
+        pools:
+            app.cache.first:
+                load_command_fixtures_classes_namespace:
+                    - 'Kununu\TestingBundle\Tests\App\Fixtures\CachePool\CachePoolFixture1'
+                    - 'Kununu\TestingBundle\Tests\App\Fixtures\CachePool\CachePoolFixture2'
+```
+
+Then the fixtures can be loaded running:
+
+```
+php bin/console kununu_testing:load_fixtures:cache_pools:app.cache.first --append
+```
+
+If `--append` option is not used, then the Cache will be truncated. A prompt appears to confirm cache truncation.
+
 ### Connection Fixtures
 
 All Doctrine Connections are eligible to be used to load fixtures.
@@ -189,7 +228,7 @@ final class IntegrationTest extends FixturesAwareTestCase
 
 #### Command to load database fixtures
 
-This bundles can automatically create a command to load database fixtures.
+This bundle can automatically create a command to load database fixtures.
 
 ```
 php bin/console kununu_testing:load_fixtures:connections:CONNECTION_NAME [--append]

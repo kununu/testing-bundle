@@ -17,3 +17,9 @@ kununu_testing:
         my_index_alias_2:
             service: 'Kununu\TestingBundle\Tests\App\ElasticSearch'
             index_name: 'my_index_2'
+    cache:
+        pools:
+            app.cache.first:
+                load_command_fixtures_classes_namespace:
+                    - 'Kununu\TestingBundle\Tests\App\Fixtures\CachePool\CachePoolFixture1'
+                    - 'Kununu\TestingBundle\Tests\App\Fixtures\CachePool\CachePoolFixture2'
