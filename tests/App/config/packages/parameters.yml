@@ -1,2 +1,3 @@
 parameters:
-    elasticsearch_url: "%env(KUNUNU_TESTING_BUNDLE_ELASTICSEARCH_URL)%"
+    elasticsearch_url_default: 'http://127.0.01:9200'
+    elasticsearch_url: "%env(default:elasticsearch_url_default:KUNUNU_TESTING_BUNDLE_ELASTICSEARCH_URL)%"
