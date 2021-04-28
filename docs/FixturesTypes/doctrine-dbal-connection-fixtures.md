@@ -134,5 +134,4 @@ kununu_testing:
                 - 'Kununu\TestingBundle\Tests\App\Fixtures\Connection\ConnectionFixture3'
             excluded_tables: # List of tables to exclude from being purged
                 - table_to_exclude_from_purge
-
 ```

@@ -139,5 +139,4 @@ kununu_testing:
                 load_command_fixtures_classes_namespace: # FQDN for fixtures classes that the Symfony command will use
                     - 'Kununu\TestingBundle\Tests\App\Fixtures\CachePool\CachePoolFixture1'
                     - 'Kununu\TestingBundle\Tests\App\Fixtures\CachePool\CachePoolFixture2'
-
 ```
