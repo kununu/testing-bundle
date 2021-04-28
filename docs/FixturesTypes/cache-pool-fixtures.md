@@ -1,5 +1,4 @@
 # Cache Pool Fixtures
--------------------------------
 
 This bundle integrates seamless with *Cache Pool Fixtures* from [kununu/data-fixtures](https://github.com/kununu/data-fixtures) and by default all services tagged with `cache.pool` are eligible to be used to load fixtures.
 
@@ -13,8 +12,9 @@ framework:
                 adapter: cache.adapter.memcached
 ```
 
-## How to load Cache Pool Fixtures?
 ----------------------------------
+
+## How to load Cache Pool Fixtures?
 
 In your tests you can extend the classes [FixturesAwareTestCase](/src/Test/FixturesAwareTestCase.php) or [WebTestCase](/src/Test/WebTestCase.php) which expose the following method:
 
@@ -65,8 +65,9 @@ final class IntegrationTest extends FixturesAwareTestCase
 
 You can also disable the creation of orchestrators services for cache pools if you don't want to use fixtures on cache pools (see [configuration](#Configuration)).
 
-## Symfony Command to load Cache fixtures
 -----------------------
+
+## Symfony Command to load Cache fixtures
 
 This bundle can automatically create a Symfony Command to load default fixtures for any cache pool. This can be useful for example when you want to have default fixtures for a cache pool that are loaded when your service spins up. At kununu we make use of this and when one of our services starts, we call a script, *run_startup.sh*, that on the *dev* and *test* environments calls this commands so that each cache pool starts with a set of a default fixtures.
 
@@ -79,7 +80,6 @@ php bin/console kununu_testing:load_fixtures:cache_pools:MY_CACHE_ID [--append]
 By default Symfony Commands are not created for any cache pool. If you want to enable the creation of a Symfony Command for a specific cache pool you will need to enable it the configuration of the bundle by setting the option `load_command_fixtures_classes_namespace` where you specify the classes names of the fixtures that the command should run.
 
 ```yaml
-# kununu_testing.yaml
 kununu_testing:
     cache:
         pools:
@@ -99,8 +99,9 @@ php bin/console kununu_testing:load_fixtures:cache_pools:app.cache.first --appen
 
 If `--append` option is not used then the cache pool will be purged.
 
-## Initializable Fixtures
 ------------------------------
+
+## Initializable Fixtures
 
 Since this bundle is using the [kununu/data-fixtures](https://github.com/kununu/data-fixtures) package, it also has support for initializable features, allowing you to inject arguments into your feature classes (see [documentation](https://github.com/kununu/data-fixtures) of the kununu/data-fixtures package).
 
@@ -123,13 +124,13 @@ $this->loadCachePoolFixtures(
 );
 ```
 
-## Configuration
 -------------------------
+
+## Configuration
 
 Bellow you can find all configuration options for cache pool fixtures and their defaults.
 
 ```
-# kununu_testing.yaml
 kununu_testing:
     cache:
         enable: true # Enable or disable the generation of orchestrators for cache pools in the app
