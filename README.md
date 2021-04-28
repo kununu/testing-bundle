@@ -1,5 +1,4 @@
 # kununu testing-bundle
-------------------------------------
 
 ### What is kununu/testing-bundle?
 
@@ -84,7 +83,6 @@ Currently, this bundle supports the following types of fixtures:
 This bundle provides a [Request Builder](https://github.com/kununu/testing-bundle/blob/master/src/Test/RequestBuilder.php) which makes calling an endpoint more expressive.
 
 ```php
-# RequestBuilder
 // Creates and returns a Builder that you can use to do a GET request
 public static function aGetRequest(): self;
 
