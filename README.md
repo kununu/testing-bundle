@@ -1,4 +1,5 @@
 # kununu testing-bundle
+------------------------------------
 
 ### What is kununu/testing-bundle?
 
@@ -41,8 +42,8 @@ return [
 
 ## Configuration
 
-Create a file named `kununu_testing.yaml` inside `config/packages/test/`.
-The configuration options of the bundle heavily depend on the fixture types. Check out the [Load Fixtures](#Load-Fixtures) section where you can find more options.
+Create the file `kununu_testing.yaml` inside `config/packages/test/`.
+The configuration options of the bundle heavily depend on the fixture type. Check out the [Load Fixtures](#Load-Fixtures) section where you can find more options.
 
 **Tip**
 If you are using the bundle on more than one environment, for example *dev* and *test*, and the configuration options are exactly the same you can import the `kununu_testing.yaml` like bellow in order to not duplicate the configurations.
@@ -70,9 +71,9 @@ imports:
 This bundle integrates with [kununu/data-fixtures](https://github.com/kununu/data-fixtures) allowing you to load fixtures in your tests.
 Currently, this bundle supports the following types of fixtures:
 
-- [Doctrine DBAL Connection Fixtures](/docs/FixturesTypes/doctrine-dbal-connection-fixtures.md)
-- [Cache Pool Fixtures](/docs/FixturesTypes/cache-pool-fixtures.md)
-- [Elasticsearch Fixtures](/docs/FixturesTypes/elasticsearch.md)
+- [Doctrine DBAL Connection Fixtures](/docs/FixtureTypes/doctrine-dbal-connection-fixtures.md)
+- [Cache Pool Fixtures](/docs/FixtureTypes/cache-pool-fixtures.md)
+- [Elasticsearch Fixtures](/docs/FixtureTypes/elasticsearch.md)
 
 ------------------------------
 
@@ -84,18 +85,42 @@ This bundle provides a [Request Builder](https://github.com/kununu/testing-bundl
 
 ```php
 # RequestBuilder
-public static function aGetRequest(): self
-public static function aPostRequest(): self
-public static function aDeleteRequest(): self
-public static function aPutRequest(): self
-public function withParameters(array $parameters): self
-public function withMethod(string $method): self
-public function withUri(string $uri): self
-public function withContent(array $content): self
-public function withRawContent(string $content): self
-public function withAuthorization(string $token): self
-public function withHeader(string $headerName, string $headerValue): self
-public function withServerParameter(string $parameterName, string $parameterValue): self
+// Creates and returns a Builder that you can use to do a GET request
+public static function aGetRequest(): self;
+
+// Creates and returns a Builder that you can use to do a POST request
+public static function aPostRequest(): self;
+
+// Creates and returns a Builder that you can use to do a DELETE request
+public static function aDeleteRequest(): self;
+
+// Creates and returns a Builder that you can use to do a PUT request
+public static function aPutRequest(): self;
+
+// Set The Request parameters
+public function withParameters(array $parameters): self;
+
+// Change The request method
+public function withMethod(string $method): self;
+
+// Set the URI to fetch
+public function withUri(string $uri): self;
+
+// Set the content of the request as an array that internally is transformed to a json and provided as the raw body data
+public function withContent(array $content): self;
+
+// Set the Raw body data
+public function withRawContent(string $content): self;
+
+// Sets an HTTP_AUTHORIZATION header with the value of "Bearer $token"
+public function withAuthorization(string $token): self;
+
+// Sets an header. 
+// In converts any header name to uppercase and prepends "HTTP_" if the header name does not contains it
+public function withHeader(string $headerName, string $headerValue): self;
+
+// Sets a server parameter (HTTP headers are referenced with an HTTP_ prefix as PHP does)
+public function withServerParameter(string $parameterName, string $parameterValue): self;
 ```
 
 #### WebTestCase
@@ -104,6 +129,12 @@ This bundle exposes the [WebTestCase](https://github.com/kununu/testing-bundle/b
 
 ```php
 protected function doRequest(RequestBuilder $builder): Symfony\Component\HttpFoundation\Response
+```
+
+Internally this method calls the Symfony client with:
+
+```php
+$client->request($builder->method, $builder->uri, $builder->parameters, $builder->files, $builder->server, $builder->content);
 ```
 
 --------------------------
