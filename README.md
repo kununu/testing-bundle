@@ -1,5 +1,4 @@
 # kununu testing-bundle
-------------------------------------
 
 ### What is kununu/testing-bundle?
 
@@ -42,8 +41,8 @@ return [
 
 ## Configuration
 
-Create the file `kununu_testing.yaml` inside `config/packages/test/`.
-The configuration options of the bundle heavily depend on the fixture type. Check out the [Load Fixtures](#Load-Fixtures) section where you can find more options.
+Create a file named `kununu_testing.yaml` inside `config/packages/test/`.
+The configuration options of the bundle heavily depend on the fixture types. Check out the [Load Fixtures](#Load-Fixtures) section where you can find more options.
 
 **Tip**
 If you are using the bundle on more than one environment, for example *dev* and *test*, and the configuration options are exactly the same you can import the `kununu_testing.yaml` like bellow in order to not duplicate the configurations.
@@ -71,9 +70,9 @@ imports:
 This bundle integrates with [kununu/data-fixtures](https://github.com/kununu/data-fixtures) allowing you to load fixtures in your tests.
 Currently, this bundle supports the following types of fixtures:
 
-- [Doctrine DBAL Connection Fixtures](/docs/FixtureTypes/doctrine-dbal-connection-fixtures.md)
-- [Cache Pool Fixtures](/docs/FixtureTypes/cache-pool-fixtures.md)
-- [Elasticsearch Fixtures](/docs/FixtureTypes/elasticsearch.md)
+- [Doctrine DBAL Connection Fixtures](/docs/FixturesTypes/doctrine-dbal-connection-fixtures.md)
+- [Cache Pool Fixtures](/docs/FixturesTypes/cache-pool-fixtures.md)
+- [Elasticsearch Fixtures](/docs/FixturesTypes/elasticsearch.md)
 
 ------------------------------
 
