@@ -71,9 +71,9 @@ imports:
 This bundle integrates with [kununu/data-fixtures](https://github.com/kununu/data-fixtures) allowing you to load fixtures in your tests.
 Currently, this bundle supports the following types of fixtures:
 
-- [Doctrine DBAL Connection Fixtures](/docs/FixtureTypes/doctrine-dbal-connection-fixtures.md)
-- [Cache Pool Fixtures](/docs/FixtureTypes/cache-pool-fixtures.md)
-- [Elasticsearch Fixtures](/docs/FixtureTypes/elasticsearch.md)
+- [Doctrine DBAL Connection Fixtures](/docs/FixturesTypes/doctrine-dbal-connection-fixtures.md)
+- [Cache Pool Fixtures](/docs/FixturesTypes/cache-pool-fixtures.md)
+- [Elasticsearch Fixtures](/docs/FixturesTypes/elasticsearch.md)
 
 ------------------------------
 
