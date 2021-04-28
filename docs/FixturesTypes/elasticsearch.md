@@ -1,10 +1,8 @@
 # Elasticsearch Fixtures
--------------------------------
 
 This bundle integrates seamless with *Elasticsearch Fixtures* from [kununu/data-fixtures](https://github.com/kununu/data-fixtures).
 
 ## How to load Elasticsearch Fixtures?
-----------------------------------
 
 First you will need to configure the bundle. In this example, we will configure an Elasticsearch index named (aliased) *my_index_alias* that we will use in the rest of the documentation.
 
@@ -60,7 +58,6 @@ final class IntegrationTest extends FixturesAwareTestCase
 ```
 
 ## Symfony Command to load Elasticsearch fixtures
------------------------
 
 This bundle can automatically create a Symfony Command to load default fixtures for any configured Elasticsearch Index. This can be useful for example when you want to have default fixtures for a Elasticsearch Index that are loaded when your service spins up. At kununu we make use of this and when one of our services starts, we call a script, *run_startup.sh*, that on the *dev* and *test* environments calls this commands so that each Elasticsearch Index starts with a set of a default fixtures.
 
@@ -93,7 +90,6 @@ php bin/console kununu_testing:load_fixtures:elastic_search:my_index_alias --app
 If `--append` option is not used then the cache pool will be purged.
 
 ## Initializable Fixtures
-------------------------------
 
 Since this bundle is using the [kununu/data-fixtures](https://github.com/kununu/data-fixtures) package, it also has support for initializable features, allowing you to inject arguments into your feature classes (see [documentation](https://github.com/kununu/data-fixtures) of the kununu/data-fixtures package).
 
@@ -117,7 +113,6 @@ $this->loadElasticSearchFixtures(
 ```
 
 ## Configuration
--------------------------
 
 Bellow you can find all configuration options for Elasticsearch fixtures.
 

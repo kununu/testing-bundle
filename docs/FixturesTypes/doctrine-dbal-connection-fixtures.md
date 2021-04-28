@@ -1,5 +1,4 @@
 # Doctrine DBAL Connection Fixtures
--------------------------------
 
 This bundle integrates seamless with *Doctrine DBAL Connection Fixtures* from [kununu/data-fixtures](https://github.com/kununu/data-fixtures) and all configured Doctrine Connections are eligible to be used to load fixtures.
 
@@ -15,7 +14,6 @@ doctrine:
 ```
 
 ## How to load Doctrine Connection Fixtures?
-----------------------------------
 
 In your tests you can extend the classes [FixturesAwareTestCase](/src/Test/FixturesAwareTestCase.php) or [WebTestCase](/src/Test/WebTestCase.php) which expose the following method:
 
@@ -63,7 +61,6 @@ final class IntegrationTest extends FixturesAwareTestCase
 ```
 
 ## Symfony Command to load Connection fixtures
------------------------
 
 This bundle can automatically create a Symfony Command to load default fixtures for any connection. This can be useful for example when you want to have default fixtures for a database that are loaded when your service spins up. At kununu we make use of this and when one of our services starts, we call a script, *run_startup.sh*, that on the *dev* and *test* environments calls this commands so that each database starts with a set of a default fixtures.
 
@@ -96,7 +93,6 @@ php bin/console kununu_testing:load_fixtures:connections:default --append
 If `--append` option is not used then the cache pool will be purged.
 
 ## Initializable Fixtures
-------------------------------
 
 Since this bundle is using the [kununu/data-fixtures](https://github.com/kununu/data-fixtures) package, it also has support for initializable features, allowing you to inject arguments into your feature classes (see [documentation](https://github.com/kununu/data-fixtures) of the kununu/data-fixtures package).
 
@@ -120,7 +116,6 @@ $this->loadDbFixtures(
 ```
 
 ## Configuration
--------------------------
 
 Bellow you can find all configuration options for Doctrine Connection fixtures.
 
