@@ -5,56 +5,21 @@ namespace Kununu\TestingBundle\Tests\Command;
 
 use Doctrine\DBAL\Connection;
 use Kununu\TestingBundle\Command\LoadConnectionFixturesCommand;
-use Symfony\Bundle\FrameworkBundle\Console\Application;
-use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
-use Symfony\Component\Console\Exception\CommandNotFoundException;
-use Symfony\Component\Console\Tester\CommandTester;
 
 /**
  * @group integration
  */
-final class LoadConnectionFixturesCommandTest extends KernelTestCase
+final class LoadConnectionFixturesCommandTest extends AbstractFixturesCommandTestCase
 {
+    private const COMMAND_1 = 'kununu_testing:load_fixtures:connections:def';
+    private const COMMAND_2 = 'kununu_testing:load_fixtures:connections:persistence';
+    private const COMMAND_3 = 'kununu_testing:load_fixtures:connections:monolithic';
+
     /** @var Connection */
     private $defConnection;
-    /** @var Application */
-    private $application;
 
-    public function testExistsCommands(): void
+    protected function doAssertionsForExecuteAppend(): void
     {
-        $command = $this->application->find('kununu_testing:load_fixtures:connections:def');
-        $this->assertInstanceOf(
-            LoadConnectionFixturesCommand::class,
-            $command,
-            'Asserted that console command "kununu_testing:load_fixtures:connections:default" exists'
-        );
-
-        try {
-            $this->application->find('kununu_testing:load_fixtures:connections:persistence');
-            $this->fail('Console command "kununu_testing:load_fixtures:connections:persistence" should not exist');
-        } catch (CommandNotFoundException $exception) {
-            $this->assertTrue(true, 'Asserted that console command "kununu_testing:load_fixtures:connections:persistence" does not exist');
-        }
-
-        try {
-            $this->application->find('kununu_testing:load_fixtures:connections:monolithic');
-            $this->fail('Console command "kununu_testing:load_fixtures:connections:monolithic" should not exist');
-        } catch (CommandNotFoundException $exception) {
-            $this->assertTrue(true, 'Asserted that console command "kununu_testing:load_fixtures:connections:monolithic" does not exist');
-        }
-    }
-
-    public function testExecuteAppend(): void
-    {
-        $this->prepareToRunCommand();
-
-        $command = $this->application->find('kununu_testing:load_fixtures:connections:def');
-        $commandTester = new CommandTester($command);
-        $commandTester->execute([
-            'command'  => $command->getName(),
-            '--append' => null,
-        ]);
-
         $this->assertEquals(2, $this->defConnection->executeQuery('select count(1) from table_1')->fetchOne());
         $this->assertEquals(2, $this->defConnection->executeQuery('select count(1) from table_2')->fetchOne());
         $this->assertEquals(1, $this->defConnection->executeQuery('select count(1) from table_1 where `name` = \'name0\'')->fetchOne());
@@ -63,17 +28,8 @@ final class LoadConnectionFixturesCommandTest extends KernelTestCase
         $this->assertEquals(1, $this->defConnection->executeQuery('select count(1) from table_2 where `name` = \'name3\'')->fetchOne());
     }
 
-    public function testExecuteNonAppendInteractive(): void
+    protected function doAssertionsForExecuteNonAppendInteractive(): void
     {
-        $this->prepareToRunCommand();
-
-        $command = $this->application->find('kununu_testing:load_fixtures:connections:def');
-        $commandTester = new CommandTester($command);
-        $commandTester->setInputs(['yes']);
-        $commandTester->execute([
-            'command' => $command->getName(),
-        ]);
-
         $this->assertEquals(1, $this->defConnection->executeQuery('select count(1) from table_1')->fetchOne());
         $this->assertEquals(1, $this->defConnection->executeQuery('select count(1) from table_2')->fetchOne());
         $this->assertEquals(0, $this->defConnection->executeQuery('select count(1) from table_1 where `name` = \'name0\'')->fetchOne());
@@ -82,17 +38,8 @@ final class LoadConnectionFixturesCommandTest extends KernelTestCase
         $this->assertEquals(1, $this->defConnection->executeQuery('select count(1) from table_2 where `name` = \'name3\'')->fetchOne());
     }
 
-    public function testExecuteNonAppendNonInteractive(): void
+    protected function doAssertionsForExecuteNonAppendNonInteractive(): void
     {
-        $this->prepareToRunCommand();
-
-        $command = $this->application->find('kununu_testing:load_fixtures:connections:def');
-        $commandTester = new CommandTester($command);
-        $commandTester->execute(
-            ['command' => $command->getName()],
-            ['interactive' => false]
-        );
-
         $this->assertEquals(1, $this->defConnection->executeQuery('select count(1) from table_1')->fetchOne());
         $this->assertEquals(1, $this->defConnection->executeQuery('select count(1) from table_2')->fetchOne());
         $this->assertEquals(0, $this->defConnection->executeQuery('select count(1) from table_1 where `name` = \'name0\'')->fetchOne());
@@ -101,14 +48,22 @@ final class LoadConnectionFixturesCommandTest extends KernelTestCase
         $this->assertEquals(1, $this->defConnection->executeQuery('select count(1) from table_2 where `name` = \'name3\'')->fetchOne());
     }
 
-    protected function setUp(): void
+    protected function getCommandClass(): string
     {
-        $kernel = self::bootKernel();
-        $this->application = new Application($kernel);
-        $this->defConnection = self::$container->get('doctrine.dbal.def_connection');
+        return LoadConnectionFixturesCommand::class;
     }
 
-    private function prepareToRunCommand(): void
+    protected function getExistingCommandAlias(): string
+    {
+        return self::COMMAND_1;
+    }
+
+    protected function getNonExistingCommandAliases(): array
+    {
+        return [self::COMMAND_2, self::COMMAND_3];
+    }
+
+    protected function preRunCommand(): void
     {
         $this->defConnection->executeStatement('TRUNCATE `table_1`');
         $this->defConnection->executeStatement('TRUNCATE `table_2`');
@@ -119,5 +74,11 @@ final class LoadConnectionFixturesCommandTest extends KernelTestCase
         $this->assertEquals(1, $this->defConnection->executeQuery('select count(1) from table_2')->fetchOne());
         $this->assertEquals(1, $this->defConnection->executeQuery('select count(1) from table_1 where `name` = \'name0\'')->fetchOne());
         $this->assertEquals(1, $this->defConnection->executeQuery('select count(1) from table_2 where `name` = \'name0\'')->fetchOne());
+    }
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->defConnection = self::$container->get('doctrine.dbal.def_connection');
     }
 }
