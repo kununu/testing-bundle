@@ -1,6 +1,6 @@
 kununu_testing:
     connections:
-        default:
+        def:
             load_command_fixtures_classes_namespace:
                 - 'Kununu\TestingBundle\Tests\App\Fixtures\Connection\ConnectionFixture3'
             excluded_tables:

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Input\ArgvInput;
+use Symfony\Component\Dotenv\Dotenv;
 use Symfony\Component\ErrorHandler\Debug;
 use Kununu\TestingBundle\Tests\App\LegacyKernel;
 use Kununu\TestingBundle\Tests\App\NewKernel;
@@ -30,6 +31,8 @@ if ($input->hasParameterOption('--no-debug', true) ||
 ) {
     putenv('APP_DEBUG=' . $_SERVER['APP_DEBUG'] = $_ENV['APP_DEBUG'] = '0');
 }
+
+(new Dotenv())->bootEnv(dirname(__DIR__).'/.env');
 
 if ($_SERVER['APP_DEBUG']) {
     umask(0000);

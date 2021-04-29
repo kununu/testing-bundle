@@ -208,17 +208,16 @@ If you are interested in contributing read our [contributing guidelines](/CONTRI
 
 ## Tests
 
-Run the tests by doing:
+This repository takes advantages of GitHub actions to run tests when a commit is performed to a branch. 
+
+Still, on your local machine you can run the tests by doing:
 
 ```
 composer install
-
-kununu test lib testing-bundle [--exclude-group integration]
-# OR
 vendor/phpunit/phpunit/phpunit tests [--exclude-group integration]
 ```
 
-**If you want to run the integration tests you will need the extension `ext-pdo_sqlite` (For installing int ubuntu run `apt update && apt install php-sqlite3`).**
+**If you want to run the integration tests you will need the extension `pdo_mysql`.**
 
 **If you want to run the integration tests you will need to have an Elasticsearch cluster running.**
 

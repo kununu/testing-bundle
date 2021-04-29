@@ -1,4 +1,10 @@
 services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+
+    Kununu\TestingBundle\Tests\App\Command\:
+        resource: '../Command/*'
 
     Kununu\TestingBundle\Tests\App\ElasticSearch\ClientFactory:
 
@@ -6,3 +12,5 @@ services:
         factory: ['@Kununu\TestingBundle\Tests\App\ElasticSearch\ClientFactory', getInstance]
         arguments:
             - ['%elasticsearch_url%']
+
+    Elasticsearch\Client: '@Kununu\TestingBundle\Tests\App\ElasticSearch'

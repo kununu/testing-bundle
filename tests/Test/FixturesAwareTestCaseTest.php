@@ -4,9 +4,6 @@ declare(strict_types=1);
 namespace Kununu\TestingBundle\Tests\Test;
 
 use Doctrine\DBAL\Connection;
-use Doctrine\DBAL\Schema\Column;
-use Doctrine\DBAL\Schema\Table;
-use Doctrine\DBAL\Types\Type;
 use Elasticsearch\Client as ElasticSearch;
 use Elasticsearch\Common\Exceptions\Missing404Exception;
 use Kununu\TestingBundle\Test\FixturesAwareTestCase;
@@ -16,7 +13,6 @@ use Kununu\TestingBundle\Tests\App\Fixtures\Connection\ConnectionFixture1;
 use Kununu\TestingBundle\Tests\App\Fixtures\Connection\ConnectionSqlFixture1;
 use Kununu\TestingBundle\Tests\App\Fixtures\ElasticSearch\ElasticSearchFixture1;
 use Kununu\TestingBundle\Tests\App\Fixtures\ElasticSearch\ElasticSearchFixture2;
-use Kununu\TestingBundle\Tests\StorageSetupTrait;
 use Psr\Cache\CacheItemPoolInterface;
 
 /**
@@ -24,10 +20,8 @@ use Psr\Cache\CacheItemPoolInterface;
  */
 final class FixturesAwareTestCaseTest extends FixturesAwareTestCase
 {
-    use StorageSetupTrait;
-
     /** @var Connection */
-    private $defaultConnection;
+    private $defConnection;
 
     /** @var Connection */
     private $monolithicConnection;
@@ -47,73 +41,72 @@ final class FixturesAwareTestCaseTest extends FixturesAwareTestCase
     /** @var ElasticSearch */
     private $elasticSearch;
 
-    public function testLoadElasticSearchFixturesWithoutAppend(): void
-    {
-        $this->elasticSearch->index(
-            [
-                'index' => 'my_index',
-                'id'    => 'document_to_purge',
-                'body'  => ['field' => 'value1'],
-            ]
-        );
-
-        $this->elasticSearch->get(['index' => 'my_index', 'id' => 'document_to_purge']);
-
-        $this->registerInitializableFixtureForElasticSearch(
-            'my_index_alias',
-            ElasticSearchFixture1::class,
-            1,
-            ['a' => 'name']
-        );
-        $this->loadElasticSearchFixtures(
-            'my_index_alias',
-            [ElasticSearchFixture1::class, ElasticSearchFixture2::class]
-        );
-
-        $purgedDocument = null;
-
-        try {
-            $purgedDocument = $this->elasticSearch->get(['index' => 'my_index', 'id' => 'document_to_purge']);
-        } catch (Missing404Exception $missing404Exception) {
-        }
-
-        if (!empty($purgedDocument)) {
-            $this->fail('Document should not exist!');
-        }
-
-        $document1 = $this->elasticSearch->get(['index' => 'my_index', 'id' => 'my_id_1']);
-        $document2 = $this->elasticSearch->get(['index' => 'my_index', 'id' => 'my_id_2']);
-
-        $this->assertEquals('value_1', $document1['_source']['field']);
-        $this->assertEquals('value_2', $document2['_source']['field']);
-    }
-
-    public function testLoadElasticSearchFixturesWithAppend(): void
-    {
-        $this->elasticSearch->index(
-            [
-                'index' => 'my_index',
-                'id'    => 'document_to_not_purge',
-                'body'  => ['field' => 'value1'],
-            ]
-        );
-
-        $this->elasticSearch->get(['index' => 'my_index', 'id' => 'document_to_not_purge']);
-
-        $this->loadElasticSearchFixtures(
-            'my_index_alias',
-            [ElasticSearchFixture1::class, ElasticSearchFixture2::class],
-            true
-        );
-
-        $this->elasticSearch->get(['index' => 'my_index', 'id' => 'document_to_not_purge']);
-
-        $document1 = $this->elasticSearch->get(['index' => 'my_index', 'id' => 'my_id_1']);
-        $document2 = $this->elasticSearch->get(['index' => 'my_index', 'id' => 'my_id_2']);
-
-        $this->assertEquals('value_1', $document1['_source']['field']);
-        $this->assertEquals('value_2', $document2['_source']['field']);
-    }
+//    public function testLoadElasticSearchFixturesWithoutAppend(): void
+//    {
+//        $this->elasticSearch->index(
+//            [
+//                'index' => 'my_index',
+//                'id'    => 'document_to_purge',
+//                'body'  => ['field' => 'value1']
+//            ]
+//        );
+//
+//        $this->registerInitializableFixtureForElasticSearch(
+//            'my_index_alias',
+//            ElasticSearchFixture1::class,
+//            1,
+//            ['a' => 'name']
+//        );
+//
+//        $this->loadElasticSearchFixtures(
+//            'my_index_alias',
+//            [ElasticSearchFixture1::class, ElasticSearchFixture2::class]
+//        );
+//
+//        $purgedDocument = null;
+//
+//        try {
+//            $purgedDocument = $this->elasticSearch->get(['index' => 'my_index', 'id' => 'document_to_purge']);
+//        } catch (Missing404Exception $missing404Exception) {
+//        }
+//
+//        if (!empty($purgedDocument)) {
+//            $this->fail('Document should not exist!');
+//        }
+//
+//        $document1 = $this->elasticSearch->get(['index' => 'my_index', 'id' => 'my_id_1']);
+//        $document2 = $this->elasticSearch->get(['index' => 'my_index', 'id' => 'my_id_2']);
+//
+//        $this->assertEquals('value_1', $document1['_source']['field']);
+//        $this->assertEquals('value_2', $document2['_source']['field']);
+//    }
+//
+//    public function testLoadElasticSearchFixturesWithAppend(): void
+//    {
+//        $this->elasticSearch->index(
+//            [
+//                'index' => 'my_index',
+//                'id'    => 'document_to_not_purge',
+//                'body'  => ['field' => 'value1'],
+//            ]
+//        );
+//
+//        $this->elasticSearch->get(['index' => 'my_index', 'id' => 'document_to_not_purge']);
+//
+//        $this->loadElasticSearchFixtures(
+//            'my_index_alias',
+//            [ElasticSearchFixture1::class, ElasticSearchFixture2::class],
+//            true
+//        );
+//
+//        $this->elasticSearch->get(['index' => 'my_index', 'id' => 'document_to_not_purge']);
+//
+//        $document1 = $this->elasticSearch->get(['index' => 'my_index', 'id' => 'my_id_1']);
+//        $document2 = $this->elasticSearch->get(['index' => 'my_index', 'id' => 'my_id_2']);
+//
+//        $this->assertEquals('value_1', $document1['_source']['field']);
+//        $this->assertEquals('value_2', $document2['_source']['field']);
+//    }
 
     public function testLoadCachePoolFixturesWithoutAppend(): void
     {
@@ -324,7 +317,7 @@ final class FixturesAwareTestCaseTest extends FixturesAwareTestCase
     public function testLoadDbFixturesWithAppend(): void
     {
         $this->registerInitializableFixtureForDb(
-            'default',
+            'def',
             ConnectionFixture1::class,
             'default_connection',
             true
@@ -337,7 +330,7 @@ final class FixturesAwareTestCaseTest extends FixturesAwareTestCase
         );
 
         $this->loadDbFixtures(
-            'default',
+            'def',
             [ConnectionFixture1::class, ConnectionFixture1::class, ConnectionSqlFixture1::class],
             true
         );
@@ -348,9 +341,9 @@ final class FixturesAwareTestCaseTest extends FixturesAwareTestCase
             true
         );
 
-        $this->assertEquals(4, (int) $this->defaultConnection->fetchOne('SELECT COUNT(*) FROM table_1'));
-        $this->assertEquals(4, (int) $this->defaultConnection->fetchOne('SELECT COUNT(*) FROM table_2'));
-        $this->assertEquals(1, (int) $this->defaultConnection->fetchOne('SELECT COUNT(*) FROM table_to_exclude'));
+        $this->assertEquals(4, (int) $this->defConnection->fetchOne('SELECT COUNT(*) FROM table_1'));
+        $this->assertEquals(4, (int) $this->defConnection->fetchOne('SELECT COUNT(*) FROM table_2'));
+        $this->assertEquals(1, (int) $this->defConnection->fetchOne('SELECT COUNT(*) FROM table_to_exclude'));
 
         $this->assertEquals(4, (int) $this->monolithicConnection->fetchOne('SELECT COUNT(*) FROM table_1'));
         $this->assertEquals(4, (int) $this->monolithicConnection->fetchOne('SELECT COUNT(*) FROM table_2'));
@@ -360,7 +353,7 @@ final class FixturesAwareTestCaseTest extends FixturesAwareTestCase
     public function testLoadDbFixturesWithoutAppend(): void
     {
         $this->loadDbFixtures(
-            'default',
+            'def',
             [ConnectionFixture1::class, ConnectionFixture1::class, ConnectionSqlFixture1::class],
             false
         );
@@ -371,9 +364,9 @@ final class FixturesAwareTestCaseTest extends FixturesAwareTestCase
             false
         );
 
-        $this->assertEquals(3, (int) $this->defaultConnection->fetchOne('SELECT COUNT(*) FROM table_1'));
-        $this->assertEquals(3, (int) $this->defaultConnection->fetchOne('SELECT COUNT(*) FROM table_2'));
-        $this->assertEquals(1, (int) $this->defaultConnection->fetchOne('SELECT COUNT(*) FROM table_to_exclude'));
+        $this->assertEquals(3, (int) $this->defConnection->fetchOne('SELECT COUNT(*) FROM table_1'));
+        $this->assertEquals(3, (int) $this->defConnection->fetchOne('SELECT COUNT(*) FROM table_2'));
+        $this->assertEquals(1, (int) $this->defConnection->fetchOne('SELECT COUNT(*) FROM table_to_exclude'));
 
         $this->assertEquals(3, (int) $this->monolithicConnection->fetchOne('SELECT COUNT(*) FROM table_1'));
         $this->assertEquals(3, (int) $this->monolithicConnection->fetchOne('SELECT COUNT(*) FROM table_2'));
@@ -389,45 +382,20 @@ final class FixturesAwareTestCaseTest extends FixturesAwareTestCase
         $this->tagAwarePoolCachePool = $this->getContainer()->get('app.cache.fourth');
         $this->chainCachePool = $this->getContainer()->get('app.cache.fifth');
 
-        $this->defaultConnection = $this->getContainer()->get('doctrine.dbal.default_connection');
+        $this->defConnection = $this->getContainer()->get('doctrine.dbal.def_connection');
         $this->monolithicConnection = $this->getContainer()->get('doctrine.dbal.monolithic_connection');
         $this->elasticSearch = $this->getContainer()->get('Kununu\TestingBundle\Tests\App\ElasticSearch');
 
-        $table1 = new Table('table_1', [
-            new Column('name', Type::getType('string')),
-            new Column('description', Type::getType('string')),
-        ]);
-
-        $table2 = new Table('table_2', [
-            new Column('name', Type::getType('string')),
-            new Column('description', Type::getType('string')),
-        ]);
-
-        $table3 = (new Table('table_3', [
-            new Column('name', Type::getType('string')),
-            new Column('description', Type::getType('string')),
-        ]))->setPrimaryKey(['name']);
-
-        $tableToExclude = new Table('table_to_exclude', [
-            new Column('name', Type::getType('string')),
-            new Column('description', Type::getType('string')),
-        ]);
-
-        $connections = [
-            $this->getContainer()->getParameter('doctrine_default_connection_path')    => $this->defaultConnection,
-            $this->getContainer()->getParameter('doctrine_monolithic_connection_path') => $this->monolithicConnection,
-        ];
-
         /** @var Connection $connection */
-        foreach ($connections as $database => $connection) {
-            $this->recreateConnectionDatabase($connection, $database, $table1, $table2, $table3, $tableToExclude);
-            $this->insertData(
-                $connection,
-                'INSERT INTO `table_1` (`name`, `description`) VALUES (\'name\', \'description\');',
-                'INSERT INTO `table_2` (`name`, `description`) VALUES (\'name\', \'description\');',
-                'INSERT INTO `table_3` (`name`, `description`) VALUES (\'name\', \'description\');',
-                'INSERT INTO `table_to_exclude` (`name`, `description`) VALUES (\'name\', \'description\');'
-            );
+        foreach ([$this->defConnection, $this->monolithicConnection] as $connection) {
+            $connection->executeStatement('TRUNCATE `table_1`');
+            $connection->executeStatement('TRUNCATE `table_2`');
+            $connection->executeStatement('TRUNCATE `table_3`');
+            $connection->executeStatement('TRUNCATE `table_to_exclude`');
+            $connection->executeStatement('INSERT INTO `table_1` (`name`, `description`) VALUES (\'name\', \'description\');');
+            $connection->executeStatement('INSERT INTO `table_2` (`name`, `description`) VALUES (\'name\', \'description\');');
+            $connection->executeStatement('INSERT INTO `table_3` (`name`, `description`) VALUES (\'name\', \'description\');');
+            $connection->executeStatement('INSERT INTO `table_to_exclude` (`name`, `description`) VALUES (\'name\', \'description\');');
         }
     }
 }
