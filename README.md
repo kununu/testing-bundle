@@ -218,3 +218,8 @@ If you want to run the integration tests on your local machine you will need:
 
 In your local environment to get everything ready for you, run `./tests/setupLocalTests.sh` and follow the instructions.
 Then you can run the tests: `vendor/bin/phpunit`.
+
+------------------------------
+
+![Continuous Integration](https://github.com/kununu/testing-bundle/actions/workflows/continuous-integration.yml/badge.svg)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=kununu_testing-bundle&metric=alert_status)](https://sonarcloud.io/dashboard?id=kununu_testing-bundle)
