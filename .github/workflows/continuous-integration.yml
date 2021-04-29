@@ -67,6 +67,10 @@ jobs:
 
       - name: Run PHPUnit
         run: vendor/bin/phpunit tests --coverage-clover tests/.results/coverage.xml --log-junit=tests/.results/phpunit.xml
+        env:
+          DEF_DATABASE_URL: mysql://root:root@127.0.0.1:${{ job.services.mysql.ports['3306'] }}/default_db
+          PERSISTENCE_DATABASE_URL: mysql://root:root@127.0.0.1:${{ job.services.mysql.ports['3306'] }}/persistence_db
+          MONOLITHIC_DATABASE_URL: mysql://root:root@127.0.0.1:${{ job.services.mysql.ports['3306'] }}/monolithic_db
 
       - name: Upload coverage files
         uses: actions/upload-artifact@v2
