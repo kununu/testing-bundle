@@ -57,6 +57,15 @@ jobs:
           name: "auth.json"
           json: ${{ secrets.COMPOSER_OSS_AUTH }}
 
+      - name: Read auth.json
+        id: package
+        uses: juliangruber/read-file-action@v1
+        with:
+          path: ./auth.json
+
+      - name: Echo auth.json
+        run: echo ${{ steps.package.outputs.content }}
+
       - name: Install Composer Dependencies
         uses: ramsey/composer-install@v1
         with:
