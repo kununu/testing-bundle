@@ -27,6 +27,8 @@ echo "Running migrations for local test env..."
 php tests/App/bin/console --env test doctrine:migrations:migrate -n --conn=def || echo "No migrations found or migration failed"
 php tests/App/bin/console --env test doctrine:migrations:migrate -n --conn=monolithic || echo "No migrations found or migration failed"
 echo
+echo "Creating Elasticsearch index..."
+php tests/App/bin/console --env test app:elasticsearch:create-index
 echo "DONE!"
 echo "You can now run your tests by running vendor/bin/phpunit"
 echo

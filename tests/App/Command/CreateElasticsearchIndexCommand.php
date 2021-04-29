@@ -31,9 +31,11 @@ class CreateElasticsearchIndexCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $this->elasticsearchClient
-            ->indices()
-            ->create(['index' => $input->getArgument('index_name')]);
+        if (!$this->elasticsearchClient->indices()->exists(['index' => $input->getArgument('index_name')])) {
+            $this->elasticsearchClient
+                ->indices()
+                ->create(['index' => $input->getArgument('index_name')]);
+        }
 
         return Command::SUCCESS;
     }
