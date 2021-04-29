@@ -9,6 +9,7 @@ on:
 
 env:
   fail-fast: true
+  COMPOSER_AUTH: ${{ secrets.COMPOSER_AUTH_TOKEN }}
 
 jobs:
   build:
@@ -54,8 +55,6 @@ jobs:
         uses: ramsey/composer-install@v1
         with:
           dependency-versions: ${{ matrix.dependencies }}
-        env:
-          COMPOSER_AUTH: ${{ secrets.COMPOSER_AUTH_TOKEN }}
 
       - name: Setup databases
         run: |
