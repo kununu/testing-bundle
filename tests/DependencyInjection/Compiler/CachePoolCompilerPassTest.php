@@ -6,28 +6,53 @@ namespace Kununu\TestingBundle\Tests\DependencyInjection\Compiler;
 use Kununu\DataFixtures\Executor\CachePoolExecutor;
 use Kununu\DataFixtures\Loader\CachePoolFixturesLoader;
 use Kununu\DataFixtures\Purger\CachePoolPurger;
+use Kununu\TestingBundle\Command\LoadCacheFixturesCommand;
 use Kununu\TestingBundle\DependencyInjection\Compiler\CachePoolCompilerPass;
 use Kununu\TestingBundle\DependencyInjection\KununuTestingExtension;
 use Kununu\TestingBundle\Service\Orchestrator;
-use Matthias\SymfonyDependencyInjectionTest\PhpUnit\AbstractCompilerPassTestCase;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Reference;
 
-final class CachePoolCompilerPassTest extends AbstractCompilerPassTestCase
+final class CachePoolCompilerPassTest extends BaseCompilerPassTestCase
 {
     private const CACHE_POOL_IDS = [
-        'cache_pool.service_1'           => [],
+        'cache_pool.service_1'           => [
+            'creates_command' => true,
+        ],
         'cache_pool.service_2'           => [],
         'cache_pool.service_3.decorated' => [
             'name' => 'cache_pool.service_3',
         ],
     ];
 
+    private const CONFIG = [
+        'cache' => [
+            'pools' => [
+                'cache_pool.service_1' => [
+                    'load_command_fixtures_classes_namespace' => [
+                        'Kununu\TestingBundle\Tests\App\Fixtures\CachePool\CachePoolFixture1',
+                        'Kununu\TestingBundle\Tests\App\Fixtures\CachePool\CachePoolFixture2',
+                    ],
+                ],
+            ],
+        ],
+    ];
+
     public function testThatCreatesOrchestratorForEachServiceTaggedAsCachePool(): void
     {
+        $this->container->loadFromExtension(KununuTestingExtension::ALIAS, self::CONFIG);
+
         $this->doAssertionsOnCachePoolsServices(
-            function(string $purgerId, string $executorId, string $loaderId, string $orchestratorId, string $cachePoolId): void {
+            function(
+                string $purgerId,
+                string $executorId,
+                string $loaderId,
+                string $orchestratorId,
+                string $cachePoolId,
+                ?string $consoleCommandId,
+                ?string $consoleCommandName
+            ): void {
                 $this->assertContainerBuilderHasServiceDefinitionWithArgument(
                     $purgerId,
                     0,
@@ -76,6 +101,19 @@ final class CachePoolCompilerPassTest extends AbstractCompilerPassTestCase
                     Orchestrator::class
                 );
                 $this->assertTrue($this->container->getDefinition($orchestratorId)->isPublic());
+
+                if (null !== $consoleCommandId) {
+                    $this->assertContainerBuilderHasService($consoleCommandId);
+
+                    $this->assertFixturesCommand(
+                        $consoleCommandId,
+                        $consoleCommandName,
+                        LoadCacheFixturesCommand::class,
+                        $cachePoolId,
+                        $orchestratorId,
+                        self::CONFIG['cache']['pools'][$cachePoolId]['load_command_fixtures_classes_namespace'] ?? []
+                    );
+                }
             }
         );
     }
@@ -109,18 +147,23 @@ final class CachePoolCompilerPassTest extends AbstractCompilerPassTestCase
     {
         $this->compile();
 
-        foreach (self::CACHE_POOL_IDS as $cachePoolId => $tagAttributes) {
+        foreach (self::CACHE_POOL_IDS as $cachePoolId => $attributes) {
+            // It means this cache pool must create a Symfony command to load fixtures to it
+            $createsCommand = (bool) ($attributes['creates_command'] ?? false);
+
             // It means the original definition was decorated. Check CachePoolCompilerPass class for more details.
-            if (!empty($tagAttributes['name'])) {
-                $cachePoolId = $tagAttributes['name'];
+            if (!empty($attributes['name'])) {
+                $cachePoolId = $attributes['name'];
             }
 
             $purgerId = sprintf('kununu_testing.orchestrator.cache_pools.%s.purger', $cachePoolId);
             $executorId = sprintf('kununu_testing.orchestrator.cache_pools.%s.executor', $cachePoolId);
             $loaderId = sprintf('kununu_testing.orchestrator.cache_pools.%s.loader', $cachePoolId);
             $orchestratorId = sprintf('kununu_testing.orchestrator.cache_pools.%s', $cachePoolId);
+            $consoleCommandId = $createsCommand ? sprintf('kununu_testing.load_fixtures.cache_pools.%s.command', $cachePoolId) : null;
+            $consoleCommandName = $createsCommand ? sprintf('kununu_testing:load_fixtures:cache_pools:%s', $cachePoolId) : null;
 
-            $asserter($purgerId, $executorId, $loaderId, $orchestratorId, $cachePoolId);
+            $asserter($purgerId, $executorId, $loaderId, $orchestratorId, $cachePoolId, $consoleCommandId, $consoleCommandName);
         }
     }
 }

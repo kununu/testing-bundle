@@ -1,19 +1,23 @@
 # Security Policy
 
+## For external contributors
 
-## Reporting a Vulnerability
+If you want to report any security vulnerabilities please do so by creating an [issue](https://github.com/kununu/testing-bundle/issues).
+Additionally, if you have a fix then please create a pull request and link it to the issue you have created.
+
+## For kununu developers
+
+### Reporting a Vulnerability
 
 Jira is our entrypoint to report security vulnerabilities. Having this mind a KUNSECU user story (type Vulnerability) needs to be created. 
 
-### How to fill the user story? 
+#### How to fill the user story? 
 
 Follow this [documentation](https://confluence.xing.hh/pages/viewpage.action?pageId=381133070).
 
-
-### To which team do I assign the user story? 
+#### To which team do I assign the user story? 
 
 Follow the [component ownership matrix](https://confluence.xing.hh/display/kununu/Component+ownership+and+support) and assign it to the corresponding team.
-
 
 ## Reporting the update of dependencies
 

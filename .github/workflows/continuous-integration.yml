@@ -1,0 +1,121 @@
+name: Continuous Integration
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    types: [ opened, synchronize, reopened ]
+
+env:
+  fail-fast: true
+
+jobs:
+  build:
+    name: PHPUnit
+    runs-on: ubuntu-20.04
+    strategy:
+      matrix:
+        php-version:
+          - 7.2
+          - 7.3
+          - 7.4
+        mysql-version:
+          - 5.7
+        elasticsearch-version:
+          - 6.8.15
+        dependencies:
+          - highest
+
+    services:
+      mysql:
+        image: mysql:${{ matrix.mysql-version }}
+        env:
+          MYSQL_ALLOW_EMPTY_PASSWORD: false
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: root
+        ports:
+          - 3306/tcp
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+
+      elasticsearch:
+        image: elasticsearch:${{ matrix.elasticsearch-version }}
+        env:
+          discovery.type: single-node
+        options: >-
+          --health-cmd "curl http://localhost:9200/_cluster/health"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 10
+        ports:
+          - 9200:9200
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-version }}
+          coverage: xdebug
+          extensions: ${{ matrix.extensions }}
+
+      - name: Authenticate composer
+        run: composer config github-oauth.github.com ${{ secrets.COMPOSER_AUTH_TOKEN }}
+
+      - name: Install Composer Dependencies
+        uses: ramsey/composer-install@v1
+        with:
+          dependency-versions: ${{ matrix.dependencies }}
+
+      - name: Setup databases
+        run: ./tests/App/bin/setup_databases.sh
+        env:
+          DEF_DATABASE_URL: mysql://root:root@127.0.0.1:${{ job.services.mysql.ports['3306'] }}/default_db
+          PERSISTENCE_DATABASE_URL: mysql://root:root@127.0.0.1:${{ job.services.mysql.ports['3306'] }}/persistence_db
+          MONOLITHIC_DATABASE_URL: mysql://root:root@127.0.0.1:${{ job.services.mysql.ports['3306'] }}/monolithic_db
+          ELASTICSEARCH_URL: http://localhost:9200
+          DATABASE_SERVER_VERSION: ${{ matrix.mysql-version }}
+
+      - name: Run PHPUnit
+        run: vendor/bin/phpunit
+        env:
+          DEF_DATABASE_URL: mysql://root:root@127.0.0.1:${{ job.services.mysql.ports['3306'] }}/default_db
+          PERSISTENCE_DATABASE_URL: mysql://root:root@127.0.0.1:${{ job.services.mysql.ports['3306'] }}/persistence_db
+          MONOLITHIC_DATABASE_URL: mysql://root:root@127.0.0.1:${{ job.services.mysql.ports['3306'] }}/monolithic_db
+          ELASTICSEARCH_URL: http://localhost:9200
+          DATABASE_SERVER_VERSION: ${{ matrix.mysql-version }}
+
+      - name: Upload coverage files
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{ github.job }}-${{ matrix.php-version }}-coverage
+          path: tests/.results/
+
+  sonarcloud:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          # Disabling shallow clone is recommended for improving relevancy of reporting
+          fetch-depth: 0
+
+      - uses: actions/download-artifact@v2
+        with:
+          name: build-7.4-coverage
+          path: tests/.results/
+
+      - name: Fix Code Coverage Paths
+        working-directory: tests/.results/
+        run: |
+          sed -i 's@'$GITHUB_WORKSPACE'@/github/workspace/@g' tests-clover.xml
+          sed -i 's@'$GITHUB_WORKSPACE'@/github/workspace/@g' tests-junit.xml
+
+      - name: SonarCloud Scan
+        uses: sonarsource/sonarcloud-github-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+

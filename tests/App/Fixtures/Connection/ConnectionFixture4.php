@@ -10,7 +10,7 @@ final class ConnectionFixture4 implements ConnectionFixtureInterface
 {
     public function load(Connection $connection): void
     {
-        $connection->exec('INSERT INTO `table_1` (`name`, `description`) VALUES (\'name4\', \'description4\');');
-        $connection->exec('INSERT INTO `table_2` (`name`, `description`) VALUES (\'name4\', \'description4\');');
+        $connection->executeStatement('INSERT INTO `table_1` (`name`, `description`) VALUES (\'name4\', \'description4\');');
+        $connection->executeStatement('INSERT INTO `table_2` (`name`, `description`) VALUES (\'name4\', \'description4\');');
     }
 }

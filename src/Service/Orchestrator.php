@@ -17,9 +17,11 @@ final class Orchestrator
         $this->loader = $loader;
     }
 
-    public function execute(array $fixturesClassNames, bool $append): void
+    public function execute(array $fixturesClassNames, bool $append, bool $clearFixtures = true): void
     {
-        $this->loader->clearFixtures();
+        if ($clearFixtures) {
+            $this->clearFixtures();
+        }
 
         foreach ($fixturesClassNames as $className) {
             $this->loader->loadFromClassName($className);
@@ -31,5 +33,10 @@ final class Orchestrator
     public function registerInitializableFixture(string $className, ...$args): void
     {
         $this->loader->registerInitializableFixture($className, ...$args);
+    }
+
+    public function clearFixtures(): void
+    {
+        $this->loader->clearFixtures();
     }
 }

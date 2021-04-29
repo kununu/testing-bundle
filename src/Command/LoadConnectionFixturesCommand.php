@@ -5,8 +5,13 @@ namespace Kununu\TestingBundle\Command;
 
 final class LoadConnectionFixturesCommand extends LoadFixturesCommand
 {
-    protected static function getFixtureType(): string
+    protected function getFixtureType(): string
     {
         return 'connections';
+    }
+
+    protected function getAliasWord(): string
+    {
+        return 'Database Connection';
     }
 }

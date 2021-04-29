@@ -1,27 +1,41 @@
 {
     "name": "kununu/testing-bundle",
     "description": "Testing made easy by providing helper classes and fixtures loading",
-    "type": "library",
+    "type": "symfony-bundle",
+    "keywords": ["tests", "symfony", "fixtures"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Hugo Gonçalves",
+            "email": "hugo.goncalves@kununu.com"
+        },
+        {
+            "name": "João Alves",
+            "email": "joao.alves@kununu.com"
+        }
+    ],
     "require": {
         "php": "^7.2",
-        "symfony/framework-bundle": "^4.3",
+        "symfony/framework-bundle": "^4.4 || ^5.0",
         "kununu/data-fixtures": "^7.0",
-        "symfony/config": "^4.3",
-        "symfony/dependency-injection": "^4.3",
-        "symfony/http-kernel": "^4.3"
+        "symfony/config": "^4.4 || ^5.0",
+        "symfony/dependency-injection": "^4.4 || ^5.0",
+        "symfony/http-kernel": "^4.4 || ^5.0"
     },
     "require-dev": {
         "ext-json": "*",
         "doctrine/doctrine-bundle": "^1.10 || ^2.0",
+        "doctrine/doctrine-migrations-bundle": "^2.0 || ^3.0",
         "elasticsearch/elasticsearch": "~7.0",
-        "kununu/scripts": "^1.1",
-        "matthiasnoback/symfony-dependency-injection-test": "^4.0",
-        "phpunit/phpunit": "^8.1",
-        "symfony/browser-kit": "^4.3",
-        "symfony/phpunit-bridge": "^5.2"
+        "kununu/scripts": "^2.0",
+        "matthiasnoback/symfony-dependency-injection-test": "^4.2",
+        "phpunit/phpunit": "^8.5",
+        "symfony/browser-kit": "^4.4 || ^5.0",
+        "symfony/dotenv": "^4.4 || ^5.2",
+        "symfony/phpunit-bridge": "^4.4 || ^5.0"
     },
     "suggest": {
-        "ext-pdo_sqlite": "To run Integration Tests.",
+        "ext-pdo_mysql": "To run Integration Tests.",
         "doctrine/doctrine-bundle": "To run Integration Tests.",
         "elasticsearch/elasticsearch": "To run Integration Tests."
     },

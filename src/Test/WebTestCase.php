@@ -17,7 +17,6 @@ abstract class WebTestCase extends FixturesAwareTestCase
 
         $this->client->request(...$builder->build());
 
-        /** @var Response $response */
         $response = $this->client->getResponse();
 
         // Since there is no content, then there is also no content-type header.

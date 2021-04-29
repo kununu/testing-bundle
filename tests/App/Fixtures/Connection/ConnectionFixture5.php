@@ -10,6 +10,6 @@ final class ConnectionFixture5 implements ConnectionFixtureInterface
 {
     public function load(Connection $connection): void
     {
-        $connection->exec('INSERT INTO `table_3` (`name`, `description`) VALUES (\'my_name\', \'description5\');');
+        $connection->executeStatement('INSERT INTO `table_3` (`name`, `description`) VALUES (\'my_name\', \'description5\');');
     }
 }

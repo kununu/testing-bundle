@@ -3,15 +3,15 @@ declare(strict_types=1);
 
 namespace Kununu\TestingBundle\Command;
 
-final class LoadElasticsearchFixturesCommand extends LoadFixturesCommand
+final class LoadCacheFixturesCommand extends LoadFixturesCommand
 {
     protected function getFixtureType(): string
     {
-        return 'elastic_search';
+        return 'cache_pools';
     }
 
     protected function getAliasWord(): string
     {
-        return 'Elasticsearch Index alias';
+        return 'Cache Pool';
     }
 }

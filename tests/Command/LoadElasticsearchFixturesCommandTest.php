@@ -11,9 +11,6 @@ use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Exception\CommandNotFoundException;
 use Symfony\Component\Console\Tester\CommandTester;
 
-/**
- * @group integration
- */
 final class LoadElasticsearchFixturesCommandTest extends FixturesAwareTestCase
 {
     /** @var Client */
@@ -34,7 +31,8 @@ final class LoadElasticsearchFixturesCommandTest extends FixturesAwareTestCase
             $this->application->find('kununu_testing:load_fixtures:elastic_search:my_index_alias_2');
             $this->fail('Console command "kununu_testing:load_fixtures:elastic_search:my_index_alias_2" should not exist');
         } catch (CommandNotFoundException $exception) {
-            $this->assertTrue(true, 'Asserted that console command "kununu_testing:load_fixtures:elastic_search:my_index_alias_2" does not exist');
+            $this->assertTrue(true,
+                'Asserted that console command "kununu_testing:load_fixtures:elastic_search:my_index_alias_2" does not exist');
         }
     }
 
@@ -59,11 +57,9 @@ final class LoadElasticsearchFixturesCommandTest extends FixturesAwareTestCase
         $command = $this->application->find('kununu_testing:load_fixtures:elastic_search:my_index_alias');
         $commandTester = new CommandTester($command);
         $commandTester->setInputs(['yes']);
-        $commandTester->execute(
-            [
-                'command'  => $command->getName(),
-            ]
-        );
+        $commandTester->execute([
+            'command' => $command->getName(),
+        ]);
 
         $this->assertEquals(1, $this->countDocumentsInIndex());
     }
@@ -75,7 +71,7 @@ final class LoadElasticsearchFixturesCommandTest extends FixturesAwareTestCase
         $command = $this->application->find('kununu_testing:load_fixtures:elastic_search:my_index_alias');
         $commandTester = new CommandTester($command);
         $commandTester->execute(
-            ['command'     => $command->getName()],
+            ['command' => $command->getName()],
             ['interactive' => false]
         );
 
@@ -84,7 +80,7 @@ final class LoadElasticsearchFixturesCommandTest extends FixturesAwareTestCase
 
     protected function setUp(): void
     {
-        $kernel = static::bootKernel();
+        $kernel = self::bootKernel();
         $this->application = new Application($kernel);
         $this->elasticsearchClient = $this->getContainer()->get('Kununu\TestingBundle\Tests\App\ElasticSearch');
     }
