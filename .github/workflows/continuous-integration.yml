@@ -51,7 +51,7 @@ jobs:
           extensions: ${{ matrix.extensions }}
 
       - name: Create Composer auth.json
-        run: echo ${{ secrets.COMPOSER_AUTH_TOKEN }} > ./auth.json
+        run: printf ${{ secrets.COMPOSER_AUTH_TOKEN }} > ./auth.json
 
       - name: Install Composer Dependencies
         uses: ramsey/composer-install@v1
