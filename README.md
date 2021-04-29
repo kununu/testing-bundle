@@ -208,8 +208,6 @@ If you are interested in contributing read our [contributing guidelines](/CONTRI
 
 ## Tests
 
-## Tests
-
 This repository takes advantages of GitHub actions to run tests when a commit is performed to a branch.
 Still, if required on your local machine you can run the tests by doing:
 
