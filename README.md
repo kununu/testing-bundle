@@ -226,4 +226,4 @@ vendor/phpunit/phpunit/phpunit tests
 **If you want to run the integration tests you will need the extension `pdo_mysql`.**
 **If you want to run the integration tests you will need to have an Elasticsearch cluster running.**
 
-You can change the environment variables used for MySQL and Elasticsearch in the `tests/App/.env` file.
+You can change the environment variables used in the tests and app by copying the file `tests/App/.env` to `tests/App/.env.test` and `tests/App/.env.local` and change the values.
