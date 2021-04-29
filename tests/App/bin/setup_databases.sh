@@ -9,7 +9,7 @@ echo
 echo "Running Migrations..."
 php console doctrine:migrations:migrate -n --conn=def || echo "No migrations found or migration failed"
 php console doctrine:migrations:migrate -n --conn=monolithic || echo "No migrations found or migration failed"
-echo "Migrations runned!"
+echo "Migrations ran!"
 echo
 echo "Creating Elasticsearch index..."
 php console app:elasticsearch:create-index
