@@ -24,7 +24,6 @@ jobs:
           - 5.7
         elasticsearch-version:
           - 6.8.15
-          - 7.12.1
         dependencies:
           - highest
 
@@ -91,7 +90,7 @@ jobs:
       - name: Upload coverage files
         uses: actions/upload-artifact@v2
         with:
-          name: ${{ github.job }}-${{ matrix.php-version }}-${{ matrix.mysql-version }}-${{ matrix.elasticsearch-version }}-coverage
+          name: ${{ github.job }}-${{ matrix.php-version }}-coverage
           path: tests/.results/
 
   sonarcloud:
