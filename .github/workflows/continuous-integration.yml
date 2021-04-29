@@ -51,7 +51,7 @@ jobs:
           extensions: ${{ matrix.extensions }}
 
       - name: Setup Composer Auth
-        run: composer config --global github-oauth.github.com {{ secrets.COMPOSER_AUTH_TOKEN }}
+        run: composer config github-oauth.github.com {{ secrets.COMPOSER_AUTH_TOKEN }}
 
       - name: Install Composer Dependencies
         uses: ramsey/composer-install@v1
