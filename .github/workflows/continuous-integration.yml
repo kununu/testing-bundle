@@ -50,9 +50,11 @@ jobs:
           coverage: xdebug
           extensions: ${{ matrix.extensions }}
 
+      - name: Setup Composer Auth
+        run: composer config --global github-oauth.github.com {{ secrets.COMPOSER_AUTH_TOKEN }}
+
       - name: Install Composer Dependencies
         uses: ramsey/composer-install@v1
-        run: composer config --global --editor --auth {{ secrets.COMPOSER_AUTH_TOKEN }}
         with:
           dependency-versions: ${{ matrix.dependencies }}
 
