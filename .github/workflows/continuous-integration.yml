@@ -23,6 +23,9 @@ jobs:
         mysql-version:
           - 5.7
 #          - 8.0
+        elasticsearch-version:
+          - 6.8.15
+#          - 7.12.1
         extensions:
           - pdo_mysql
         dependencies:
@@ -38,6 +41,18 @@ jobs:
         ports:
           - 3306/tcp
         options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+
+      elasticsearch:
+        image: elasticsearch:${{ matrix.mysql-version }}
+        env:
+          discovery.type: single-node
+        options: >-
+          --health-cmd "curl http://localhost:9200/_cluster/health"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 10
+        ports:
+          - 9200:9200
 
     steps:
       - name: Checkout
@@ -64,6 +79,7 @@ jobs:
           DEF_DATABASE_URL: mysql://root:root@127.0.0.1:${{ job.services.mysql.ports['3306'] }}/default_db
           PERSISTENCE_DATABASE_URL: mysql://root:root@127.0.0.1:${{ job.services.mysql.ports['3306'] }}/persistence_db
           MONOLITHIC_DATABASE_URL: mysql://root:root@127.0.0.1:${{ job.services.mysql.ports['3306'] }}/monolithic_db
+          ELASTICSEARCH_URL: http://localhost:9200
 
       - name: Run PHPUnit
         run: vendor/bin/phpunit tests --coverage-clover tests/.results/coverage.xml --log-junit=tests/.results/phpunit.xml
@@ -71,6 +87,7 @@ jobs:
           DEF_DATABASE_URL: mysql://root:root@127.0.0.1:${{ job.services.mysql.ports['3306'] }}/default_db
           PERSISTENCE_DATABASE_URL: mysql://root:root@127.0.0.1:${{ job.services.mysql.ports['3306'] }}/persistence_db
           MONOLITHIC_DATABASE_URL: mysql://root:root@127.0.0.1:${{ job.services.mysql.ports['3306'] }}/monolithic_db
+          ELASTICSEARCH_URL: http://localhost:9200
 
       - name: Upload coverage files
         uses: actions/upload-artifact@v2
