@@ -50,8 +50,12 @@ jobs:
           coverage: xdebug
           extensions: ${{ matrix.extensions }}
 
-      - name: Setup Composer Auth
-        run: composer config http-basic.github.com ${{ secrets.COMPOSER_HTTP_BASIC_USER }} ${{ secrets.COMPOSER_HTTP_BASIC_PASSWORD }}
+      - name: create-json
+        id: create-composer-oss-auth
+        uses: jsdaniell/create-json@1.1.2
+        with:
+          name: "auth.json"
+          json: ${{ secrets.COMPOSER_OSS_AUTH }}
 
       - name: Install Composer Dependencies
         uses: ramsey/composer-install@v1
