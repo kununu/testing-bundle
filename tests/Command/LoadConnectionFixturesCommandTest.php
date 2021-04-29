@@ -80,9 +80,5 @@ final class LoadConnectionFixturesCommandTest extends AbstractFixturesCommandTes
     {
         parent::setUp();
         $this->defConnection = self::$container->get('doctrine.dbal.def_connection');
-        var_dump($this->defConnection->getHost());
-        var_dump($this->defConnection->getParams());
-        var_dump($this->defConnection->getPort());
-        var_dump($this->defConnection->getUsername());
     }
 }
