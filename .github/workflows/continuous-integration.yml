@@ -50,11 +50,9 @@ jobs:
           coverage: xdebug
           extensions: ${{ matrix.extensions }}
 
-      - name: Create Composer auth.json
-        run: printf "${{ secrets.COMPOSER_AUTH_TOKEN }}" > ./auth.json
-
       - name: Install Composer Dependencies
         uses: ramsey/composer-install@v1
+        run: composer config --global --editor --auth {{ secrets.COMPOSER_AUTH_TOKEN }}
         with:
           dependency-versions: ${{ matrix.dependencies }}
 
