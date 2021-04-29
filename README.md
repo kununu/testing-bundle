@@ -211,8 +211,10 @@ If you are interested in contributing read our [contributing guidelines](/CONTRI
 
 This repository takes advantages of GitHub actions to run tests when a commit is performed to a branch.
 
-**If you want to run the integration tests on your local machine you will need the extension `pdo_mysql` installed, a running local MySql database and  an Elasticsearch cluster running.**
+If you want to run the integration tests on your local machine you will need:
+- *pdo_mysql* extension
+- MySQL server
+- Elasticsearch cluster
 
-To setup your local environment please copy the file `test/.env` to `test/.env.test` and change the connections parameters to reflect your local env then run `tests/setupLocalTest.sh`
-
-Now you can run your tests locally: `vendor/bin/phpunit`.
+In your local environment to get everything ready for you, run `./tests/setupLocalTests.sh` and follow the instructions.
+Then you can run the tests: `vendor/bin/phpunit`.
