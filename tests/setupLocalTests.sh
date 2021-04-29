@@ -16,7 +16,7 @@ echo
 echo "Cleaning application caches"
 rm -rf tests/App/var/*
 echo
-source tests/App/bin/setup_databases.sh
+. tests/App/bin/setup_databases.sh test
 echo "DONE!"
 echo "You can now run your tests by running vendor/bin/phpunit"
 echo
