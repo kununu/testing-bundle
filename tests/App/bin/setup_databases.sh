@@ -12,7 +12,7 @@ php console doctrine:migrations:migrate -n --conn=monolithic || echo "No migrati
 echo "Migrations runned!"
 echo
 echo "Creating Elasticsearch index..."
-#php console app:elasticsearch:create-index
+php console app:elasticsearch:create-index
 echo "Elasticsearch index created!"
 echo
 echo "Databases setup complete!"

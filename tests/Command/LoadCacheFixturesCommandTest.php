@@ -7,9 +7,6 @@ use Kununu\TestingBundle\Command\LoadCacheFixturesCommand;
 use Kununu\TestingBundle\Tests\App\Fixtures\CachePool\CachePoolFixture3;
 use Psr\Cache\CacheItemPoolInterface;
 
-/**
- * @group integration
- */
 final class LoadCacheFixturesCommandTest extends AbstractFixturesCommandTestCase
 {
     private const COMMAND_1 = 'kununu_testing:load_fixtures:cache_pools:app.cache.first';

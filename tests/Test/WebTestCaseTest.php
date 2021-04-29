@@ -7,9 +7,6 @@ use Kununu\TestingBundle\Test\FixturesAwareTestCase;
 use Kununu\TestingBundle\Test\RequestBuilder;
 use Kununu\TestingBundle\Test\WebTestCase;
 
-/**
- * @group integration
- */
 final class WebTestCaseTest extends WebTestCase
 {
     public function testDoRequest(): void

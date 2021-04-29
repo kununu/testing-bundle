@@ -6,9 +6,6 @@ namespace Kununu\TestingBundle\Tests\Command;
 use Doctrine\DBAL\Connection;
 use Kununu\TestingBundle\Command\LoadConnectionFixturesCommand;
 
-/**
- * @group integration
- */
 final class LoadConnectionFixturesCommandTest extends AbstractFixturesCommandTestCase
 {
     private const COMMAND_1 = 'kununu_testing:load_fixtures:connections:def';
