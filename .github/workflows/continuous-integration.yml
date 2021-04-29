@@ -22,10 +22,10 @@ jobs:
 #          - 7.4
         mysql-version:
           - 5.7
-#          - 8.0
+          - 8.0
         elasticsearch-version:
           - 6.8.15
-#          - 7.12.1
+          - 7.12.1
         extensions:
           - pdo_mysql
         dependencies:
@@ -83,7 +83,7 @@ jobs:
           DATABASE_SERVER_VERSION: ${{ matrix.mysql-version }}
 
       - name: Run PHPUnit
-        run: vendor/bin/phpunit tests --coverage-clover tests/.results/coverage.xml --log-junit=tests/.results/phpunit.xml
+        run: vendor/bin/phpunit
         env:
           DEF_DATABASE_URL: mysql://root:root@127.0.0.1:${{ job.services.mysql.ports['3306'] }}/default_db
           PERSISTENCE_DATABASE_URL: mysql://root:root@127.0.0.1:${{ job.services.mysql.ports['3306'] }}/persistence_db
@@ -94,32 +94,32 @@ jobs:
       - name: Upload coverage files
         uses: actions/upload-artifact@v2
         with:
-          name: ${{ github.job }}-${{ matrix.php-version }}-${{ matrix.mysql-version }}-coverage
+          name: ${{ github.job }}-${{ matrix.php-version }}-${{ matrix.mysql-version }}-${{ matrix.elasticsearch-version }}-coverage
           path: tests/.results/
 
-#  sonarcloud:
-#    needs: build
-#    runs-on: ubuntu-latest
-#    steps:
-#      - uses: actions/checkout@v2
-#        with:
-#          # Disabling shallow clone is recommended for improving relevancy of reporting
-#          fetch-depth: 0
-#
-#      - uses: actions/download-artifact@v2
-#        with:
-#          name: build-7.2-coverage
-#          path: tests/.results/
-#
-#      - name: Fix Code Coverage Paths
-#        working-directory: tests/.results/
-#        run: |
-#          sed -i 's@'$GITHUB_WORKSPACE'@/github/workspace/@g' coverage.xml
-#          sed -i 's@'$GITHUB_WORKSPACE'@/github/workspace/@g' phpunit.xml
-#
-#      - name: SonarCloud Scan
-#        uses: sonarsource/sonarcloud-github-action@master
-#        env:
-#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+  sonarcloud:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          # Disabling shallow clone is recommended for improving relevancy of reporting
+          fetch-depth: 0
+
+      - uses: actions/download-artifact@v2
+        with:
+          name: build-7.4-8.0-7.12.1-coverage
+          path: tests/.results/
+
+      - name: Fix Code Coverage Paths
+        working-directory: tests/.results/
+        run: |
+          sed -i 's@'$GITHUB_WORKSPACE'@/github/workspace/@g' tests-clover.xml
+          sed -i 's@'$GITHUB_WORKSPACE'@/github/workspace/@g' tests-junit.xml
+
+      - name: SonarCloud Scan
+        uses: sonarsource/sonarcloud-github-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
