@@ -80,6 +80,7 @@ jobs:
           PERSISTENCE_DATABASE_URL: mysql://root:root@127.0.0.1:${{ job.services.mysql.ports['3306'] }}/persistence_db
           MONOLITHIC_DATABASE_URL: mysql://root:root@127.0.0.1:${{ job.services.mysql.ports['3306'] }}/monolithic_db
           ELASTICSEARCH_URL: http://localhost:9200
+          DATABASE_SERVER_VERSION: ${{ matrix.mysql-version }}
 
       - name: Run PHPUnit
         run: vendor/bin/phpunit tests --coverage-clover tests/.results/coverage.xml --log-junit=tests/.results/phpunit.xml
@@ -88,11 +89,12 @@ jobs:
           PERSISTENCE_DATABASE_URL: mysql://root:root@127.0.0.1:${{ job.services.mysql.ports['3306'] }}/persistence_db
           MONOLITHIC_DATABASE_URL: mysql://root:root@127.0.0.1:${{ job.services.mysql.ports['3306'] }}/monolithic_db
           ELASTICSEARCH_URL: http://localhost:9200
+          DATABASE_SERVER_VERSION: ${{ matrix.mysql-version }}
 
       - name: Upload coverage files
         uses: actions/upload-artifact@v2
         with:
-          name: ${{ github.job }}-${{ matrix.php-versions }}-coverage
+          name: ${{ github.job }}-${{ matrix.php-version }}-${{ matrix.mysql-version }}-coverage
           path: tests/.results/
 
 #  sonarcloud:

@@ -1,5 +1,6 @@
 parameters:
     elasticsearch_url: '%env(resolve:ELASTICSEARCH_URL)%'
+    database_server_version: '%env(resolve:DATABASE_SERVER_VERSION)%'
     def_database_url: '%env(resolve:DEF_DATABASE_URL)%'
     persistence_database_url: '%env(resolve:PERSISTENCE_DATABASE_URL)%'
     monolithic_database_url: '%env(resolve:MONOLITHIC_DATABASE_URL)%'
