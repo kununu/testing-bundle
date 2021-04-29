@@ -9,6 +9,7 @@ on:
 
 env:
   fail-fast: true
+  COMPOSER_AUTH: ${{ secrets.COMPOSER_AUTH_TOKEN }}
 
 jobs:
   build:
@@ -50,10 +51,8 @@ jobs:
           coverage: xdebug
           extensions: ${{ matrix.extensions }}
 
-      - name: Setup Composer Auth
-        run: |
-          echo "{{ secrets.COMPOSER_AUTH_TOKEN }}"
-          composer config github-oauth.github.com {{ secrets.COMPOSER_AUTH_TOKEN }}
+#      - name: Setup Composer Auth
+#        run: composer config github-oauth.github.com ${{ secrets.COMPOSER_AUTH_TOKEN }}
 
       - name: Install Composer Dependencies
         uses: ramsey/composer-install@v1
