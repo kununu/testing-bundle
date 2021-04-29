@@ -206,24 +206,13 @@ If you are interested in contributing read our [contributing guidelines](/CONTRI
 
 ------------------------------
 
-## Tests
 
 ## Tests
 
 This repository takes advantages of GitHub actions to run tests when a commit is performed to a branch.
-Still, if required on your local machine you can run the tests by doing:
 
-```
-composer install
-@todo move this to a script
-php bin/console doctrine:database:create --connection=def
-php bin/console doctrine:database:create --connection=monolithic
-php bin/console doctrine:migrations:migrate -n --conn=def || echo "No migrations found or migration failed"
-php bin/console doctrine:migrations:migrate -n --conn=monolithic || echo "No migrations found or migration failed"
-vendor/phpunit/phpunit/phpunit tests
-```
+**If you want to run the integration tests on your local machine you will need the extension `pdo_mysql` installed, a running local MySql database and  an Elasticsearch cluster running.**
 
-**If you want to run the integration tests you will need the extension `pdo_mysql`.**
-**If you want to run the integration tests you will need to have an Elasticsearch cluster running.**
+To setup your local environment please copy the file `test/.env` to `test/.env.test` and change the connections parameters to reflect your local env then run `tests/setupLocalTest.sh`
 
-You can change the environment variables used for MySQL and Elasticsearch in the `tests/App/.env` file.
+Now you can run your tests locally: `vendor/bin/phpunit`.

@@ -5,3 +5,4 @@ composer.lock
 tests/App/var/
 vendor/
 tests/.results/
+test/App/.env.test

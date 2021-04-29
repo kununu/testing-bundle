@@ -17,7 +17,7 @@ final class Version20210428225538 extends AbstractMigration
     public function up(Schema $schema): void
     {
         $this->addSql(<<<'SQL'
-CREATE TABLE table_1 (
+CREATE TABLE IF NOT EXISTS table_1 (
     name VARCHAR(255) NOT NULL,
     description VARCHAR(255) NOT NULL
 ) DEFAULT CHARACTER SET utf8 COLLATE `utf8_unicode_ci` ENGINE = InnoDB;
@@ -25,7 +25,7 @@ SQL
         );
 
         $this->addSql(<<<'SQL'
-CREATE TABLE table_2 (
+CREATE TABLE IF NOT EXISTS table_2 (
     name VARCHAR(255) NOT NULL,
     description VARCHAR(255) NOT NULL
  ) DEFAULT CHARACTER SET utf8 COLLATE `utf8_unicode_ci` ENGINE = InnoDB;
@@ -33,7 +33,7 @@ SQL
         );
 
         $this->addSql(<<<'SQL'
-CREATE TABLE table_3 (
+CREATE TABLE IF NOT EXISTS table_3 (
     name VARCHAR(255) NOT NULL,
     description VARCHAR(255) NOT NULL, PRIMARY KEY(name)
 ) DEFAULT CHARACTER SET utf8 COLLATE `utf8_unicode_ci` ENGINE = InnoDB;
@@ -41,7 +41,7 @@ SQL
         );
 
         $this->addSql(<<<'SQL'
-CREATE TABLE table_to_exclude (
+CREATE TABLE IF NOT EXISTS table_to_exclude (
     name VARCHAR(255) NOT NULL,
     description VARCHAR(255) NOT NULL
 ) DEFAULT CHARACTER SET utf8 COLLATE `utf8_unicode_ci` ENGINE = InnoDB;
