@@ -69,6 +69,7 @@ jobs:
         uses: ramsey/composer-install@v1
         with:
           dependency-versions: ${{ matrix.dependencies }}
+          composer-options: "--prefer-stable"
 
       - name: Setup databases
         run: ./tests/App/bin/setup_databases.sh
