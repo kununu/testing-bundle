@@ -11,7 +11,7 @@ echo
 echo "(Re-)Installing composer dependencies..."
 rm -rf vendor/*
 rm composer.lock
-composer install
+composer update --prefer-stable
 echo
 echo "Cleaning application caches"
 rm -rf tests/App/var/*

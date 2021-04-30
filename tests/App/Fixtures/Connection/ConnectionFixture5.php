@@ -5,11 +5,14 @@ namespace Kununu\TestingBundle\Tests\App\Fixtures\Connection;
 
 use Doctrine\DBAL\Connection;
 use Kununu\DataFixtures\Adapter\ConnectionFixtureInterface;
+use Kununu\TestingBundle\Tests\ConnectionHelperTrait;
 
 final class ConnectionFixture5 implements ConnectionFixtureInterface
 {
+    use ConnectionHelperTrait;
+
     public function load(Connection $connection): void
     {
-        $connection->executeStatement('INSERT INTO `table_3` (`name`, `description`) VALUES (\'my_name\', \'description5\');');
+        $this->executeQuery($connection, 'INSERT INTO `table_3` (`name`, `description`) VALUES (\'my_name\', \'description5\');');
     }
 }
