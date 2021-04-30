@@ -13,10 +13,13 @@ use Kununu\TestingBundle\Tests\App\Fixtures\Connection\ConnectionFixture1;
 use Kununu\TestingBundle\Tests\App\Fixtures\Connection\ConnectionSqlFixture1;
 use Kununu\TestingBundle\Tests\App\Fixtures\ElasticSearch\ElasticSearchFixture1;
 use Kununu\TestingBundle\Tests\App\Fixtures\ElasticSearch\ElasticSearchFixture2;
+use Kununu\TestingBundle\Tests\ConnectionHelperTrait;
 use Psr\Cache\CacheItemPoolInterface;
 
 final class FixturesAwareTestCaseTest extends FixturesAwareTestCase
 {
+    use ConnectionHelperTrait;
+
     /** @var Connection */
     private $defConnection;
 
@@ -338,13 +341,13 @@ final class FixturesAwareTestCaseTest extends FixturesAwareTestCase
             true
         );
 
-        $this->assertEquals(4, (int) $this->defConnection->fetchOne('SELECT COUNT(*) FROM table_1'));
-        $this->assertEquals(4, (int) $this->defConnection->fetchOne('SELECT COUNT(*) FROM table_2'));
-        $this->assertEquals(1, (int) $this->defConnection->fetchOne('SELECT COUNT(*) FROM table_to_exclude'));
+        $this->assertEquals(4, (int) $this->fetchOne($this->defConnection, 'SELECT COUNT(*) FROM table_1'));
+        $this->assertEquals(4, (int) $this->fetchOne($this->defConnection, 'SELECT COUNT(*) FROM table_2'));
+        $this->assertEquals(1, (int) $this->fetchOne($this->defConnection, 'SELECT COUNT(*) FROM table_to_exclude'));
 
-        $this->assertEquals(4, (int) $this->monolithicConnection->fetchOne('SELECT COUNT(*) FROM table_1'));
-        $this->assertEquals(4, (int) $this->monolithicConnection->fetchOne('SELECT COUNT(*) FROM table_2'));
-        $this->assertEquals(1, (int) $this->monolithicConnection->fetchOne('SELECT COUNT(*) FROM table_to_exclude'));
+        $this->assertEquals(4, (int) $this->fetchOne($this->monolithicConnection, 'SELECT COUNT(*) FROM table_1'));
+        $this->assertEquals(4, (int) $this->fetchOne($this->monolithicConnection, 'SELECT COUNT(*) FROM table_2'));
+        $this->assertEquals(1, (int) $this->fetchOne($this->monolithicConnection, 'SELECT COUNT(*) FROM table_to_exclude'));
     }
 
     public function testLoadDbFixturesWithoutAppend(): void
@@ -361,13 +364,13 @@ final class FixturesAwareTestCaseTest extends FixturesAwareTestCase
             false
         );
 
-        $this->assertEquals(3, (int) $this->defConnection->fetchOne('SELECT COUNT(*) FROM table_1'));
-        $this->assertEquals(3, (int) $this->defConnection->fetchOne('SELECT COUNT(*) FROM table_2'));
-        $this->assertEquals(1, (int) $this->defConnection->fetchOne('SELECT COUNT(*) FROM table_to_exclude'));
+        $this->assertEquals(3, (int) $this->fetchOne($this->defConnection, 'SELECT COUNT(*) FROM table_1'));
+        $this->assertEquals(3, (int) $this->fetchOne($this->defConnection, 'SELECT COUNT(*) FROM table_2'));
+        $this->assertEquals(1, (int) $this->fetchOne($this->defConnection, 'SELECT COUNT(*) FROM table_to_exclude'));
 
-        $this->assertEquals(3, (int) $this->monolithicConnection->fetchOne('SELECT COUNT(*) FROM table_1'));
-        $this->assertEquals(3, (int) $this->monolithicConnection->fetchOne('SELECT COUNT(*) FROM table_2'));
-        $this->assertEquals(1, (int) $this->monolithicConnection->fetchOne('SELECT COUNT(*) FROM table_to_exclude'));
+        $this->assertEquals(3, (int) $this->fetchOne($this->monolithicConnection, 'SELECT COUNT(*) FROM table_1'));
+        $this->assertEquals(3, (int) $this->fetchOne($this->monolithicConnection, 'SELECT COUNT(*) FROM table_2'));
+        $this->assertEquals(1, (int) $this->fetchOne($this->monolithicConnection, 'SELECT COUNT(*) FROM table_to_exclude'));
     }
 
     protected function setUp(): void
@@ -385,14 +388,14 @@ final class FixturesAwareTestCaseTest extends FixturesAwareTestCase
 
         /** @var Connection $connection */
         foreach ([$this->defConnection, $this->monolithicConnection] as $connection) {
-            $connection->executeStatement('TRUNCATE `table_1`');
-            $connection->executeStatement('TRUNCATE `table_2`');
-            $connection->executeStatement('TRUNCATE `table_3`');
-            $connection->executeStatement('TRUNCATE `table_to_exclude`');
-            $connection->executeStatement('INSERT INTO `table_1` (`name`, `description`) VALUES (\'name\', \'description\');');
-            $connection->executeStatement('INSERT INTO `table_2` (`name`, `description`) VALUES (\'name\', \'description\');');
-            $connection->executeStatement('INSERT INTO `table_3` (`name`, `description`) VALUES (\'name\', \'description\');');
-            $connection->executeStatement('INSERT INTO `table_to_exclude` (`name`, `description`) VALUES (\'name\', \'description\');');
+            $this->executeQuery($connection, 'TRUNCATE `table_1`');
+            $this->executeQuery($connection, 'TRUNCATE `table_2`');
+            $this->executeQuery($connection, 'TRUNCATE `table_3`');
+            $this->executeQuery($connection, 'TRUNCATE `table_to_exclude`');
+            $this->executeQuery($connection, 'INSERT INTO `table_1` (`name`, `description`) VALUES (\'name\', \'description\');');
+            $this->executeQuery($connection, 'INSERT INTO `table_2` (`name`, `description`) VALUES (\'name\', \'description\');');
+            $this->executeQuery($connection, 'INSERT INTO `table_3` (`name`, `description`) VALUES (\'name\', \'description\');');
+            $this->executeQuery($connection, 'INSERT INTO `table_to_exclude` (`name`, `description`) VALUES (\'name\', \'description\');');
         }
     }
 }
