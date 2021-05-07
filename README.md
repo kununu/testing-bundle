@@ -1,16 +1,7 @@
 # kununu testing-bundle
 
-### What is kununu/testing-bundle?
-
-At kununu we usually write functional and integration tests. [liip/LiipFunctionalTestBundle](https://github.com/liip/LiipFunctionalTestBundle) and [dmaicher/doctrine-test-bundle](https://github.com/dmaicher/doctrine-test-bundle) are great options however they do not match our requirements and heavily depend on [Doctrine ORM](https://github.com/doctrine/orm).
-Also, we have the necessity to load fixtures in our *dev/test/e2e* environments for any type of storage that our services use.
-
-The main requirements that we address with this bundle:
-
-- **Database schema is not touched when loading fixtures**. This requirement excludes LiipFunctionalTestBundle because it drops and creates the schema when loading fixtures. Another drawback of LiipFunctionalTestBundle is that it relies on Doctrine Mapping Metadata to recreate the schema which for us is a limitation since we do not always map everything but instead use Migrations.
-- **We really want to hit the databases**. This requirement excludes https://github.com/dmaicher/doctrine-test-bundle because it wraps your fixtures in a transaction.
-
-Apart from solving the requirements above this bundle easily integrates with [kununu/data-fixtures](https://github.com/kununu/data-fixtures) package and provides some utilities that makes testing easier, like a RequestBuilder that turns testing controllers more expressive. If you want to see an example of what this bundle can do for you click [here](#Example).
+This bundle integrates with [kununu/data-fixtures](https://github.com/kununu/data-fixtures) package allowing you to load fixtures in your tests. 
+It also provides some utilities that makes testing easier, like a RequestBuilder that turns testing controllers more expressive. If you want to see an example of what this bundle can do for you click [here](#Example).
 
 ------------------------------------
 

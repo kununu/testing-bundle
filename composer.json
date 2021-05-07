@@ -17,7 +17,7 @@
     "require": {
         "php": "^7.2",
         "symfony/framework-bundle": "^4.4 || ^5.0",
-        "kununu/data-fixtures": "dev-master",
+        "kununu/data-fixtures": "^8.0",
         "symfony/config": "^4.4 || ^5.0",
         "symfony/dependency-injection": "^4.4 || ^5.0",
         "symfony/http-kernel": "^4.4 || ^5.0"
@@ -51,17 +51,5 @@
     },
     "config": {
         "sort-packages": true
-    },
-    "repositories": [
-        {
-            "type": "vcs",
-            "url": "https://github.com/kununu/data-fixtures.git",
-            "no-api": true
-        },
-        {
-            "type": "vcs",
-            "url": "https://github.com/kununu/kununu-scripts.git",
-            "no-api": true
-        }
-    ]
+    }
 }
