@@ -1,7 +1,5 @@
 # kununu testing-bundle
 
-### What is kununu/testing-bundle?
-
 This bundle integrates with [kununu/data-fixtures](https://github.com/kununu/data-fixtures) package allowing you to load fixtures in your tests. 
 It also provides some utilities that makes testing easier, like a RequestBuilder that turns testing controllers more expressive. If you want to see an example of what this bundle can do for you click [here](#Example).
 
