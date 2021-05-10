@@ -9,7 +9,7 @@ It also provides some utilities that makes testing easier, like a RequestBuilder
 
 #### 1. Add kununu/testing-bundle to your project
 
-**Please beaware that this bundle should not be used in production mode!**
+**Please be aware that this bundle should not be used in production mode!**
 
 ```bash
 composer require --dev kununu/testing-bundle
