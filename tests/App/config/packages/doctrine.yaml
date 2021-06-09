@@ -1,16 +1,19 @@
 doctrine:
-    dbal:
-        default_connection: def
-        connections:
-            def:
-                driver: pdo_mysql
-                url: "%def_database_url%"
-                server_version: "%database_server_version%"
-            persistence:
-                driver: pdo_mysql
-                url: "%persistence_database_url%"
-                server_version: "%database_server_version%"
-            monolithic:
-                driver: pdo_mysql
-                url: "%monolithic_database_url%"
-                server_version: "%database_server_version%"
+  dbal:
+    default_connection: def
+    connections:
+      def:
+        driver: pdo_mysql
+        url: "%def_database_url%"
+        server_version: "%database_server_version%"
+        override_url: true
+      persistence:
+        driver: pdo_mysql
+        url: "%persistence_database_url%"
+        server_version: "%database_server_version%"
+        override_url: true
+      monolithic:
+        driver: pdo_mysql
+        url: "%monolithic_database_url%"
+        server_version: "%database_server_version%"
+        override_url: true
