@@ -13,12 +13,12 @@ use Kununu\TestingBundle\Tests\App\Fixtures\Connection\ConnectionFixture1;
 use Kununu\TestingBundle\Tests\App\Fixtures\Connection\ConnectionSqlFixture1;
 use Kununu\TestingBundle\Tests\App\Fixtures\ElasticSearch\ElasticSearchFixture1;
 use Kununu\TestingBundle\Tests\App\Fixtures\ElasticSearch\ElasticSearchFixture2;
-use Kununu\TestingBundle\Tests\ConnectionHelperTrait;
+use Kununu\TestingBundle\Traits\ConnectionToolsTrait;
 use Psr\Cache\CacheItemPoolInterface;
 
 final class FixturesAwareTestCaseTest extends FixturesAwareTestCase
 {
-    use ConnectionHelperTrait;
+    use ConnectionToolsTrait;
 
     /** @var Connection */
     private $defConnection;
@@ -377,14 +377,14 @@ final class FixturesAwareTestCaseTest extends FixturesAwareTestCase
     {
         parent::setUp();
 
-        $this->cachePool = $this->getContainer()->get('app.cache.first');
-        $this->tagAwareCachePool = $this->getContainer()->get('app.cache.third');
-        $this->tagAwarePoolCachePool = $this->getContainer()->get('app.cache.fourth');
-        $this->chainCachePool = $this->getContainer()->get('app.cache.fifth');
+        $this->cachePool = $this->getFixturesContainer()->get('app.cache.first');
+        $this->tagAwareCachePool = $this->getFixturesContainer()->get('app.cache.third');
+        $this->tagAwarePoolCachePool = $this->getFixturesContainer()->get('app.cache.fourth');
+        $this->chainCachePool = $this->getFixturesContainer()->get('app.cache.fifth');
 
-        $this->defConnection = $this->getContainer()->get('doctrine.dbal.def_connection');
-        $this->monolithicConnection = $this->getContainer()->get('doctrine.dbal.monolithic_connection');
-        $this->elasticSearch = $this->getContainer()->get('Kununu\TestingBundle\Tests\App\ElasticSearch');
+        $this->defConnection = $this->getFixturesContainer()->get('doctrine.dbal.def_connection');
+        $this->monolithicConnection = $this->getFixturesContainer()->get('doctrine.dbal.monolithic_connection');
+        $this->elasticSearch = $this->getFixturesContainer()->get('Kununu\TestingBundle\Tests\App\ElasticSearch');
 
         /** @var Connection $connection */
         foreach ([$this->defConnection, $this->monolithicConnection] as $connection) {

@@ -5,11 +5,11 @@ namespace Kununu\TestingBundle\Tests\Command;
 
 use Doctrine\DBAL\Connection;
 use Kununu\TestingBundle\Command\LoadConnectionFixturesCommand;
-use Kununu\TestingBundle\Tests\ConnectionHelperTrait;
+use Kununu\TestingBundle\Traits\ConnectionToolsTrait;
 
 final class LoadConnectionFixturesCommandTest extends AbstractFixturesCommandTestCase
 {
-    use ConnectionHelperTrait;
+    use ConnectionToolsTrait;
 
     private const COMMAND_1 = 'kununu_testing:load_fixtures:connections:def';
     private const COMMAND_2 = 'kununu_testing:load_fixtures:connections:persistence';

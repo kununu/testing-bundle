@@ -1,0 +1,12 @@
+services:
+  # Aliases
+  kununu_testing.schema_copy_adapter_factory: '@Kununu\TestingBundle\Service\SchemaCopy\Factory\AdapterFactory'
+  kununu_testing.schema_copy: '@Kununu\TestingBundle\Service\SchemaCopy\Copier\SchemaCopier'
+
+  # Schema Copy Adapter Factory
+  Kununu\TestingBundle\Service\SchemaCopy\Factory\AdapterFactory: ~
+
+  # Schema Copier
+  Kununu\TestingBundle\Service\SchemaCopy\Copier\SchemaCopier:
+    arguments:
+      - '@kununu_testing.schema_copy_adapter_factory'

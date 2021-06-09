@@ -64,7 +64,7 @@ abstract class FixturesAwareTestCase extends BaseWebTestCase
         $this->getOrchestrator(self::KEY_ELASTICSEARCH, $alias)->registerInitializableFixture($className, ...$args);
     }
 
-    final protected function getContainer(): ContainerInterface
+    final protected function getFixturesContainer(): ContainerInterface
     {
         if (!static::$kernel || !static::$container) {
             static::createClient();
@@ -96,6 +96,6 @@ abstract class FixturesAwareTestCase extends BaseWebTestCase
 
     private function getOrchestrator(string $type, string $key): Orchestrator
     {
-        return $this->getContainer()->get(sprintf('kununu_testing.orchestrator.%s.%s', $type, $key));
+        return $this->getFixturesContainer()->get(sprintf('kununu_testing.orchestrator.%s.%s', $type, $key));
     }
 }

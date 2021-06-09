@@ -82,7 +82,7 @@ final class LoadElasticsearchFixturesCommandTest extends FixturesAwareTestCase
     {
         $kernel = self::bootKernel();
         $this->application = new Application($kernel);
-        $this->elasticsearchClient = $this->getContainer()->get('Kununu\TestingBundle\Tests\App\ElasticSearch');
+        $this->elasticsearchClient = $this->getFixturesContainer()->get('Kununu\TestingBundle\Tests\App\ElasticSearch');
     }
 
     private function prepareToRunCommand(): void
