@@ -11,6 +11,9 @@ use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Exception\CommandNotFoundException;
 use Symfony\Component\Console\Tester\CommandTester;
 
+/**
+ * @group legacy
+ */
 final class LoadElasticsearchFixturesCommandTest extends FixturesAwareTestCase
 {
     /** @var Client */

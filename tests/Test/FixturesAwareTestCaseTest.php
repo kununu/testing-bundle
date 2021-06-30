@@ -16,6 +16,9 @@ use Kununu\TestingBundle\Tests\App\Fixtures\ElasticSearch\ElasticSearchFixture2;
 use Kununu\TestingBundle\Traits\ConnectionToolsTrait;
 use Psr\Cache\CacheItemPoolInterface;
 
+/**
+ * @group legacy
+ */
 final class FixturesAwareTestCaseTest extends FixturesAwareTestCase
 {
     use ConnectionToolsTrait;

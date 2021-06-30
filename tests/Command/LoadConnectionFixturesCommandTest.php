@@ -7,6 +7,9 @@ use Doctrine\DBAL\Connection;
 use Kununu\TestingBundle\Command\LoadConnectionFixturesCommand;
 use Kununu\TestingBundle\Traits\ConnectionToolsTrait;
 
+/**
+ * @group legacy
+ */
 final class LoadConnectionFixturesCommandTest extends AbstractFixturesCommandTestCase
 {
     use ConnectionToolsTrait;
