@@ -21,6 +21,21 @@ final class LoadConnectionFixturesCommandTest extends AbstractFixturesCommandTes
     /** @var Connection */
     private $connection;
 
+    public function testExecuteInteractiveCancelled(): void
+    {
+        $this->runCommand($this->getExistingCommandAlias(), [], ['interactive' => true], ['no']);
+
+        $expectedRows = [
+            [
+                'name'        => 'name0',
+                'description' => 'description0',
+            ],
+        ];
+
+        $this->assertEquals($expectedRows, $this->fetchAllRows($this->connection, 'SELECT * FROM `table_1`'));
+        $this->assertEquals($expectedRows, $this->fetchAllRows($this->connection, 'SELECT * FROM `table_2`'));
+    }
+
     protected function doAssertionsForExecuteAppend(): void
     {
         $this->assertEquals(2, $this->fetchOne($this->connection, 'select count(1) from table_1'));
@@ -82,6 +97,6 @@ final class LoadConnectionFixturesCommandTest extends AbstractFixturesCommandTes
     protected function setUp(): void
     {
         parent::setUp();
-        $this->connection = self::$container->get('doctrine.dbal.def_connection');
+        $this->connection = $this->getFixturesContainer()->get('doctrine.dbal.def_connection');
     }
 }

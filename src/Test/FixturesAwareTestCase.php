@@ -66,13 +66,16 @@ abstract class FixturesAwareTestCase extends BaseWebTestCase
 
     final protected function getFixturesContainer(): ContainerInterface
     {
-        if (!static::$kernel || !static::$container) {
+        if (!static::$kernel || !(method_exists(static::class, 'getContainer') ? static::getContainer() : static::$container)) {
             static::createClient();
         }
 
-        return static::$container;
+        return method_exists(static::class, 'getContainer') ? static::getContainer() : static::$container;
     }
 
+    /**
+     * @codeCoverageIgnore
+     */
     final protected function clearDbFixtures(string $connectionName): self
     {
         $this->getOrchestrator(self::KEY_CONNECTIONS, $connectionName)->clearFixtures();
@@ -80,6 +83,9 @@ abstract class FixturesAwareTestCase extends BaseWebTestCase
         return $this;
     }
 
+    /**
+     * @codeCoverageIgnore
+     */
     final protected function clearCachePoolFixtures(string $cachePoolServiceId): self
     {
         $this->getOrchestrator(self::KEY_CACHE_POOLS, $cachePoolServiceId)->clearFixtures();
@@ -87,6 +93,9 @@ abstract class FixturesAwareTestCase extends BaseWebTestCase
         return $this;
     }
 
+    /**
+     * @codeCoverageIgnore
+     */
     final protected function clearElasticSearchFixtures(string $alias): self
     {
         $this->getOrchestrator(self::KEY_ELASTICSEARCH, $alias)->clearFixtures();

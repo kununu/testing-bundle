@@ -6,8 +6,8 @@
         colors="true"
         beStrictAboutChangesToGlobalState="true">
     <php>
-        <ini name="error_reporting" value="-1" />
-        <server name="APP_ENV" value="test" force="true" />
+        <ini name="error_reporting" value="-1"/>
+        <server name="APP_ENV" value="test" force="true"/>
     </php>
     <testsuites>
         <testsuite name="TestingBundle Test Suite">
@@ -18,6 +18,9 @@
     <filter>
         <whitelist processUncoveredFilesFromWhitelist="false">
             <directory>src</directory>
+            <exclude>
+                <file>src/Traits/ConnectionToolsTrait.php</file>
+            </exclude>
         </whitelist>
     </filter>
 

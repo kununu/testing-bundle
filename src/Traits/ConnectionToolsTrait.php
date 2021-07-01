@@ -14,6 +14,17 @@ trait ConnectionToolsTrait
 {
     use DataFixturesConnectionToolsTrait;
 
+    protected function fetchAllRows(Connection $connection, string $sql): array
+    {
+        $result = $connection->executeQuery($sql);
+
+        if (method_exists($result, 'fetchAllAssociative')) {
+            return $result->fetchAllAssociative();
+        }
+
+        return $result->fetchAll(PDO::FETCH_ASSOC);
+    }
+
     protected function fetchAllFirstColumn(Connection $connection, string $sql): array
     {
         $result = $connection->executeQuery($sql);

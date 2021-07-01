@@ -42,7 +42,7 @@ final class CopyConnectionSchemaCommand extends Command
         if (!$this->checkConnection($source = $this->getConnection($from), 'from', $from, $output) ||
             !$this->checkConnection($destination = $this->getConnection($to), 'to', $to, $output)
         ) {
-            return 1;
+            return 2;
         }
 
         $confirmation = (new SymfonyStyle($input, $output))
@@ -53,9 +53,11 @@ final class CopyConnectionSchemaCommand extends Command
 
         if ($confirmation) {
             $this->schemaCopy->copy($source, $destination);
+
+            return 0;
         }
 
-        return 0;
+        return 1;
     }
 
     private function checkConnection(?Connection $connection, string $arg, string $connectionName, OutputInterface $output): bool

@@ -4,43 +4,36 @@ declare(strict_types=1);
 namespace Kununu\TestingBundle\Tests\Service\SchemaCopy\Adapter;
 
 use Doctrine\DBAL\Connection;
-use Doctrine\DBAL\Platforms\MySqlPlatform;
 use Kununu\TestingBundle\Service\SchemaCopy\Adapter\MySqlAdapter;
-use Kununu\TestingBundle\Service\SchemaCopy\SchemaCopyAdapterInterface;
+use Kununu\TestingBundle\Tests\Service\SchemaCopy\SchemaCopyTestCase;
 use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
-final class MySqlAdapterTest extends TestCase
+final class MySqlAdapterTest extends SchemaCopyTestCase
 {
-    /** @var string */
-    private $executeStatementMethod;
     /** @var Connection|MockObject */
     private $connection;
     /** @var MySqlAdapter */
     private $adapter;
 
-    public function testSameTypeAs(): void
+    public function testSameTypeAsEqual(): void
     {
         $this->assertTrue($this->adapter->sameTypeAs($this->adapter));
+    }
 
-        $otherAdapter = $this->createMock(SchemaCopyAdapterInterface::class);
-        $otherAdapter->expects($this->once())->method('type')->willReturn('IT IS DIFFERENT!');
-
-        $this->assertFalse($this->adapter->sameTypeAs($otherAdapter));
+    public function testSameTypeAsNotEqual(): void
+    {
+        $this->assertFalse($this->adapter->sameTypeAs($this->createAdapterMock('IT IS DIFFERENT!')));
     }
 
     public function testDoWithoutConstraints(): void
     {
-        $this->connection
-            ->expects($this->exactly(4))
-            ->method($this->executeStatementMethod)
-            ->withConsecutive(
-                ['SET UNIQUE_CHECKS=0'],
-                ['SET FOREIGN_KEY_CHECKS=0'],
-                ['SET UNIQUE_CHECKS=1'],
-                ['SET FOREIGN_KEY_CHECKS=1']
-            )
-            ->willReturn(0);
+        $this->mockExecuteStatement(
+            $this->connection,
+            'SET UNIQUE_CHECKS=0',
+            'SET FOREIGN_KEY_CHECKS=0',
+            'SET UNIQUE_CHECKS=1',
+            'SET FOREIGN_KEY_CHECKS=1'
+        );
 
         $value = false;
 
@@ -53,56 +46,106 @@ final class MySqlAdapterTest extends TestCase
 
     public function testDisableConstraints(): void
     {
-        $this->connection
-            ->expects($this->exactly(2))
-            ->method($this->executeStatementMethod)
-            ->withConsecutive(
-                ['SET UNIQUE_CHECKS=0'],
-                ['SET FOREIGN_KEY_CHECKS=0']
-            )
-            ->willReturn(0);
+        $this->mockExecuteStatement(
+            $this->connection,
+            'SET UNIQUE_CHECKS=0',
+            'SET FOREIGN_KEY_CHECKS=0'
+        );
 
         $this->adapter->disableConstraints();
     }
 
     public function testEnableConstraints(): void
     {
-        $this->connection
-            ->expects($this->exactly(2))
-            ->method($this->executeStatementMethod)
-            ->withConsecutive(
-                ['SET UNIQUE_CHECKS=1'],
-                ['SET FOREIGN_KEY_CHECKS=1']
-            )
-            ->willReturn(0);
+        $this->mockExecuteStatement(
+            $this->connection,
+            'SET UNIQUE_CHECKS=1',
+            'SET FOREIGN_KEY_CHECKS=1'
+        );
 
         $this->adapter->enableConstraints();
     }
 
-    protected function fetchColumn(Connection $connection, string $sql, int $columnIndex = 0)
+    public function testGetTableCreateStatement(): void
     {
-        $result = $connection->executeQuery($sql);
+        $this->mockExecuteQuery(
+            $this->connection,
+            [
+                $this->createResultMock($this->fetchNumericMethod, false),
+            ],
+            'SHOW CREATE TABLE `my_table`'
+        );
 
-        if (method_exists($result, 'fetchNumeric')) {
-            $row = $result->fetchNumeric();
+        $this->adapter->getTableCreateStatement('my_table');
+    }
 
-            return $row === false ? false : ($row[$columnIndex] ?? false);
-        }
+    public function testGetTables(): void
+    {
+        $this->mockExecuteQuery(
+            $this->connection,
+            [
+                $this->createResultMock($this->fetchAllFirstColumnMethod, []),
+            ],
+            'SHOW FULL TABLES WHERE Table_type = \'BASE TABLE\''
+        );
 
-        return $result->fetchColumn($columnIndex);
+        $this->adapter->getTables();
+    }
+
+    public function testGetViewCreateStatement(): void
+    {
+        $this->mockExecuteQuery(
+            $this->connection,
+            [
+                $this->createResultMock($this->fetchNumericMethod, false),
+            ],
+            'SHOW CREATE VIEW `my_view`'
+        );
+
+        $this->adapter->getViewCreateStatement('my_view');
+    }
+
+    public function testGetViews(): void
+    {
+        $this->mockExecuteQuery(
+            $this->connection,
+            [
+                $this->createResultMock($this->fetchAllFirstColumnMethod, []),
+            ],
+            'SHOW FULL TABLES WHERE Table_type = \'VIEW\''
+        );
+
+        $this->adapter->getViews();
+    }
+
+    public function testPurgeTablesAndViews(): void
+    {
+        $this->mockExecuteQuery(
+            $this->connection,
+            [
+                $this->createResultMock($this->fetchAllFirstColumnMethod, ['view_1', 'view_2']),
+                $this->createResultMock($this->fetchAllFirstColumnMethod, ['table_1', 'table_2', 'table_3']),
+            ],
+            'SHOW FULL TABLES WHERE Table_type = \'VIEW\'',
+            'SHOW FULL TABLES WHERE Table_type = \'BASE TABLE\''
+        );
+
+        $this->mockExecuteStatement(
+            $this->connection,
+            'DROP VIEW IF EXISTS `view_1`',
+            'DROP VIEW IF EXISTS `view_2`',
+            'DROP TABLE IF EXISTS `table_1`',
+            'DROP TABLE IF EXISTS `table_2`',
+            'DROP TABLE IF EXISTS `table_3`'
+        );
+
+        $this->adapter->purgeTablesAndViews();
     }
 
     protected function setUp(): void
     {
-        $this->executeStatementMethod = method_exists(Connection::class, 'executeStatement') ? 'executeStatement' : 'exec';
-        $this->fetchNumericMethod = method_exists(Connection::class, 'executeStatement') ? 'executeStatement' : 'exec';
-
-        $this->connection = $this->createMock(Connection::class);
-        $this->connection
-            ->expects($this->any())
-            ->method('getDatabasePlatform')
-            ->willReturn($this->createMock(MySqlPlatform::class));
-
+        parent::setUp();
+        $this->connection = $this->createConnectionMock();
         $this->adapter = new MySqlAdapter($this->connection);
     }
 }
