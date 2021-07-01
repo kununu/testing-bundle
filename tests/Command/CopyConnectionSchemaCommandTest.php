@@ -3,8 +3,9 @@ declare(strict_types=1);
 
 namespace Kununu\TestingBundle\Tests\Command;
 
+use Doctrine\DBAL\Connection;
 use Kununu\TestingBundle\Command\CopyConnectionSchemaCommand;
-use Kununu\TestingBundle\Service\SchemaCopy\Factory\AdapterFactory;
+use Kununu\TestingBundle\Service\SchemaCopy\SchemaCopyAdapterFactoryInterface;
 
 /**
  * @group legacy
@@ -97,8 +98,13 @@ final class CopyConnectionSchemaCommandTest extends AbstractCommandTestCase
     {
         parent::setUp();
 
-        $adapterFactory = new AdapterFactory();
-        $this->adapter = $adapterFactory->createAdapter($this->getFixturesContainer()->get('doctrine.dbal.monolithic_test_connection'));
+        /** @var SchemaCopyAdapterFactoryInterface $adapterFactory */
+        $adapterFactory = $this->getFixturesContainer()->get('kununu_testing.schema_copy_adapter_factory');
+
+        /** @var Connection $connection */
+        $connection = $this->getFixturesContainer()->get('doctrine.dbal.monolithic_test_connection');
+
+        $this->adapter = $adapterFactory->createAdapter($connection);
     }
 
     protected function getCommandClass(): string
