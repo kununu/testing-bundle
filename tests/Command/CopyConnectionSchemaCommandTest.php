@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace Kununu\TestingBundle\Tests\Command;
 
 use Kununu\TestingBundle\Command\CopyConnectionSchemaCommand;
-use Kununu\TestingBundle\Service\SchemaCopy\Adapter\MySqlAdapter;
+use Kununu\TestingBundle\Service\SchemaCopy\Factory\AdapterFactory;
 
 /**
  * @group legacy
@@ -96,7 +96,9 @@ final class CopyConnectionSchemaCommandTest extends AbstractCommandTestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->adapter = new MySqlAdapter($this->getFixturesContainer()->get('doctrine.dbal.monolithic_test_connection'));
+
+        $adapterFactory = new AdapterFactory();
+        $this->adapter = $adapterFactory->createAdapter($this->getFixturesContainer()->get('doctrine.dbal.monolithic_test_connection'));
     }
 
     protected function getCommandClass(): string
