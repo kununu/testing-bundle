@@ -12,6 +12,7 @@ use Kununu\TestingBundle\DependencyInjection\KununuTestingExtension;
 use Kununu\TestingBundle\Service\Orchestrator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
+use Symfony\Component\DependencyInjection\Extension\ExtensionInterface;
 use Symfony\Component\DependencyInjection\Reference;
 
 final class CachePoolCompilerPassTest extends BaseCompilerPassTestCase
@@ -131,6 +132,20 @@ final class CachePoolCompilerPassTest extends BaseCompilerPassTestCase
         );
     }
 
+    public function testThatCreatesOrchestratorWhenNoKununuTestingExtensionForEachServiceTaggedAsCachePoolIsNotCalled(): void
+    {
+        $this->container->registerExtension($this->getMockKununuTestingExtension());
+
+        $this->doAssertionsOnCachePoolsServices(
+            function(string $purgerId, string $executorId, string $loaderId, string $orchestratorId): void {
+                $this->assertContainerBuilderNotHasService($purgerId);
+                $this->assertContainerBuilderNotHasService($executorId);
+                $this->assertContainerBuilderNotHasService($loaderId);
+                $this->assertContainerBuilderNotHasService($orchestratorId);
+            }
+        );
+    }
+
     protected function registerCompilerPass(ContainerBuilder $container): void
     {
         $container->addCompilerPass(new CachePoolCompilerPass());
@@ -165,5 +180,14 @@ final class CachePoolCompilerPassTest extends BaseCompilerPassTestCase
 
             $asserter($purgerId, $executorId, $loaderId, $orchestratorId, $cachePoolId, $consoleCommandId, $consoleCommandName);
         }
+    }
+
+    private function getMockKununuTestingExtension(): ExtensionInterface
+    {
+        $mock = $this->createMock(ExtensionInterface::class);
+        $mock->expects($this->any())->method('getAlias')->willReturn(KununuTestingExtension::ALIAS);
+        $mock->expects($this->any())->method('getNamespace')->willReturn(false);
+
+        return $mock;
     }
 }
