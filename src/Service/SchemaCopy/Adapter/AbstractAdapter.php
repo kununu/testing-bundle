@@ -20,7 +20,7 @@ abstract class AbstractAdapter implements SchemaCopyAdapterInterface
         $this->connection = $connection;
     }
 
-    public function doWithoutConstraints(callable $fn): void
+    public function runCopy(callable $fn): void
     {
         $this->disableConstraints();
         $fn();

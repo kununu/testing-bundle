@@ -29,7 +29,7 @@ final class SchemaCopier implements SchemaCopyInterface
             throw new IncompatibleAdaptersException($sourceAdapter, $destinationAdapter);
         }
 
-        $destinationAdapter->doWithoutConstraints(
+        $destinationAdapter->runCopy(
             function() use ($sourceAdapter, $destinationAdapter, $destination): void {
                 $destinationAdapter->purgeTablesAndViews();
 

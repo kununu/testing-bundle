@@ -7,8 +7,6 @@ interface SchemaCopyAdapterInterface
 {
     public function disableConstraints(): void;
 
-    public function doWithoutConstraints(callable $fn): void;
-
     public function enableConstraints(): void;
 
     public function getTableCreateStatement(string $table): string;
@@ -20,6 +18,8 @@ interface SchemaCopyAdapterInterface
     public function getViews(): array;
 
     public function purgeTablesAndViews(): void;
+
+    public function runCopy(callable $fn): void;
 
     public function sameTypeAs(SchemaCopyAdapterInterface $other): bool;
 

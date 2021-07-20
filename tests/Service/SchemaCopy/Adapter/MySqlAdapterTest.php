@@ -25,7 +25,7 @@ final class MySqlAdapterTest extends SchemaCopyTestCase
         $this->assertFalse($this->adapter->sameTypeAs($this->createAdapterMock('IT IS DIFFERENT!')));
     }
 
-    public function testDoWithoutConstraints(): void
+    public function testRunCopy(): void
     {
         $this->mockExecuteStatement(
             $this->connection,
@@ -37,7 +37,7 @@ final class MySqlAdapterTest extends SchemaCopyTestCase
 
         $value = false;
 
-        $this->adapter->doWithoutConstraints(function() use (&$value): void {
+        $this->adapter->runCopy(function() use (&$value): void {
             $value = true;
         });
 
