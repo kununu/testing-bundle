@@ -3,8 +3,10 @@ declare(strict_types=1);
 
 namespace Kununu\TestingBundle\DependencyInjection;
 
+use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\Extension;
+use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 
 final class KununuTestingExtension extends Extension implements ExtensionConfiguration
 {
@@ -14,9 +16,8 @@ final class KununuTestingExtension extends Extension implements ExtensionConfigu
 
     public function load(array $configs, ContainerBuilder $container): void
     {
-        $configuration = new Configuration();
-
-        $this->config = $this->processConfiguration($configuration, $configs);
+        $this->config = $this->processConfiguration(new Configuration(), $configs);
+        (new YamlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config')))->load('services.yaml');
 
         if (!empty($this->config['connections'])) {
             foreach ($this->config['connections'] as $connId => $connectionConfigs) {

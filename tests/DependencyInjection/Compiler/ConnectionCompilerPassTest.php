@@ -104,6 +104,19 @@ final class ConnectionCompilerPassTest extends BaseCompilerPassTestCase
         }
     }
 
+    public function testCompileWithoutConnections(): void
+    {
+        $this->compile();
+
+        foreach ($this->container->getServiceIds() as $serviceId) {
+            $this->assertNotRegExp('/^kununu_testing\.orchestrator\.connections\.\w+$/m', $serviceId);
+            $this->assertNotRegExp('/^kununu_testing\.orchestrator\.connections\.\w+\.purger$/m', $serviceId);
+            $this->assertNotRegExp('/^kununu_testing\.orchestrator\.connections\.\w+\.executor/m', $serviceId);
+            $this->assertNotRegExp('/^kununu_testing\.orchestrator\.connections\.\w+\.loader/m', $serviceId);
+            $this->assertNotRegExp('/^kununu_testing\.load_fixtures\.connections\.\w+\.command/m', $serviceId);
+        }
+    }
+
     protected function registerCompilerPass(ContainerBuilder $container): void
     {
         $container->addCompilerPass(new ConnectionCompilerPass());

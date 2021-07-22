@@ -5,11 +5,11 @@ namespace Kununu\TestingBundle\Tests\App\Fixtures\Connection;
 
 use Doctrine\DBAL\Connection;
 use Kununu\DataFixtures\Adapter\ConnectionFixtureInterface;
-use Kununu\TestingBundle\Tests\ConnectionHelperTrait;
+use Kununu\TestingBundle\Traits\ConnectionToolsTrait;
 
 final class ConnectionFixture6 implements ConnectionFixtureInterface
 {
-    use ConnectionHelperTrait;
+    use ConnectionToolsTrait;
 
     public function load(Connection $connection): void
     {

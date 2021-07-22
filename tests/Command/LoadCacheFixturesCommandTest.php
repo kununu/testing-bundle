@@ -7,6 +7,9 @@ use Kununu\TestingBundle\Command\LoadCacheFixturesCommand;
 use Kununu\TestingBundle\Tests\App\Fixtures\CachePool\CachePoolFixture3;
 use Psr\Cache\CacheItemPoolInterface;
 
+/**
+ * @group legacy
+ */
 final class LoadCacheFixturesCommandTest extends AbstractFixturesCommandTestCase
 {
     private const COMMAND_1 = 'kununu_testing:load_fixtures:cache_pools:app.cache.first';
@@ -67,7 +70,7 @@ final class LoadCacheFixturesCommandTest extends AbstractFixturesCommandTestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->cachePool = $this->getContainer()->get('app.cache.first');
+        $this->cachePool = $this->getFixturesContainer()->get('app.cache.first');
     }
 
     private function assertCacheValue(bool $exists, string $key, $value = null): void

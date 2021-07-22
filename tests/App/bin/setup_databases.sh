@@ -10,6 +10,7 @@ fi
 echo "Creating Databases..."
 php console doctrine:database:create ${command_env} --connection=def --if-not-exists
 php console doctrine:database:create ${command_env} --connection=monolithic --if-not-exists
+php console doctrine:database:create ${command_env} --connection=monolithic_test --if-not-exists
 echo "Databases created!"
 echo
 echo "Running Migrations..."

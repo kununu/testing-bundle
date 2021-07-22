@@ -74,6 +74,19 @@ final class ElasticSearchCompilerPassTest extends BaseCompilerPassTestCase
         }
     }
 
+    public function testCompileWithoutIndexes(): void
+    {
+        $this->compile();
+
+        foreach ($this->container->getServiceIds() as $serviceId) {
+            $this->assertNotRegExp('/^kununu_testing\.orchestrator\.elastic_search\.\w+$/m', $serviceId);
+            $this->assertNotRegExp('/^kununu_testing\.orchestrator\.elastic_search\.\w+\.purger$/m', $serviceId);
+            $this->assertNotRegExp('/^kununu_testing\.orchestrator\.elastic_search\.\w+\.executor/m', $serviceId);
+            $this->assertNotRegExp('/^kununu_testing\.orchestrator\.elastic_search\.\w+\.loader/m', $serviceId);
+            $this->assertNotRegExp('/^kununu_testing\.load_fixtures\.elastic_search\.\w+\.command/m', $serviceId);
+        }
+    }
+
     protected function registerCompilerPass(ContainerBuilder $container): void
     {
         $container->addCompilerPass(new ElasticSearchCompilerPass());

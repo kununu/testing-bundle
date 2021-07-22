@@ -46,6 +46,12 @@ CREATE TABLE IF NOT EXISTS table_to_exclude (
 ) DEFAULT CHARACTER SET utf8 COLLATE `utf8_unicode_ci` ENGINE = InnoDB;
 SQL
         );
+
+        $this->addSql(<<<'SQL'
+CREATE OR REPLACE VIEW my_view AS
+    SELECT `name` FROM table_1;
+SQL
+        );
     }
 
     public function down(Schema $schema): void

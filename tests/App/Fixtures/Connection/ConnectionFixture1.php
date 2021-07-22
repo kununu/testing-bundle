@@ -6,11 +6,11 @@ namespace Kununu\TestingBundle\Tests\App\Fixtures\Connection;
 use Doctrine\DBAL\Connection;
 use Kununu\DataFixtures\Adapter\ConnectionFixtureInterface;
 use Kununu\DataFixtures\InitializableFixtureInterface;
-use Kununu\TestingBundle\Tests\ConnectionHelperTrait;
+use Kununu\TestingBundle\Traits\ConnectionToolsTrait;
 
 final class ConnectionFixture1 implements ConnectionFixtureInterface, InitializableFixtureInterface
 {
-    use ConnectionHelperTrait;
+    use ConnectionToolsTrait;
 
     private $arg1;
     private $arg2 = false;

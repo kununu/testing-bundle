@@ -65,6 +65,18 @@ Currently, this bundle supports the following types of fixtures:
 - [Cache Pool Fixtures](/docs/FixturesTypes/cache-pool-fixtures.md)
 - [Elasticsearch Fixtures](/docs/FixturesTypes/elasticsearch.md)
 
+--------------------
+
+## Schema Copier
+
+-----------------------
+
+This bundle also has a way of copying a database schema from one database to another.
+
+See more:
+
+- [Schema Copier](/docs/SchemaCopier/schema-copier.md)
+
 ------------------------------
 
 ## Making a Request

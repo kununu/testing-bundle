@@ -5,11 +5,14 @@ namespace Kununu\TestingBundle\Tests\Command;
 
 use Doctrine\DBAL\Connection;
 use Kununu\TestingBundle\Command\LoadConnectionFixturesCommand;
-use Kununu\TestingBundle\Tests\ConnectionHelperTrait;
+use Kununu\TestingBundle\Traits\ConnectionToolsTrait;
 
+/**
+ * @group legacy
+ */
 final class LoadConnectionFixturesCommandTest extends AbstractFixturesCommandTestCase
 {
-    use ConnectionHelperTrait;
+    use ConnectionToolsTrait;
 
     private const COMMAND_1 = 'kununu_testing:load_fixtures:connections:def';
     private const COMMAND_2 = 'kununu_testing:load_fixtures:connections:persistence';
@@ -17,6 +20,21 @@ final class LoadConnectionFixturesCommandTest extends AbstractFixturesCommandTes
 
     /** @var Connection */
     private $connection;
+
+    public function testExecuteInteractiveCancelled(): void
+    {
+        $this->runCommand($this->getExistingCommandAlias(), [], ['interactive' => true], ['no']);
+
+        $expectedRows = [
+            [
+                'name'        => 'name0',
+                'description' => 'description0',
+            ],
+        ];
+
+        $this->assertEquals($expectedRows, $this->fetchAllRows($this->connection, 'SELECT * FROM `table_1`'));
+        $this->assertEquals($expectedRows, $this->fetchAllRows($this->connection, 'SELECT * FROM `table_2`'));
+    }
 
     protected function doAssertionsForExecuteAppend(): void
     {
@@ -79,6 +97,6 @@ final class LoadConnectionFixturesCommandTest extends AbstractFixturesCommandTes
     protected function setUp(): void
     {
         parent::setUp();
-        $this->connection = self::$container->get('doctrine.dbal.def_connection');
+        $this->connection = $this->getFixturesContainer()->get('doctrine.dbal.def_connection');
     }
 }

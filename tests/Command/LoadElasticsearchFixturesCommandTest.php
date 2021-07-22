@@ -11,6 +11,9 @@ use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Exception\CommandNotFoundException;
 use Symfony\Component\Console\Tester\CommandTester;
 
+/**
+ * @group legacy
+ */
 final class LoadElasticsearchFixturesCommandTest extends FixturesAwareTestCase
 {
     /** @var Client */
@@ -82,7 +85,7 @@ final class LoadElasticsearchFixturesCommandTest extends FixturesAwareTestCase
     {
         $kernel = self::bootKernel();
         $this->application = new Application($kernel);
-        $this->elasticsearchClient = $this->getContainer()->get('Kununu\TestingBundle\Tests\App\ElasticSearch');
+        $this->elasticsearchClient = $this->getFixturesContainer()->get('Kununu\TestingBundle\Tests\App\ElasticSearch');
     }
 
     private function prepareToRunCommand(): void
