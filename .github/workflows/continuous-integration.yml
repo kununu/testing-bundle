@@ -28,6 +28,9 @@ jobs:
         dependencies:
           - lowest
           - highest
+        exclude:
+          - php-version: 8
+            dependencies: lowest
 
     services:
       mysql:
