@@ -20,6 +20,7 @@ jobs:
           - 7.2
           - 7.3
           - 7.4
+          - 8.0
         mysql-version:
           - 5.7
         elasticsearch-version:
@@ -27,6 +28,9 @@ jobs:
         dependencies:
           - lowest
           - highest
+        exclude:
+          - php-version: 8
+            dependencies: lowest
 
     services:
       mysql:

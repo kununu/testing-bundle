@@ -47,4 +47,14 @@ abstract class BaseCompilerPassTestCase extends AbstractCompilerPassTestCase
 
         $this->assertTrue($this->container->getDefinition($orchestratorId)->isPublic());
     }
+
+    protected function assertThatDoesNotMatchRegularExpression(string $pattern, string $string, string $message = ''): void
+    {
+        // Support both phpunit ^8.5 and ^9.0 as "assertNotRegExp" is now deprecated
+        if (method_exists($this, 'assertDoesNotMatchRegularExpression')) {
+            $this->assertDoesNotMatchRegularExpression($pattern, $string, $message);
+        } else {
+            $this->assertNotRegExp($pattern, $string, $message);
+        }
+    }
 }
