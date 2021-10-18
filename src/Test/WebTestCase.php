@@ -15,6 +15,7 @@ abstract class WebTestCase extends FixturesAwareTestCase
     {
         $this->initClient();
 
+        $this->client->catchExceptions(false);
         $this->client->request(...$builder->build());
 
         $response = $this->client->getResponse();
