@@ -3,7 +3,10 @@ declare(strict_types=1);
 
 namespace Kununu\TestingBundle\Tests\DependencyInjection\Compiler;
 
+use Kununu\TestingBundle\DependencyInjection\KununuTestingExtension;
+use Kununu\TestingBundle\Service\Orchestrator;
 use Matthias\SymfonyDependencyInjectionTest\PhpUnit\AbstractCompilerPassTestCase;
+use Symfony\Component\DependencyInjection\Extension\ExtensionInterface;
 use Symfony\Component\DependencyInjection\Reference;
 
 abstract class BaseCompilerPassTestCase extends AbstractCompilerPassTestCase
@@ -56,5 +59,46 @@ abstract class BaseCompilerPassTestCase extends AbstractCompilerPassTestCase
         } else {
             $this->assertNotRegExp($pattern, $string, $message);
         }
+    }
+
+    protected function assertPurger(string $purgerId, string $purgerClass, ...$arguments): void
+    {
+        $this->assertContainerBuilderHasService($purgerId, $purgerClass);
+        $this->assertTrue($this->container->getDefinition($purgerId)->isPrivate());
+        foreach ($arguments as $position => $argument) {
+            $this->assertContainerBuilderHasServiceDefinitionWithArgument($purgerId, $position, $argument);
+        }
+    }
+
+    protected function assertExecutor(string $executorId, string $executorClass, ...$arguments): void
+    {
+        $this->assertContainerBuilderHasService($executorId, $executorClass);
+        $this->assertTrue($this->container->getDefinition($executorId)->isPrivate());
+        foreach ($arguments as $position => $argument) {
+            $this->assertContainerBuilderHasServiceDefinitionWithArgument($executorId, $position, $argument);
+        }
+    }
+
+    protected function assertLoader(string $loaderId, string $loaderClass): void
+    {
+        $this->assertContainerBuilderHasService($loaderId, $loaderClass);
+        $this->assertTrue($this->container->getDefinition($loaderId)->isPrivate());
+    }
+
+    protected function assertOrchestrator(string $orchestratorId, string $executorId, string $loaderId): void
+    {
+        $this->assertContainerBuilderHasService($orchestratorId, Orchestrator::class);
+        $this->assertTrue($this->container->getDefinition($orchestratorId)->isPublic());
+        $this->assertContainerBuilderHasServiceDefinitionWithArgument($orchestratorId, 0, new Reference($executorId));
+        $this->assertContainerBuilderHasServiceDefinitionWithArgument($orchestratorId, 1, new Reference($loaderId));
+    }
+
+    protected function getMockKununuTestingExtension(): ExtensionInterface
+    {
+        $mock = $this->createMock(ExtensionInterface::class);
+        $mock->expects($this->any())->method('getAlias')->willReturn(KununuTestingExtension::ALIAS);
+        $mock->expects($this->any())->method('getNamespace')->willReturn(false);
+
+        return $mock;
     }
 }

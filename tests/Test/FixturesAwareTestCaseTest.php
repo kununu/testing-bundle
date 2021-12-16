@@ -13,8 +13,13 @@ use Kununu\TestingBundle\Tests\App\Fixtures\Connection\ConnectionFixture1;
 use Kununu\TestingBundle\Tests\App\Fixtures\Connection\ConnectionSqlFixture1;
 use Kununu\TestingBundle\Tests\App\Fixtures\ElasticSearch\ElasticSearchFixture1;
 use Kununu\TestingBundle\Tests\App\Fixtures\ElasticSearch\ElasticSearchFixture2;
+use Kununu\TestingBundle\Tests\App\Fixtures\HttpClient\HttpClientFixture1;
+use Kununu\TestingBundle\Tests\App\Fixtures\HttpClient\HttpClientFixture2;
 use Kununu\TestingBundle\Traits\ConnectionToolsTrait;
 use Psr\Cache\CacheItemPoolInterface;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 /**
  * @group legacy
@@ -43,6 +48,9 @@ final class FixturesAwareTestCaseTest extends FixturesAwareTestCase
 
     /** @var ElasticSearch */
     private $elasticSearch;
+
+    /** @var HttpClientInterface */
+    private $httpClient;
 
     public function testLoadElasticSearchFixturesWithoutAppend(): void
     {
@@ -376,6 +384,62 @@ final class FixturesAwareTestCaseTest extends FixturesAwareTestCase
         $this->assertEquals(1, (int) $this->fetchOne($this->monolithicConnection, 'SELECT COUNT(*) FROM table_to_exclude'));
     }
 
+    public function testLoadHttpClientFixturesWithAppend(): void
+    {
+        $this->registerInitializableFixtureForHttpClient('http_client', HttpClientFixture1::class);
+
+        $this->loadHttpClientFixtures('http_client', [HttpClientFixture1::class], true);
+        $this->loadHttpClientFixtures('http_client', [HttpClientFixture2::class], true);
+
+        $response = $this->httpClient->request(Request::METHOD_GET, 'https://my.server/b7dd0cc2-381d-4e92-bc9b-b78245142e0a/data');
+        $this->assertEquals(Response::HTTP_NOT_FOUND, $response->getStatusCode());
+
+        $response = $this->httpClient->request(Request::METHOD_GET, 'https://my.server/f2895c23-28cb-4020-b038-717cca64bf2d/data');
+        $this->assertEquals(Response::HTTP_OK, $response->getStatusCode());
+        $this->assertJsonStringEqualsJsonString(
+            <<<'JSON'
+{
+    "id": 1000,
+    "name": {
+        "first": "The",
+        "surname": "Name"
+    },
+    "age": 39,
+    "newsletter": true
+}
+JSON
+            ,
+            $response->getContent()
+        );
+    }
+
+    public function testLoadHttpClientFixturesWithoutAppend(): void
+    {
+        $this->loadHttpClientFixtures('http_client', [HttpClientFixture1::class]);
+        $this->loadHttpClientFixtures('http_client', [HttpClientFixture2::class]);
+
+        $response = $this->httpClient->request(Request::METHOD_GET, 'https://my.server/b7dd0cc2-381d-4e92-bc9b-b78245142e0a/data');
+        $this->assertEquals(Response::HTTP_INTERNAL_SERVER_ERROR, $response->getStatusCode());
+
+        $response = $this->httpClient->request(Request::METHOD_GET, 'https://my.server/f2895c23-28cb-4020-b038-717cca64bf2d/data');
+        $this->assertEquals(Response::HTTP_OK, $response->getStatusCode());
+        $this->assertJsonStringEqualsJsonString(
+            <<<'JSON'
+{
+    "id": 1000,
+    "name": {
+        "first": "The",
+        "surname": "Name"
+    },
+    "age": 39,
+    "newsletter": true
+}
+JSON
+            ,
+            $response->getContent()
+        );
+    }
+
     protected function setUp(): void
     {
         parent::setUp();
@@ -388,6 +452,7 @@ final class FixturesAwareTestCaseTest extends FixturesAwareTestCase
         $this->defConnection = $this->getFixturesContainer()->get('doctrine.dbal.def_connection');
         $this->monolithicConnection = $this->getFixturesContainer()->get('doctrine.dbal.monolithic_connection');
         $this->elasticSearch = $this->getFixturesContainer()->get('Kununu\TestingBundle\Tests\App\ElasticSearch');
+        $this->httpClient = $this->getFixturesContainer()->get('http_client');
 
         /** @var Connection $connection */
         foreach ([$this->defConnection, $this->monolithicConnection] as $connection) {

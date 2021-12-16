@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace Kununu\TestingBundle\DependencyInjection\Compiler;
 
-use Doctrine\DBAL\Connection;
 use Kununu\DataFixtures\Executor\ConnectionExecutor;
 use Kununu\DataFixtures\Loader\ConnectionFixturesLoader;
 use Kununu\DataFixtures\Purger\ConnectionPurger;
@@ -73,7 +72,6 @@ final class ConnectionCompilerPass implements CompilerPassInterface
     ): string {
         $excludedTables = $connConfig[self::EXCLUDED_TABLES_CONFIG] ?? [];
 
-        /** @var Connection $connection */
         $connection = new Reference($id);
 
         // Purger Definition for the Connection with provided $id

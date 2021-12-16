@@ -14,3 +14,7 @@ services:
             - ['%elasticsearch_url%']
 
     Elasticsearch\Client: '@Kununu\TestingBundle\Tests\App\ElasticSearch'
+
+    http_client:
+        class: Kununu\DataFixtures\Tools\HttpClient
+        public: true

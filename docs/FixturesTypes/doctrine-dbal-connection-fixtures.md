@@ -6,11 +6,11 @@ In the rest of the documentation we will assume that you are using the [Doctrine
 
 ```yaml
 doctrine:
-    dbal:
-        connections:
-            default:
-                driver: pdo_mysql
-                url: '%env(resolve:DATABASE_URL)%'
+  dbal:
+    connections:
+      default:
+        driver: pdo_mysql
+        url: '%env(resolve:DATABASE_URL)%'
 ```
 
 ----------------------------------
@@ -78,11 +78,11 @@ By default Symfony Commands are not created for any Doctrine Connection. If you 
 
 ```yaml
 kununu_testing:
-    connections:
-        default:
-            load_command_fixtures_classes_namespace: 
-                - 'Kununu\TestingBundle\Tests\App\Fixtures\Connection\ConnectionFixture1'
-                - 'Kununu\TestingBundle\Tests\App\Fixtures\Connection\ConnectionFixture2'
+  connections:
+    default:
+      load_command_fixtures_classes_namespace:
+        - 'Kununu\TestingBundle\Tests\App\Fixtures\Connection\ConnectionFixture1'
+        - 'Kununu\TestingBundle\Tests\App\Fixtures\Connection\ConnectionFixture2'
 ```
 
 ### 2. Run Symfony Command
@@ -128,10 +128,10 @@ Bellow you can find all configuration options for Doctrine Connection fixtures.
 
 ```yaml
 kununu_testing:
-    connections:
-        connection_name:
-            load_command_fixtures_classes_namespace: # FQDN for fixtures classes that the Symfony command will use
-                - 'Kununu\TestingBundle\Tests\App\Fixtures\Connection\ConnectionFixture3'
-            excluded_tables: # List of tables to exclude from being purged
-                - table_to_exclude_from_purge
+  connections:
+    connection_name:
+      load_command_fixtures_classes_namespace: # FQDN for fixtures classes that the Symfony command will use
+        - 'Kununu\TestingBundle\Tests\App\Fixtures\Connection\ConnectionFixture3'
+      excluded_tables: # List of tables to exclude from being purged
+        - table_to_exclude_from_purge
 ```

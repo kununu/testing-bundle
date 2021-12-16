@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace Kununu\TestingBundle\DependencyInjection\Compiler;
 
-use Elasticsearch\Client;
 use Kununu\DataFixtures\Executor\ElasticSearchExecutor;
 use Kununu\DataFixtures\Loader\ElasticSearchFixturesLoader;
 use Kununu\DataFixtures\Purger\ElasticSearchPurger;
@@ -53,7 +52,6 @@ final class ElasticSearchCompilerPass implements CompilerPassInterface
         $indexName = $config['index_name'];
         $id = $config['service'];
 
-        /** @var Client $client */
         $client = new Reference($id);
 
         // Purger Definition

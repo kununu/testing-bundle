@@ -9,10 +9,8 @@ use Kununu\DataFixtures\Purger\CachePoolPurger;
 use Kununu\TestingBundle\Command\LoadCacheFixturesCommand;
 use Kununu\TestingBundle\DependencyInjection\Compiler\CachePoolCompilerPass;
 use Kununu\TestingBundle\DependencyInjection\KununuTestingExtension;
-use Kununu\TestingBundle\Service\Orchestrator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
-use Symfony\Component\DependencyInjection\Extension\ExtensionInterface;
 use Symfony\Component\DependencyInjection\Reference;
 
 final class CachePoolCompilerPassTest extends BaseCompilerPassTestCase
@@ -54,54 +52,10 @@ final class CachePoolCompilerPassTest extends BaseCompilerPassTestCase
                 ?string $consoleCommandId,
                 ?string $consoleCommandName
             ): void {
-                $this->assertContainerBuilderHasServiceDefinitionWithArgument(
-                    $purgerId,
-                    0,
-                    new Reference($cachePoolId)
-                );
-                $this->assertContainerBuilderHasService(
-                    $purgerId,
-                    CachePoolPurger::class
-                );
-                $this->assertTrue($this->container->getDefinition($purgerId)->isPrivate());
-
-                $this->assertContainerBuilderHasServiceDefinitionWithArgument(
-                    $executorId,
-                    0,
-                    new Reference($cachePoolId)
-                );
-                $this->assertContainerBuilderHasServiceDefinitionWithArgument(
-                    $executorId,
-                    1,
-                    new Reference($purgerId)
-                );
-                $this->assertContainerBuilderHasService(
-                    $executorId,
-                    CachePoolExecutor::class
-                );
-                $this->assertTrue($this->container->getDefinition($executorId)->isPrivate());
-
-                $this->assertContainerBuilderHasService(
-                    $loaderId,
-                    CachePoolFixturesLoader::class
-                );
-                $this->assertTrue($this->container->getDefinition($loaderId)->isPrivate());
-
-                $this->assertContainerBuilderHasServiceDefinitionWithArgument(
-                    $orchestratorId,
-                    0,
-                    new Reference($executorId)
-                );
-                $this->assertContainerBuilderHasServiceDefinitionWithArgument(
-                    $orchestratorId,
-                    1,
-                    new Reference($loaderId)
-                );
-                $this->assertContainerBuilderHasService(
-                    $orchestratorId,
-                    Orchestrator::class
-                );
-                $this->assertTrue($this->container->getDefinition($orchestratorId)->isPublic());
+                $this->assertPurger($purgerId, CachePoolPurger::class, new Reference($cachePoolId));
+                $this->assertExecutor($executorId, CachePoolExecutor::class, new Reference($cachePoolId), new Reference($purgerId));
+                $this->assertLoader($loaderId, CachePoolFixturesLoader::class);
+                $this->assertOrchestrator($orchestratorId, $executorId, $loaderId);
 
                 if (null !== $consoleCommandId) {
                     $this->assertContainerBuilderHasService($consoleCommandId);
@@ -180,14 +134,5 @@ final class CachePoolCompilerPassTest extends BaseCompilerPassTestCase
 
             $asserter($purgerId, $executorId, $loaderId, $orchestratorId, $cachePoolId, $consoleCommandId, $consoleCommandName);
         }
-    }
-
-    private function getMockKununuTestingExtension(): ExtensionInterface
-    {
-        $mock = $this->createMock(ExtensionInterface::class);
-        $mock->expects($this->any())->method('getAlias')->willReturn(KununuTestingExtension::ALIAS);
-        $mock->expects($this->any())->method('getNamespace')->willReturn(false);
-
-        return $mock;
     }
 }
