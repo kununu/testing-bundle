@@ -1,7 +1,7 @@
 # kununu testing-bundle
 
 This bundle integrates with [kununu/data-fixtures](https://github.com/kununu/data-fixtures) package allowing you to load fixtures in your tests. 
-It also provides some utilities that makes testing easier, like a RequestBuilder that turns testing controllers more expressive. If you want to see an example of what this bundle can do for you click [here](#Example).
+It also provides some utilities that makes testing easier, like a `RequestBuilder` that turns testing controllers more expressive. If you want to see an example of what this bundle can do for you click [here](#Example).
 
 ------------------------------------
 
@@ -19,7 +19,7 @@ composer require --dev kununu/testing-bundle
 
 Enable the bundle at `config/bundles.php` for any environment.
 
-```
+```php
 <?php
 
 return [
@@ -41,17 +41,17 @@ If you are using the bundle on more than one environment, for example *dev* and 
 ```yaml
 # config/packages/dev/kununu_testing.yaml
 kununu_testing:
-    cache:
-        pools:
-            app.cache.first:
-                load_command_fixtures_classes_namespace:
-                    - 'Kununu\TestingBundle\Tests\App\Fixtures\CachePool\CachePoolFixture1'
+  cache:
+    pools:
+      app.cache.first:
+        load_command_fixtures_classes_namespace:
+          - 'Kununu\TestingBundle\Tests\App\Fixtures\CachePool\CachePoolFixture1'
 ```
 
 ```yaml
 # config/packages/test/kununu_testing.yaml
 imports:
-    - { resource: '../dev/kununu_testing.yaml' }
+  - { resource: '../dev/kununu_testing.yaml' }
 ```
 
 --------------------
@@ -64,6 +64,7 @@ Currently, this bundle supports the following types of fixtures:
 - [Doctrine DBAL Connection Fixtures](/docs/FixturesTypes/doctrine-dbal-connection-fixtures.md)
 - [Cache Pool Fixtures](/docs/FixturesTypes/cache-pool-fixtures.md)
 - [Elasticsearch Fixtures](/docs/FixturesTypes/elasticsearch.md)
+- [Symfony Http Client Fixtures](/docs/FixturesTypes/symfony-http-client.md)
 
 --------------------
 

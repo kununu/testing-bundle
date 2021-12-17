@@ -17,7 +17,7 @@
     "require": {
         "php": "^7.2 || ^8.0",
         "symfony/framework-bundle": "^4.4 || ^5.0",
-        "kununu/data-fixtures": "^8.0",
+        "kununu/data-fixtures": "^9.0",
         "symfony/config": "^4.4 || ^5.0",
         "symfony/dependency-injection": "^4.4 || ^5.0",
         "symfony/http-kernel": "^4.4 || ^5.0"
@@ -32,14 +32,20 @@
         "kununu/scripts": "*",
         "matthiasnoback/symfony-dependency-injection-test": "^4.2",
         "phpunit/phpunit": "^8.5 || ^9.0",
+        "psr/cache": "^1.0",
         "symfony/browser-kit": "^5.2",
         "symfony/dotenv": "^5.2",
-        "symfony/phpunit-bridge": "^5.2"
+        "symfony/phpunit-bridge": "^5.2",
+        "symfony/http-client": "^4.4 | ^5.2",
+        "symfony/http-foundation": "^4.4 | ^5.2"
     },
     "suggest": {
         "ext-pdo_mysql": "To run Integration Tests.",
         "doctrine/doctrine-bundle": "To run Integration Tests.",
-        "elasticsearch/elasticsearch": "To run Integration Tests."
+        "elasticsearch/elasticsearch": "To run Integration Tests.",
+        "psr/cache": "To run Integration Tests.",
+        "symfony/http-client": "To run Integration Tests.",
+        "symfony/http-foundation": "To run Integration Tests."
     },
     "autoload": {
         "psr-4": {

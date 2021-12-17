@@ -4,12 +4,12 @@ This bundle integrates seamless with *Cache Pool Fixtures* from [kununu/data-fix
 
 In the rest of the documentation we will assume that you are using the [Symfony Cache Component](https://symfony.com/doc/current/components/cache.html) and have configured a cache pool named *app.cache.first*.
 
-```
+```yaml
 framework:
-    cache:
-        pools:
-            app.cache.first:
-                adapter: cache.adapter.memcached
+  cache:
+    pools:
+      app.cache.first:
+        adapter: cache.adapter.memcached
 ```
 
 ----------------------------------
@@ -81,12 +81,12 @@ By default Symfony Commands are not created for any cache pool. If you want to e
 
 ```yaml
 kununu_testing:
-    cache:
-        pools:
-            app.cache.first:
-                load_command_fixtures_classes_namespace:
-                    - 'Kununu\TestingBundle\Tests\App\Fixtures\CachePool\CachePoolFixture1'
-                    - 'Kununu\TestingBundle\Tests\App\Fixtures\CachePool\CachePoolFixture2'
+  cache:
+    pools:
+      app.cache.first:
+        load_command_fixtures_classes_namespace:
+          - 'Kununu\TestingBundle\Tests\App\Fixtures\CachePool\CachePoolFixture1'
+          - 'Kununu\TestingBundle\Tests\App\Fixtures\CachePool\CachePoolFixture2'
 ```
 
 ### 2. Run Symfony Command
@@ -130,13 +130,13 @@ $this->loadCachePoolFixtures(
 
 Bellow you can find all configuration options for cache pool fixtures and their defaults.
 
-```
+```yaml
 kununu_testing:
-    cache:
-        enable: true # Enable or disable the generation of orchestrators for cache pools in the app
-        pools:
-            app.cache.first: # Cache pool Id
-                load_command_fixtures_classes_namespace: # FQDN for fixtures classes that the Symfony command will use
-                    - 'Kununu\TestingBundle\Tests\App\Fixtures\CachePool\CachePoolFixture1'
-                    - 'Kununu\TestingBundle\Tests\App\Fixtures\CachePool\CachePoolFixture2'
+  cache:
+    enable: true # Enable or disable the generation of orchestrators for cache pools in the app
+    pools:
+      app.cache.first: # Cache pool Id
+        load_command_fixtures_classes_namespace: # FQDN for fixtures classes that the Symfony command will use
+          - 'Kununu\TestingBundle\Tests\App\Fixtures\CachePool\CachePoolFixture1'
+          - 'Kununu\TestingBundle\Tests\App\Fixtures\CachePool\CachePoolFixture2'
 ```

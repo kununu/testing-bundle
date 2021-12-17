@@ -8,12 +8,12 @@ This bundle integrates seamless with *Elasticsearch Fixtures* from [kununu/data-
 
 First you will need to configure the bundle. In this example, we will configure an Elasticsearch index named (aliased) *my_index_alias* that we will use in the rest of the documentation.
 
-```
+```yaml
 kununu_testing:
-    elastic_search:
-        my_index_alias:
-            service: 'My\Elasticsearch\Client'
-            index_name: 'my_index_name'
+  elastic_search:
+    my_index_alias:
+      service: 'My\Elasticsearch\Client'
+      index_name: 'my_index_name'
 ```
 
 In your tests you can extend the classes [FixturesAwareTestCase](/src/Test/FixturesAwareTestCase.php) or [WebTestCase](/src/Test/WebTestCase.php) which expose the following method:
@@ -75,11 +75,11 @@ By default Symfony Commands are not created for any Elasticsearch Index. If you 
 
 ```yaml
 kununu_testing:
-    elastic_search:
-        my_index_alias:
-            load_command_fixtures_classes_namespace:
-                - 'Kununu\TestingBundle\Tests\App\Fixtures\ElasticSearch\ElasticSearchFixture1'
-                - 'Kununu\TestingBundle\Tests\App\Fixtures\ElasticSearch\ElasticSearchFixture2'
+  elastic_search:
+    my_index_alias:
+      load_command_fixtures_classes_namespace:
+        - 'Kununu\TestingBundle\Tests\App\Fixtures\ElasticSearch\ElasticSearchFixture1'
+        - 'Kununu\TestingBundle\Tests\App\Fixtures\ElasticSearch\ElasticSearchFixture2'
 ```
 
 ### 2. Run Symfony Command
@@ -125,10 +125,10 @@ Bellow you can find all configuration options for Elasticsearch fixtures.
 
 ```yaml
 kununu_testing:
-    elastic_search:
-        my_index_alias: # Alias to be used to load fixtures for the configured index using the defined service
-            load_command_fixtures_classes_namespace:
-                - 'Kununu\TestingBundle\Tests\App\Fixtures\ElasticSearch\ElasticSearchFixture2' # FQDN for a fixtures class
-            service: 'Kununu\TestingBundle\Tests\App\ElasticSearch' # Service Id of an instance of Elasticsearch\Client 
-            index_name: 'my_index_name' # name of your index
+  elastic_search:
+    my_index_alias: # Alias to be used to load fixtures for the configured index using the defined service
+      load_command_fixtures_classes_namespace:
+        - 'Kununu\TestingBundle\Tests\App\Fixtures\ElasticSearch\ElasticSearchFixture2' # FQDN for a fixtures class
+      service: 'Kununu\TestingBundle\Tests\App\ElasticSearch' # Service Id of an instance of Elasticsearch\Client 
+      index_name: 'my_index_name' # name of your index
 ```
