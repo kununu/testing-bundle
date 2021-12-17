@@ -17,7 +17,7 @@ protected function loadHttpClientFixtures(string $httpClientServiceId, array $cl
 
 - `$httpClientServiceId` - Name of your Symfony Http Client service
 - `$classNames` - Array with classes names of fixtures to load
-- `$append` - If `false` the cache pool will be purged before loading your fixtures
+- `$append` - If `false` the http client will be purged before loading your fixtures
 - `$clearFixtures` - If `true` it will clear any previous loaded fixtures classes
 
 **Example of loading fixtures in a Integration Test**
@@ -83,3 +83,9 @@ services:
     class: Kununu\DataFixtures\Tools\HttpClient
     public: true
 ```
+
+Also be mindful that if you inject the same client on several services you might have unwanted results.
+
+Example: you are testing service A which uses component B. Component B is also injected with the same Http client but is calling totally different endpoints.
+
+To solve those cases create dedicated Http clients services for the service you are testing.

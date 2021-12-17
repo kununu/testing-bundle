@@ -39,4 +39,9 @@ final class Orchestrator
     {
         $this->loader->clearFixtures();
     }
+
+    public function getFixtures(): array
+    {
+        return $this->loader->getFixtures();
+    }
 }

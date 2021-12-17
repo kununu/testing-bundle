@@ -91,9 +91,6 @@ abstract class FixturesAwareTestCase extends BaseWebTestCase
         return method_exists(static::class, 'getContainer') ? static::getContainer() : static::$container;
     }
 
-    /**
-     * @codeCoverageIgnore
-     */
     final protected function clearDbFixtures(string $connectionName): self
     {
         $this->getOrchestrator(self::KEY_CONNECTIONS, $connectionName)->clearFixtures();
@@ -101,9 +98,11 @@ abstract class FixturesAwareTestCase extends BaseWebTestCase
         return $this;
     }
 
-    /**
-     * @codeCoverageIgnore
-     */
+    final protected function getDbFixtures(string $connectionName): array
+    {
+        return $this->getOrchestrator(self::KEY_CONNECTIONS, $connectionName)->getFixtures();
+    }
+
     final protected function clearCachePoolFixtures(string $cachePoolServiceId): self
     {
         $this->getOrchestrator(self::KEY_CACHE_POOLS, $cachePoolServiceId)->clearFixtures();
@@ -111,9 +110,11 @@ abstract class FixturesAwareTestCase extends BaseWebTestCase
         return $this;
     }
 
-    /**
-     * @codeCoverageIgnore
-     */
+    final protected function getCachePoolFixtures(string $cachePoolServiceId): array
+    {
+        return $this->getOrchestrator(self::KEY_CACHE_POOLS, $cachePoolServiceId)->getFixtures();
+    }
+
     final protected function clearElasticSearchFixtures(string $alias): self
     {
         $this->getOrchestrator(self::KEY_ELASTICSEARCH, $alias)->clearFixtures();
@@ -121,14 +122,21 @@ abstract class FixturesAwareTestCase extends BaseWebTestCase
         return $this;
     }
 
-    /**
-     * @codeCoverageIgnore
-     */
+    final protected function getElasticSearchFixtures(string $alias): array
+    {
+        return $this->getOrchestrator(self::KEY_ELASTICSEARCH, $alias)->getFixtures();
+    }
+
     final protected function clearHttpClientFixtures(string $httpClientServiceId): self
     {
         $this->getOrchestrator(self::KEY_HTTP_CLIENT, $httpClientServiceId)->clearFixtures();
 
         return $this;
+    }
+
+    final protected function getHttpClientFixtures(string $httpClientServiceId): array
+    {
+        return $this->getOrchestrator(self::KEY_HTTP_CLIENT, $httpClientServiceId)->getFixtures();
     }
 
     private function getOrchestrator(string $type, string $key): Orchestrator
