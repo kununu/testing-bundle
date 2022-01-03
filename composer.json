@@ -17,7 +17,7 @@
     "require": {
         "php": "^7.2 || ^8.0",
         "symfony/framework-bundle": "^4.4 || ^5.0",
-        "kununu/data-fixtures": "^9.0",
+        "kununu/data-fixtures": "^9.1",
         "symfony/config": "^4.4 || ^5.0",
         "symfony/dependency-injection": "^4.4 || ^5.0",
         "symfony/http-kernel": "^4.4 || ^5.0"

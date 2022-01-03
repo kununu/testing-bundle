@@ -11,13 +11,14 @@ final class ConfigurationTest extends ConfigurationTestCase
             'empty_configuration' => [
                 [],
                 [
-                    'connections'    => [],
-                    'elastic_search' => [],
-                    'cache'          => [
+                    'connections'                   => [],
+                    'non_transactional_connections' => [],
+                    'elastic_search'                => [],
+                    'cache'                         => [
                         'enable' => true,
                         'pools'  => [],
                     ],
-                    'http_client'    => [
+                    'http_client'                   => [
                         'clients' => [],
                     ],
                 ],

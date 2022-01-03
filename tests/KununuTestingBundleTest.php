@@ -8,6 +8,7 @@ use Kununu\TestingBundle\DependencyInjection\Compiler\ConnectionCompilerPass;
 use Kununu\TestingBundle\DependencyInjection\Compiler\CopyConnectionSchemaCommandCompilerPass;
 use Kununu\TestingBundle\DependencyInjection\Compiler\ElasticSearchCompilerPass;
 use Kununu\TestingBundle\DependencyInjection\Compiler\HttpClientCompilerPass;
+use Kununu\TestingBundle\DependencyInjection\Compiler\NonTransactionalConnectionCompilerPass;
 use Kununu\TestingBundle\KununuTestingBundle;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -18,7 +19,7 @@ final class KununuTestingBundleTest extends TestCase
     {
         $containerMock = $this->createMock(ContainerBuilder::class);
         $containerMock
-            ->expects($this->exactly(5))
+            ->expects($this->exactly(6))
             ->method('addCompilerPass')
             ->withConsecutive(
                 [
@@ -29,6 +30,11 @@ final class KununuTestingBundleTest extends TestCase
                 [
                     $this->callback(function($subject) {
                         return $subject instanceof ConnectionCompilerPass;
+                    }),
+                ],
+                [
+                    $this->callback(function($subject) {
+                        return $subject instanceof NonTransactionalConnectionCompilerPass;
                     }),
                 ],
                 [

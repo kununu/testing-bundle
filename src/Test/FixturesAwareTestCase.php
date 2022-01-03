@@ -10,6 +10,7 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase as BaseWebTestCase;
 abstract class FixturesAwareTestCase extends BaseWebTestCase
 {
     private const KEY_CONNECTIONS = 'connections';
+    private const KEY_NON_TRANSACTIONAL_CONNECTIONS = 'non_transactional_connections';
     private const KEY_CACHE_POOLS = 'cache_pools';
     private const KEY_ELASTICSEARCH = 'elastic_search';
     private const KEY_HTTP_CLIENT = 'http_client';
@@ -21,6 +22,15 @@ abstract class FixturesAwareTestCase extends BaseWebTestCase
         bool $clearFixtures = true
     ): void {
         $this->getOrchestrator(self::KEY_CONNECTIONS, $connectionName)->execute($classNames, $append, $clearFixtures);
+    }
+
+    final protected function loadDbNonTransactionalFixtures(
+        string $connectionName,
+        array $classNames = [],
+        bool $append = false,
+        bool $clearFixtures = true
+    ): void {
+        $this->getOrchestrator(self::KEY_NON_TRANSACTIONAL_CONNECTIONS, $connectionName)->execute($classNames, $append, $clearFixtures);
     }
 
     final protected function loadCachePoolFixtures(
@@ -56,6 +66,14 @@ abstract class FixturesAwareTestCase extends BaseWebTestCase
         ...$args
     ): void {
         $this->getOrchestrator(self::KEY_CONNECTIONS, $connectionName)->registerInitializableFixture($className, ...$args);
+    }
+
+    final protected function registerInitializableFixtureForNonTransactionalDb(
+        string $connectionName,
+        string $className,
+        ...$args
+    ): void {
+        $this->getOrchestrator(self::KEY_NON_TRANSACTIONAL_CONNECTIONS, $connectionName)->registerInitializableFixture($className, ...$args);
     }
 
     final protected function registerInitializableFixtureForCachePool(
@@ -98,9 +116,21 @@ abstract class FixturesAwareTestCase extends BaseWebTestCase
         return $this;
     }
 
+    final protected function clearDbNonTransactionalFixtures(string $connectionName): self
+    {
+        $this->getOrchestrator(self::KEY_NON_TRANSACTIONAL_CONNECTIONS, $connectionName)->clearFixtures();
+
+        return $this;
+    }
+
     final protected function getDbFixtures(string $connectionName): array
     {
         return $this->getOrchestrator(self::KEY_CONNECTIONS, $connectionName)->getFixtures();
+    }
+
+    final protected function getDbNonTransactionalFixtures(string $connectionName): array
+    {
+        return $this->getOrchestrator(self::KEY_NON_TRANSACTIONAL_CONNECTIONS, $connectionName)->getFixtures();
     }
 
     final protected function clearCachePoolFixtures(string $cachePoolServiceId): self

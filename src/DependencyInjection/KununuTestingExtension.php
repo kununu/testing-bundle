@@ -19,12 +19,14 @@ final class KununuTestingExtension extends Extension implements ExtensionConfigu
         $this->config = $this->processConfiguration(new Configuration(), $configs);
         (new YamlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config')))->load('services.yaml');
 
-        if (!empty($this->config['connections'])) {
-            foreach ($this->config['connections'] as $connId => $connectionConfigs) {
-                $container->setParameter(
-                    sprintf('kununu_testing.connections.%s', $connId),
-                    $connectionConfigs
-                );
+        foreach (['connections', 'non_transactional_connections'] as $section) {
+            if (!empty($this->config[$section])) {
+                foreach ($this->config[$section] as $connId => $connectionConfigs) {
+                    $container->setParameter(
+                        sprintf('kununu_testing.%s.%s', $section, $connId),
+                        $connectionConfigs
+                    );
+                }
             }
         }
 

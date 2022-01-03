@@ -61,6 +61,38 @@ final class IntegrationTest extends FixturesAwareTestCase
     }
 }
 ```
+With non-transactional fixtures:
+
+```php
+use Kununu\TestingBundle\Test\FixturesAwareTestCase;
+
+final class IntegrationTest extends FixturesAwareTestCase
+{
+    public function testIntegration()
+    {
+        // Start with an empty database and loading data from Fixture1
+        $this->loadDbNonTransactionalFixtures(
+            'default',
+            [Fixture1::class]
+        );
+        
+        // Start from a empty database
+        $this->loadDbNonTransactionalFixtures(
+            'default',
+            []
+        );
+        
+        // Do not purge Database before loading fixtures
+        $this->loadDbNonTransactionalFixtures(
+            'default',
+            [
+                Fixture1::class
+            ],
+            true
+        );
+    }
+}
+```
 
 -----------------------
 
@@ -72,6 +104,11 @@ This bundle can automatically create a Symfony Command to load default fixtures 
 php bin/console kununu_testing:load_fixtures:connections:CONNECTION_NAME [--append]
 ```
 
+Or for non-transactional fixtures:
+```bash
+php bin/console kununu_testing:load_fixtures:non_transactional_connections:CONNECTION_NAME [--append]
+```
+
 ### 1. Enable Symfony Command for a Doctrine Connection
 
 By default Symfony Commands are not created for any Doctrine Connection. If you want to enable the creation of a Symfony Command for a specific Connection you will need to enable it the configuration of the bundle by setting the option `load_command_fixtures_classes_namespace` where you specify the classes names of the fixtures that the command should run.
@@ -79,6 +116,11 @@ By default Symfony Commands are not created for any Doctrine Connection. If you 
 ```yaml
 kununu_testing:
   connections:
+    default:
+      load_command_fixtures_classes_namespace:
+        - 'Kununu\TestingBundle\Tests\App\Fixtures\Connection\ConnectionFixture1'
+        - 'Kununu\TestingBundle\Tests\App\Fixtures\Connection\ConnectionFixture2'
+  non_transactional_connections:
     default:
       load_command_fixtures_classes_namespace:
         - 'Kununu\TestingBundle\Tests\App\Fixtures\Connection\ConnectionFixture1'
@@ -93,7 +135,13 @@ The fixtures can be loaded for a Connection by running:
 php bin/console kununu_testing:load_fixtures:connections:default --append
 ```
 
-If `--append` option is not used then the cache pool will be purged.
+Or for non transactional fixtures:
+
+```bash
+php bin/console kununu_testing:load_fixtures:non_transactional_connections:default --append
+```
+
+If `--append` option is not used then the connection will be purged.
 
 ------------------------------
 
@@ -120,6 +168,25 @@ $this->loadDbFixtures(
 );
 ```
 
+Or for non-transactional fixtures:
+
+```php
+$this->registerInitializableFixtureForNonTransactionalDb(
+	'default',
+	YourConnectionFixtureClass::class,
+	$yourArg1,
+	...,
+    $yourArgN
+);
+
+$this->loadDbNonTransactionalFixtures(
+	'default',
+	[
+		YourConnectionFixtureClass::class
+	]
+);
+```
+
 -------------------------
 
 ## Configuration
@@ -129,6 +196,12 @@ Bellow you can find all configuration options for Doctrine Connection fixtures.
 ```yaml
 kununu_testing:
   connections:
+    connection_name:
+      load_command_fixtures_classes_namespace: # FQDN for fixtures classes that the Symfony command will use
+        - 'Kununu\TestingBundle\Tests\App\Fixtures\Connection\ConnectionFixture3'
+      excluded_tables: # List of tables to exclude from being purged
+        - table_to_exclude_from_purge
+  non_transactional_connections:
     connection_name:
       load_command_fixtures_classes_namespace: # FQDN for fixtures classes that the Symfony command will use
         - 'Kununu\TestingBundle\Tests\App\Fixtures\Connection\ConnectionFixture3'
