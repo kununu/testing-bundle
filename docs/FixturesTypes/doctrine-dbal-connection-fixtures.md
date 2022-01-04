@@ -20,13 +20,14 @@ doctrine:
 In your tests you can extend the classes [FixturesAwareTestCase](/src/Test/FixturesAwareTestCase.php) or [WebTestCase](/src/Test/WebTestCase.php) which expose the following method:
 
 ```php
-protected function loadDbFixtures(string $connectionName, array $classNames = [], bool $append = false, bool $clearFixtures = true)
+protected function loadDbFixtures(string $connectionName, array $classNames = [], bool $append = false, bool $clearFixtures = true, bool $transactional = true);
 ```
 
 - `$connectionName` - Name of your connection
 - `$classNames` - Array with classes names of fixtures to load
 - `$append` - If `false` the cache pool will be purged before loading your fixtures
 - `$clearFixtures` - If `true` it will clear any previous loaded fixtures classes
+- `$clearFixtures` - If `true` it will use a transactional executor
 
 
 **Example of loading fixtures in a Integration Test**
@@ -71,24 +72,32 @@ final class IntegrationTest extends FixturesAwareTestCase
     public function testIntegration()
     {
         // Start with an empty database and loading data from Fixture1
-        $this->loadDbNonTransactionalFixtures(
+        $this->loadDbFixtures(
             'default',
-            [Fixture1::class]
+            [Fixture1::class],
+            false,
+            true,
+            false
         );
         
         // Start from a empty database
-        $this->loadDbNonTransactionalFixtures(
+        $this->loadDbFixtures(
             'default',
-            []
+            [],
+            false,
+            true,
+            false
         );
         
         // Do not purge Database before loading fixtures
-        $this->loadDbNonTransactionalFixtures(
+        $this->loadDbFixtures(
             'default',
             [
                 Fixture1::class
             ],
-            true
+            true,
+            true,
+            false            
         );
     }
 }
@@ -105,6 +114,7 @@ php bin/console kununu_testing:load_fixtures:connections:CONNECTION_NAME [--appe
 ```
 
 Or for non-transactional fixtures:
+
 ```bash
 php bin/console kununu_testing:load_fixtures:non_transactional_connections:CONNECTION_NAME [--append]
 ```
@@ -179,11 +189,14 @@ $this->registerInitializableFixtureForNonTransactionalDb(
     $yourArgN
 );
 
-$this->loadDbNonTransactionalFixtures(
+$this->loadDbFixtures(
 	'default',
 	[
 		YourConnectionFixtureClass::class
-	]
+	],
+	false,
+	true,
+	false
 );
 ```
 

@@ -37,16 +37,20 @@ final class FixturesAwareTestCaseNonTransactionalConnectionsTest extends Fixture
             false
         );
 
-        $this->loadDbNonTransactionalFixtures(
+        $this->loadDbFixtures(
             'def',
             [ConnectionFixture1::class, ConnectionFixture1::class, ConnectionSqlFixture1::class],
-            true
+            true,
+            true,
+            false
         );
 
-        $this->loadDbNonTransactionalFixtures(
+        $this->loadDbFixtures(
             'monolithic',
             [ConnectionFixture1::class, ConnectionFixture1::class, ConnectionSqlFixture1::class],
-            true
+            true,
+            true,
+            false
         );
 
         $this->assertEquals(4, (int) $this->fetchOne($this->defConnection, 'SELECT COUNT(*) FROM table_1'));
@@ -60,15 +64,19 @@ final class FixturesAwareTestCaseNonTransactionalConnectionsTest extends Fixture
 
     public function testLoadDbFixturesWithoutAppend(): void
     {
-        $this->loadDbNonTransactionalFixtures(
+        $this->loadDbFixtures(
             'def',
             [ConnectionFixture1::class, ConnectionFixture1::class, ConnectionSqlFixture1::class],
+            false,
+            true,
             false
         );
 
-        $this->loadDbNonTransactionalFixtures(
+        $this->loadDbFixtures(
             'monolithic',
             [ConnectionFixture1::class, ConnectionFixture1::class, ConnectionSqlFixture1::class],
+            false,
+            true,
             false
         );
 
@@ -83,9 +91,15 @@ final class FixturesAwareTestCaseNonTransactionalConnectionsTest extends Fixture
 
     public function testClearFixtures(): void
     {
-        $this->loadDbNonTransactionalFixtures('def', [ConnectionFixture1::class, ConnectionFixture1::class, ConnectionSqlFixture1::class]);
-        $this->clearDbNonTransactionalFixtures('def');
-        $this->assertEmpty($this->getDbNonTransactionalFixtures('def'));
+        $this->loadDbFixtures(
+            'def',
+            [ConnectionFixture1::class, ConnectionFixture1::class, ConnectionSqlFixture1::class],
+            false,
+            true,
+            false
+        );
+        $this->clearDbFixtures('def', false);
+        $this->assertEmpty($this->getDbFixtures('def', false));
     }
 
     protected function setUp(): void
