@@ -3,20 +3,32 @@ declare(strict_types=1);
 
 namespace Kununu\TestingBundle\DependencyInjection;
 
+use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 
 final class Configuration implements ConfigurationInterface
 {
-    public function getConfigTreeBuilder()
+    public function getConfigTreeBuilder(): TreeBuilder
     {
         $treeBuilder = new TreeBuilder('kununu_testing');
-        $rootNode = $treeBuilder->getRootNode();
+        $rootNode = $treeBuilder->getRootNode()->fixXmlConfig('connection');
 
-        $rootNode
-            ->fixXmlConfig('connection')
+        $this
+            ->addConnectionsSection($rootNode, 'connections')
+            ->addConnectionsSection($rootNode, 'non_transactional_connections')
+            ->addElasticSearchSection($rootNode)
+            ->addCacheSection($rootNode)
+            ->addHttpClientSection($rootNode);
+
+        return $treeBuilder;
+    }
+
+    private function addConnectionsSection(ArrayNodeDefinition $node, string $nodeName): self
+    {
+        $node
             ->children()
-                ->arrayNode('connections')
+                ->arrayNode($nodeName)
                     ->requiresAtLeastOneElement()
                     ->useAttributeAsKey('name')
                     ->arrayPrototype()
@@ -34,24 +46,15 @@ final class Configuration implements ConfigurationInterface
                         ->end()
                     ->end()
                 ->end()
-                ->arrayNode('non_transactional_connections')
-                    ->requiresAtLeastOneElement()
-                    ->useAttributeAsKey('name')
-                    ->arrayPrototype()
-                        ->children()
-                            ->arrayNode('load_command_fixtures_classes_namespace')
-                                ->scalarPrototype()
-                                ->end()
-                                ->defaultValue([])
-                            ->end()
-                            ->arrayNode('excluded_tables')
-                                ->scalarPrototype()
-                                ->end()
-                                ->defaultValue([])
-                            ->end()
-                        ->end()
-                    ->end()
-                ->end()
+            ->end();
+
+        return $this;
+    }
+
+    private function addElasticSearchSection(ArrayNodeDefinition $node): self
+    {
+        $node
+            ->children()
                 ->arrayNode('elastic_search')
                     ->requiresAtLeastOneElement()
                     ->useAttributeAsKey('name')
@@ -73,6 +76,15 @@ final class Configuration implements ConfigurationInterface
                         ->end()
                     ->end()
                 ->end()
+            ->end();
+
+        return $this;
+    }
+
+    private function addCacheSection(ArrayNodeDefinition $node): self
+    {
+        $node
+            ->children()
                 ->arrayNode('cache')
                     ->addDefaultsIfNotSet()
                     ->children()
@@ -95,6 +107,15 @@ final class Configuration implements ConfigurationInterface
                         ->end()
                     ->end()
                 ->end()
+            ->end();
+
+        return $this;
+    }
+
+    private function addHttpClientSection(ArrayNodeDefinition $node): void
+    {
+        $node
+            ->children()
                 ->arrayNode('http_client')
                     ->addDefaultsIfNotSet()
                     ->children()
@@ -107,9 +128,6 @@ final class Configuration implements ConfigurationInterface
                         ->end()
                     ->end()
                 ->end()
-            ->end()
-        ;
-
-        return $treeBuilder;
+            ->end();
     }
 }
