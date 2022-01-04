@@ -15,6 +15,7 @@ final class DbOptionsTest extends TestCase
      * @param DbOptionsInterface $options
      * @param bool               $expectedAppend
      * @param bool               $expectedClear
+     * @param bool               $expectedTransactional
      *
      * @return void
      */

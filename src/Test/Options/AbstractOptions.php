@@ -3,23 +3,25 @@ declare(strict_types=1);
 
 namespace Kununu\TestingBundle\Test\Options;
 
-abstract class AbstractOptions implements OptionsInterface
+abstract class AbstractOptions
 {
-    private $append = false;
-    private $clear = true;
+    protected const OPTIONS = [];
 
-    private function __construct()
-    {
-    }
+    private const PREFIX_WITH = 'with';
+    private const PREFIX_WITHOUT = 'without';
 
-    public function append(): bool
-    {
-        return $this->append;
-    }
+    private $options = [];
 
-    public function clear(): bool
+    protected function __construct()
     {
-        return $this->clear;
+        $defaultValues = static::OPTIONS;
+        foreach (class_parents($this) as $parentClass) {
+            $defaultValues = array_merge($defaultValues, $parentClass::OPTIONS);
+        }
+
+        foreach ($defaultValues as $param => $value) {
+            $this->options[$param] = $value;
+        }
     }
 
     /** @return static */
@@ -29,34 +31,22 @@ abstract class AbstractOptions implements OptionsInterface
     }
 
     /** @return static */
-    public function withAppend(): self
+    public function __call(string $method, array $args)
     {
-        $this->append = true;
+        foreach ([self::PREFIX_WITHOUT => false, self::PREFIX_WITH => true] as $prefix => $value) {
+            if ($prefix === substr($method, 0, $setterPrefixLen = strlen($prefix))) {
+                $option = lcfirst(substr($method, $setterPrefixLen));
+                if (array_key_exists($option, $this->options)) {
+                    $this->options[$option] = $value;
+                }
+            }
+        }
 
         return $this;
     }
 
-    /** @return static */
-    public function withoutAppend(): self
+    protected function getAttribute($name): bool
     {
-        $this->append = false;
-
-        return $this;
-    }
-
-    /** @return static */
-    public function withClear(): self
-    {
-        $this->clear = true;
-
-        return $this;
-    }
-
-    /** @return static */
-    public function withoutClear(): self
-    {
-        $this->clear = false;
-
-        return $this;
+        return array_key_exists($name, $this->options) ? $this->options[$name] : false;
     }
 }
