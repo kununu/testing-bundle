@@ -4,6 +4,8 @@ declare(strict_types=1);
 namespace Kununu\TestingBundle\Test;
 
 use Kununu\TestingBundle\Service\Orchestrator;
+use Kununu\TestingBundle\Test\Options\DbOptionsInterface;
+use Kununu\TestingBundle\Test\Options\OptionsInterface;
 use Psr\Container\ContainerInterface;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase as BaseWebTestCase;
 
@@ -15,43 +17,30 @@ abstract class FixturesAwareTestCase extends BaseWebTestCase
     private const KEY_ELASTICSEARCH = 'elastic_search';
     private const KEY_HTTP_CLIENT = 'http_client';
 
-    final protected function loadDbFixtures(
-        string $connectionName,
-        array $classNames = [],
-        bool $append = false,
-        bool $clearFixtures = true,
-        bool $transactional = true
-    ): void {
+    final protected function loadDbFixtures(string $connectionName, DbOptionsInterface $options, string ...$classNames): void
+    {
         $this
-            ->getOrchestrator($transactional ? self::KEY_CONNECTIONS : self::KEY_NON_TRANSACTIONAL_CONNECTIONS, $connectionName)
-            ->execute($classNames, $append, $clearFixtures);
+            ->getOrchestrator($options->transactional() ? self::KEY_CONNECTIONS : self::KEY_NON_TRANSACTIONAL_CONNECTIONS, $connectionName)
+            ->execute($classNames, $options->append(), $options->clear());
     }
 
-    final protected function loadCachePoolFixtures(
-        string $cachePoolServiceId,
-        array $classNames = [],
-        bool $append = false,
-        bool $clearFixtures = true
-    ): void {
-        $this->getOrchestrator(self::KEY_CACHE_POOLS, $cachePoolServiceId)->execute($classNames, $append, $clearFixtures);
+    final protected function loadCachePoolFixtures(string $cachePoolServiceId, OptionsInterface $options, string ...$classNames): void
+    {
+        $this
+            ->getOrchestrator(self::KEY_CACHE_POOLS, $cachePoolServiceId)
+            ->execute($classNames, $options->append(), $options->clear());
     }
 
-    final protected function loadElasticSearchFixtures(
-        string $alias,
-        array $classNames = [],
-        bool $append = false,
-        bool $clearFixtures = true
-    ): void {
-        $this->getOrchestrator(self::KEY_ELASTICSEARCH, $alias)->execute($classNames, $append, $clearFixtures);
+    final protected function loadElasticSearchFixtures(string $alias, OptionsInterface $options, string ...$classNames): void
+    {
+        $this->getOrchestrator(self::KEY_ELASTICSEARCH, $alias)
+            ->execute($classNames, $options->append(), $options->clear());
     }
 
-    final protected function loadHttpClientFixtures(
-        string $httpClientServiceId,
-        array $classNames = [],
-        bool $append = false,
-        bool $clearFixtures = true
-    ): void {
-        $this->getOrchestrator(self::KEY_HTTP_CLIENT, $httpClientServiceId)->execute($classNames, $append, $clearFixtures);
+    final protected function loadHttpClientFixtures(string $httpClientServiceId, OptionsInterface $options, string ...$classNames): void
+    {
+        $this->getOrchestrator(self::KEY_HTTP_CLIENT, $httpClientServiceId)
+            ->execute($classNames, $options->append(), $options->clear());
     }
 
     final protected function registerInitializableFixtureForDb(
@@ -105,19 +94,19 @@ abstract class FixturesAwareTestCase extends BaseWebTestCase
         return method_exists(static::class, 'getContainer') ? static::getContainer() : static::$container;
     }
 
-    final protected function clearDbFixtures(string $connectionName, bool $transactional = true): self
+    final protected function clearDbFixtures(string $connectionName, DbOptionsInterface $options): self
     {
         $this
-            ->getOrchestrator($transactional ? self::KEY_CONNECTIONS : self::KEY_NON_TRANSACTIONAL_CONNECTIONS, $connectionName)
+            ->getOrchestrator($options->transactional() ? self::KEY_CONNECTIONS : self::KEY_NON_TRANSACTIONAL_CONNECTIONS, $connectionName)
             ->clearFixtures();
 
         return $this;
     }
 
-    final protected function getDbFixtures(string $connectionName, bool $transactional = true): array
+    final protected function getDbFixtures(string $connectionName, DbOptionsInterface $options): array
     {
         return $this
-            ->getOrchestrator($transactional ? self::KEY_CONNECTIONS : self::KEY_NON_TRANSACTIONAL_CONNECTIONS, $connectionName)
+            ->getOrchestrator($options->transactional() ? self::KEY_CONNECTIONS : self::KEY_NON_TRANSACTIONAL_CONNECTIONS, $connectionName)
             ->getFixtures();
     }
 

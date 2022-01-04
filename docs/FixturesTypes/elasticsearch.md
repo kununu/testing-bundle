@@ -19,19 +19,19 @@ kununu_testing:
 In your tests you can extend the classes [FixturesAwareTestCase](/src/Test/FixturesAwareTestCase.php) or [WebTestCase](/src/Test/WebTestCase.php) which expose the following method:
 
 ```php
-loadElasticSearchFixtures(string $alias, array $classNames = [], bool $append = false, bool $clearFixtures = true)
+protected function loadElasticSearchFixtures(string $alias, OptionsInterface $options, string ...$classNames): void
 ```
 
 - `$alias` - Alias defined above
 - `$classNames` - Array with classes names of fixtures to load
-- `$append` - If `false` the cache pool will be purged before loading your fixtures
-- `$clearFixtures` - If `true` it will clear any previous loaded fixtures classes
-
+- `$options` - [Options](options.md) for the fixtures load process
+- `...$classNames` - Classes names of fixtures to load
 
 **Example of loading fixtures in a Integration Test**
 
 ```php
 use Kununu\TestingBundle\Test\FixturesAwareTestCase;
+use Kununu\TestingBundle\Test\Options\Options;
 
 final class IntegrationTest extends FixturesAwareTestCase
 {
@@ -40,20 +40,21 @@ final class IntegrationTest extends FixturesAwareTestCase
         // Start with an empty index and loading data from Fixture1
         $this->loadElasticSearchFixtures(
             'my_index_alias',
-            [Fixture1::class]
+            Options::create(),
+            Fixture1::class
         );
         
         // Start from a empty index
         $this->loadElasticSearchFixtures(
             'my_index_alias',
-            []
+            Options::create()
         );
         
         // Do not purge index before loading fixtures
         $this->loadElasticSearchFixtures(
             'my_index_alias',
-            [Fixture1::class],
-            true
+            Options::create()->withAppend(),
+            Fixture1::class
         );
     }
 }
@@ -101,20 +102,28 @@ Since this bundle is using the [kununu/data-fixtures](https://github.com/kununu/
 In order to do that, your Fixtures classes must implement the *[InitializableFixtureInterface](https://github.com/kununu/data-fixtures/blob/master/src/InitializableFixtureInterface.php)*, and before loading the fixtures you will need to initialize the arguments.
 
 ```php
-$this->registerInitializableFixtureForElasticSearch(
-	'my_index_alias',
-	YourElasticsearchFixtureClass::class,
-	$yourArg1,
-	...,
-	$yourArgN
-);
+use Kununu\TestingBundle\Test\FixturesAwareTestCase;
+use Kununu\TestingBundle\Test\Options\Options;
 
-$this->loadElasticSearchFixtures(
-	'my_index_alias',
-	[
-		YourElasticsearchFixtureClass::class
-	]
-);
+final class IntegrationTest extends FixturesAwareTestCase
+{
+    public function testIntegration()
+    {
+        $this->registerInitializableFixtureForElasticSearch(
+            'my_index_alias',
+            YourElasticsearchFixtureClass::class,
+            $yourArg1,
+            // ...,
+            $yourArgN
+        );
+
+        $this->loadElasticSearchFixtures(
+            'my_index_alias',
+            Options::create(),
+            YourElasticsearchFixtureClass::class
+        );
+    }
+}
 ```
 
 -------------------------

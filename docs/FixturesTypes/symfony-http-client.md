@@ -12,18 +12,18 @@ In the rest of the documentation we will assume that you are using the [Symfony 
 In your tests you can extend the classes [FixturesAwareTestCase](/src/Test/FixturesAwareTestCase.php) or [WebTestCase](/src/Test/WebTestCase.php) which expose the following method:
 
 ```php
-protected function loadHttpClientFixtures(string $httpClientServiceId, array $classNames = [], bool $append = false, bool $clearFixtures = true)
+protected function loadHttpClientFixtures(string $httpClientServiceId, OptionsInterface $options, string ...$classNames): void
 ```
 
 - `$httpClientServiceId` - Name of your Symfony Http Client service
-- `$classNames` - Array with classes names of fixtures to load
-- `$append` - If `false` the http client will be purged before loading your fixtures
-- `$clearFixtures` - If `true` it will clear any previous loaded fixtures classes
+- `$options` - [Options](options.md) for the fixtures load process
+- `...$classNames` - Classes names of fixtures to load
 
 **Example of loading fixtures in a Integration Test**
 
 ```php
 use Kununu\TestingBundle\Test\FixturesAwareTestCase;
+use Kununu\TestingBundle\Test\Options\Options;
 
 final class IntegrationTest extends FixturesAwareTestCase
 {
@@ -32,10 +32,10 @@ final class IntegrationTest extends FixturesAwareTestCase
         // Load mock responses of a Symfony Http Client from a Fixture class
         $this->loadHttpClientFixtures(
             'app.my.http_client',
-            [
-                YourHttpClientFixtureClass::class
-            ]
+            Options::create(),
+            YourHttpClientFixtureClass::class
         );
+    }
 }
 ```
 
@@ -46,20 +46,29 @@ Since this bundle is using the [kununu/data-fixtures](https://github.com/kununu/
 In order to do that, your Fixtures classes must implement the *[InitializableFixtureInterface](https://github.com/kununu/data-fixtures/blob/master/src/InitializableFixtureInterface.php)*, and before loading the fixtures you will need to initialize the arguments.
 
 ```php
-$this->registerInitializableFixtureForHttpClient(
-	'app.my.http_client',
-	YourHttpClientFixtureClass::class,
-	$yourArg1,
-	...,
-	$yourArgN
-);
+use Kununu\TestingBundle\Test\FixturesAwareTestCase;
+use Kununu\TestingBundle\Test\Options\Options;
 
-$this->loadHttpClientFixtures(
-	'app.my.http_client'
-    [
-    	YourHttpClientFixtureClass::class
-    ]
-);
+final class IntegrationTest extends FixturesAwareTestCase
+{
+    public function testIntegration(): void
+    {
+        $this->registerInitializableFixtureForHttpClient(
+            'app.my.http_client',
+	        YourHttpClientFixtureClass::class,
+	        $yourArg1,
+	        //...,
+	        $yourArgN
+        );
+
+        $this->loadHttpClientFixtures(
+	        'app.my.http_client',
+	        Options::create(),
+	        YourHttpClientFixtureClass::class
+        );
+    }
+}
+
 ```
 
 -------------------------
@@ -84,7 +93,7 @@ services:
     public: true
 ```
 
-Also be mindful that if you inject the same client on several services you might have unwanted results.
+Also be mindful that **if you inject the same client on several services** you might have **unwanted results**.
 
 Example: you are testing service A which uses component B. Component B is also injected with the same Http client but is calling totally different endpoints.
 

@@ -6,6 +6,7 @@ namespace Kununu\TestingBundle\Tests\Command;
 use Elasticsearch\Client;
 use Kununu\TestingBundle\Command\LoadElasticsearchFixturesCommand;
 use Kununu\TestingBundle\Test\FixturesAwareTestCase;
+use Kununu\TestingBundle\Test\Options\Options;
 use Kununu\TestingBundle\Tests\App\Fixtures\ElasticSearch\ElasticSearchFixture1;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Exception\CommandNotFoundException;
@@ -90,7 +91,7 @@ final class LoadElasticsearchFixturesCommandTest extends FixturesAwareTestCase
 
     private function prepareToRunCommand(): void
     {
-        $this->loadElasticSearchFixtures('my_index_alias', [ElasticSearchFixture1::class]);
+        $this->loadElasticSearchFixtures('my_index_alias', Options::create(), ElasticSearchFixture1::class);
 
         $this->assertEquals(1, $this->countDocumentsInIndex());
     }

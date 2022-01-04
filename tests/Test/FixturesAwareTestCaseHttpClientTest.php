@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Kununu\TestingBundle\Tests\Test;
 
 use Kununu\TestingBundle\Test\FixturesAwareTestCase;
+use Kununu\TestingBundle\Test\Options\Options;
 use Kununu\TestingBundle\Tests\App\Fixtures\HttpClient\HttpClientFixture1;
 use Kununu\TestingBundle\Tests\App\Fixtures\HttpClient\HttpClientFixture2;
 use Symfony\Component\HttpFoundation\Request;
@@ -22,8 +23,8 @@ final class FixturesAwareTestCaseHttpClientTest extends FixturesAwareTestCase
     {
         $this->registerInitializableFixtureForHttpClient('http_client', HttpClientFixture1::class);
 
-        $this->loadHttpClientFixtures('http_client', [HttpClientFixture1::class], true);
-        $this->loadHttpClientFixtures('http_client', [HttpClientFixture2::class], true);
+        $this->loadHttpClientFixtures('http_client', $options = Options::create()->withAppend(), HttpClientFixture1::class);
+        $this->loadHttpClientFixtures('http_client', $options, HttpClientFixture2::class);
 
         $response = $this->httpClient->request(Request::METHOD_GET, 'https://my.server/b7dd0cc2-381d-4e92-bc9b-b78245142e0a/data');
         $this->assertEquals(Response::HTTP_NOT_FOUND, $response->getStatusCode());
@@ -49,8 +50,8 @@ JSON
 
     public function testLoadHttpClientFixturesWithoutAppend(): void
     {
-        $this->loadHttpClientFixtures('http_client', [HttpClientFixture1::class]);
-        $this->loadHttpClientFixtures('http_client', [HttpClientFixture2::class]);
+        $this->loadHttpClientFixtures('http_client', $options = Options::create(), HttpClientFixture1::class);
+        $this->loadHttpClientFixtures('http_client', $options, HttpClientFixture2::class);
 
         $response = $this->httpClient->request(Request::METHOD_GET, 'https://my.server/b7dd0cc2-381d-4e92-bc9b-b78245142e0a/data');
         $this->assertEquals(Response::HTTP_INTERNAL_SERVER_ERROR, $response->getStatusCode());
@@ -76,7 +77,7 @@ JSON
 
     public function testClearFixtures(): void
     {
-        $this->loadHttpClientFixtures('http_client', [HttpClientFixture1::class, HttpClientFixture2::class]);
+        $this->loadHttpClientFixtures('http_client', Options::create(), HttpClientFixture1::class, HttpClientFixture2::class);
         $this->clearHttpClientFixtures('http_client');
         $this->assertEmpty($this->getHttpClientFixtures('http_client'));
     }

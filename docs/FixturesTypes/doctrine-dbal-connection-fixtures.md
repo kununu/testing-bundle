@@ -20,20 +20,18 @@ doctrine:
 In your tests you can extend the classes [FixturesAwareTestCase](/src/Test/FixturesAwareTestCase.php) or [WebTestCase](/src/Test/WebTestCase.php) which expose the following method:
 
 ```php
-protected function loadDbFixtures(string $connectionName, array $classNames = [], bool $append = false, bool $clearFixtures = true, bool $transactional = true);
+protected function loadDbFixtures(string $connectionName, DbOptionsInterface $options, string ...$classNames)
 ```
 
 - `$connectionName` - Name of your connection
-- `$classNames` - Array with classes names of fixtures to load
-- `$append` - If `false` the cache pool will be purged before loading your fixtures
-- `$clearFixtures` - If `true` it will clear any previous loaded fixtures classes
-- `$clearFixtures` - If `true` it will use a transactional executor
-
+- `$options` - [Options](options.md) for the fixtures load process
+- `...$classNames` - Classes names of fixtures to load
 
 **Example of loading fixtures in a Integration Test**
 
 ```php
 use Kununu\TestingBundle\Test\FixturesAwareTestCase;
+use Kununu\TestingBundle\Test\Options\DbOptions;
 
 final class IntegrationTest extends FixturesAwareTestCase
 {
@@ -42,22 +40,21 @@ final class IntegrationTest extends FixturesAwareTestCase
         // Start with an empty database and loading data from Fixture1
         $this->loadDbFixtures(
             'default',
-            [Fixture1::class]
+            DbOptions::create(),
+            Fixture1::class
         );
         
         // Start from a empty database
         $this->loadDbFixtures(
             'default',
-            []
+            DbOptions::create()
         );
         
         // Do not purge Database before loading fixtures
         $this->loadDbFixtures(
             'default',
-            [
-                Fixture1::class
-            ],
-            true
+            DbOptions::create()->withAppend(),
+            Fixture1::class
         );
     }
 }
@@ -66,6 +63,7 @@ With non-transactional fixtures:
 
 ```php
 use Kununu\TestingBundle\Test\FixturesAwareTestCase;
+use Kununu\TestingBundle\Test\Options\DbOptions;
 
 final class IntegrationTest extends FixturesAwareTestCase
 {
@@ -74,30 +72,21 @@ final class IntegrationTest extends FixturesAwareTestCase
         // Start with an empty database and loading data from Fixture1
         $this->loadDbFixtures(
             'default',
-            [Fixture1::class],
-            false,
-            true,
-            false
+            DbOptions::createNonTransactional(),
+            Fixture1::class
         );
         
         // Start from a empty database
         $this->loadDbFixtures(
             'default',
-            [],
-            false,
-            true,
-            false
+            DbOptions::createNonTransactional()
         );
         
         // Do not purge Database before loading fixtures
         $this->loadDbFixtures(
             'default',
-            [
-                Fixture1::class
-            ],
-            true,
-            true,
-            false            
+            DbOptions::createNonTransactional()->withAppend(),
+            Fixture1::class
         );
     }
 }
@@ -162,42 +151,55 @@ Since this bundle is using the [kununu/data-fixtures](https://github.com/kununu/
 In order to do that, your Fixtures classes must implement the *[InitializableFixtureInterface](https://github.com/kununu/data-fixtures/blob/master/src/InitializableFixtureInterface.php)*, and before loading the fixtures you will need to initialize the arguments.
 
 ```php
-$this->registerInitializableFixtureForDb(
-	'default',
-	YourConnectionFixtureClass::class,
-	$yourArg1,
-	...,
-    $yourArgN
-);
+use Kununu\TestingBundle\Test\FixturesAwareTestCase;
+use Kununu\TestingBundle\Test\Options\DbOptions;
 
-$this->loadDbFixtures(
-	'default',
-	[
-		YourConnectionFixtureClass::class
-	]
-);
+final class IntegrationTest extends FixturesAwareTestCase
+{
+    public function testIntegration()
+    {
+        $this->registerInitializableFixtureForDb(
+            'default',
+            YourConnectionFixtureClass::class,
+            $yourArg1,
+            //...,
+            $yourArgN
+        );
+        
+        $this->loadDbFixtures(
+            'default',
+            DbOptions::create(),
+            YourConnectionFixtureClass::class
+        );
+    }
+}
 ```
 
 Or for non-transactional fixtures:
 
 ```php
-$this->registerInitializableFixtureForNonTransactionalDb(
-	'default',
-	YourConnectionFixtureClass::class,
-	$yourArg1,
-	...,
-    $yourArgN
-);
+use Kununu\TestingBundle\Test\FixturesAwareTestCase;
+use Kununu\TestingBundle\Test\Options\DbOptions;
 
-$this->loadDbFixtures(
-	'default',
-	[
-		YourConnectionFixtureClass::class
-	],
-	false,
-	true,
-	false
-);
+final class IntegrationTest extends FixturesAwareTestCase
+{
+    public function testIntegration()
+    {
+        $this->registerInitializableFixtureForNonTransactionalDb(
+	        'default',
+	        YourConnectionFixtureClass::class,
+	        $yourArg1,
+	        //...,
+            $yourArgN
+        );
+
+        $this->loadDbFixtures(
+	        'default',
+	        DbOptions::createNonTransactional(),
+		    YourConnectionFixtureClass::class
+        );
+    }
+}
 ```
 
 -------------------------

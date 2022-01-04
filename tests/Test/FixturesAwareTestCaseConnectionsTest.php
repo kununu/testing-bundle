@@ -5,6 +5,7 @@ namespace Kununu\TestingBundle\Tests\Test;
 
 use Doctrine\DBAL\Connection;
 use Kununu\TestingBundle\Test\FixturesAwareTestCase;
+use Kununu\TestingBundle\Test\Options\DbOptions;
 use Kununu\TestingBundle\Tests\App\Fixtures\Connection\ConnectionFixture1;
 use Kununu\TestingBundle\Tests\App\Fixtures\Connection\ConnectionSqlFixture1;
 use Kununu\TestingBundle\Traits\ConnectionToolsTrait;
@@ -39,14 +40,18 @@ final class FixturesAwareTestCaseConnectionsTest extends FixturesAwareTestCase
 
         $this->loadDbFixtures(
             'def',
-            [ConnectionFixture1::class, ConnectionFixture1::class, ConnectionSqlFixture1::class],
-            true
+            $options = DbOptions::create()->withAppend(),
+            ConnectionFixture1::class,
+            ConnectionFixture1::class,
+            ConnectionSqlFixture1::class
         );
 
         $this->loadDbFixtures(
             'monolithic',
-            [ConnectionFixture1::class, ConnectionFixture1::class, ConnectionSqlFixture1::class],
-            true
+            $options,
+            ConnectionFixture1::class,
+            ConnectionFixture1::class,
+            ConnectionSqlFixture1::class
         );
 
         $this->assertEquals(4, (int) $this->fetchOne($this->defConnection, 'SELECT COUNT(*) FROM table_1'));
@@ -62,14 +67,18 @@ final class FixturesAwareTestCaseConnectionsTest extends FixturesAwareTestCase
     {
         $this->loadDbFixtures(
             'def',
-            [ConnectionFixture1::class, ConnectionFixture1::class, ConnectionSqlFixture1::class],
-            false
+            $options = DbOptions::create(),
+            ConnectionFixture1::class,
+            ConnectionFixture1::class,
+            ConnectionSqlFixture1::class
         );
 
         $this->loadDbFixtures(
             'monolithic',
-            [ConnectionFixture1::class, ConnectionFixture1::class, ConnectionSqlFixture1::class],
-            false
+            $options,
+            ConnectionFixture1::class,
+            ConnectionFixture1::class,
+            ConnectionSqlFixture1::class
         );
 
         $this->assertEquals(3, (int) $this->fetchOne($this->defConnection, 'SELECT COUNT(*) FROM table_1'));
@@ -83,9 +92,16 @@ final class FixturesAwareTestCaseConnectionsTest extends FixturesAwareTestCase
 
     public function testClearFixtures(): void
     {
-        $this->loadDbFixtures('def', [ConnectionFixture1::class, ConnectionFixture1::class, ConnectionSqlFixture1::class]);
-        $this->clearDbFixtures('def');
-        $this->assertEmpty($this->getDbFixtures('def'));
+        $this->loadDbFixtures(
+            'def',
+            $options = DbOptions::create(),
+            ConnectionFixture1::class,
+            ConnectionFixture1::class,
+            ConnectionSqlFixture1::class
+        );
+        $this->clearDbFixtures('def', $options);
+
+        $this->assertEmpty($this->getDbFixtures('def', $options));
     }
 
     protected function setUp(): void

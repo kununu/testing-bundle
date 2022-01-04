@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Kununu\TestingBundle\Tests\Command;
 
 use Kununu\TestingBundle\Command\LoadCacheFixturesCommand;
+use Kununu\TestingBundle\Test\Options\Options;
 use Kununu\TestingBundle\Tests\App\Fixtures\CachePool\CachePoolFixture3;
 use Psr\Cache\CacheItemPoolInterface;
 
@@ -59,7 +60,7 @@ final class LoadCacheFixturesCommandTest extends AbstractFixturesCommandTestCase
 
     protected function preRunCommand(): void
     {
-        $this->loadCachePoolFixtures('app.cache.first', [CachePoolFixture3::class]);
+        $this->loadCachePoolFixtures('app.cache.first', Options::create(), CachePoolFixture3::class);
 
         $this->assertCacheValue(false, 'key_1');
         $this->assertCacheValue(false, 'key_2');

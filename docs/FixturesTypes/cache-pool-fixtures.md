@@ -19,19 +19,18 @@ framework:
 In your tests you can extend the classes [FixturesAwareTestCase](/src/Test/FixturesAwareTestCase.php) or [WebTestCase](/src/Test/WebTestCase.php) which expose the following method:
 
 ```php
-protected function loadCachePoolFixtures(string $cachePoolServiceId, array $classNames = [], bool $append = false, bool $clearFixtures = true)
+protected function loadCachePoolFixtures(string $cachePoolServiceId, OptionsInterface $options, string ...$classNames): void
 ```
 
 - `$cachePoolServiceId` - Name of your pool as configured in the config above
-- `$classNames` - Array with classes names of fixtures to load
-- `$append` - If `false` the cache pool will be purged before loading your fixtures
-- `$clearFixtures` - If `true` it will clear any previous loaded fixtures classes
-
+- `$options` - [Options](options.md) for the fixtures load process
+- `...$classNames` - Classes names of fixtures to load
 
 **Example of loading fixtures in a Integration Test**
 
 ```php
 use Kununu\TestingBundle\Test\FixturesAwareTestCase;
+use Kununu\TestingBundle\Test\Options\Options;
 
 final class IntegrationTest extends FixturesAwareTestCase
 {
@@ -40,24 +39,21 @@ final class IntegrationTest extends FixturesAwareTestCase
         // Start with a clean pool loading data from Fixture1
         $this->loadCachePoolFixtures(
             'app.cache.first',
-            [
-                Fixture1::class
-            ]
+            Options::create(),
+            Fixture1::class
         );
         
         // Start from a clean pool
         $this->loadCachePoolFixtures(
             'app.cache.first',
-            []
+            Options::create()
         );
         
         // Do not purge pool before loading fixtures
         $this->loadCachePoolFixtures(
             'app.cache.first',
-            [
-                Fixture1::class
-            ],
-            true
+            Options::create()->withAppend(),
+            Fixture1::class
         );
     }
 }
@@ -108,20 +104,28 @@ Since this bundle is using the [kununu/data-fixtures](https://github.com/kununu/
 In order to do that, your Fixtures classes must implement the *[InitializableFixtureInterface](https://github.com/kununu/data-fixtures/blob/master/src/InitializableFixtureInterface.php)*, and before loading the fixtures you will need to initialize the arguments.
 
 ```php
-$this->registerInitializableFixtureForCachePool(
-	'app.cache.first',
-	YourCachePoolFixtureClass::class,
-	$yourArg1,
-	...,
-	$yourArgN
-);
+use Kununu\TestingBundle\Test\FixturesAwareTestCase;
+use Kununu\TestingBundle\Test\Options\Options;
 
-$this->loadCachePoolFixtures(
-	'app.cache.first',
-    [
-    	YourCachePoolFixtureClass::class
-    ]
-);
+final class IntegrationTest extends FixturesAwareTestCase
+{
+    public function testIntegration()
+    {
+        $this->registerInitializableFixtureForCachePool(
+            'app.cache.first',
+            YourCachePoolFixtureClass::class,
+            $yourArg1,
+            // ...,
+            $yourArgN
+        );
+        
+        $this->loadCachePoolFixtures(
+            'app.cache.first',
+            Options::create(),
+            YourCachePoolFixtureClass::class
+        );
+    }
+}
 ```
 
 -------------------------

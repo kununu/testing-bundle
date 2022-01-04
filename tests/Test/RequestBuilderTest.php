@@ -12,7 +12,7 @@ final class RequestBuilderTest extends TestCase
     {
         $request = RequestBuilder::aGetRequest();
 
-        list($method, $uri, $parameters, $files, $server, $content) = $request->build();
+        [$method, $uri, $parameters, $files, $server, $content] = $request->build();
 
         $this->assertEquals('GET', $method);
         $this->assertNull($uri);
@@ -26,7 +26,7 @@ final class RequestBuilderTest extends TestCase
     {
         $request = RequestBuilder::aPostRequest();
 
-        list($method, $uri, $parameters, $files, $server, $content) = $request->build();
+        [$method, $uri, $parameters, $files, $server, $content] = $request->build();
 
         $this->assertEquals('POST', $method);
         $this->assertNull($uri);
@@ -38,10 +38,9 @@ final class RequestBuilderTest extends TestCase
 
     public function testBuildPostRequestWithParameters(): void
     {
-        $request = RequestBuilder::aPostRequest();
-        $request->withParameters(['parameters']);
+        $request = RequestBuilder::aPostRequest()->withParameters(['parameters']);
 
-        list($method, $uri, $parameters, $files, $server, $content) = $request->build();
+        [$method, $uri, $parameters, $files, $server, $content] = $request->build();
 
         $this->assertEquals('POST', $method);
         $this->assertNull($uri);
@@ -55,7 +54,7 @@ final class RequestBuilderTest extends TestCase
     {
         $request = RequestBuilder::aPutRequest();
 
-        list($method, $uri, $parameters, $files, $server, $content) = $request->build();
+        [$method, $uri, $parameters, $files, $server, $content] = $request->build();
 
         $this->assertEquals('PUT', $method);
         $this->assertNull($uri);
@@ -69,7 +68,7 @@ final class RequestBuilderTest extends TestCase
     {
         $request = RequestBuilder::aDeleteRequest();
 
-        list($method, $uri, $parameters, $files, $server, $content) = $request->build();
+        [$method, $uri, $parameters, $files, $server, $content] = $request->build();
 
         $this->assertEquals('DELETE', $method);
         $this->assertNull($uri);
@@ -81,51 +80,41 @@ final class RequestBuilderTest extends TestCase
 
     public function testBuildRequestWithMethod(): void
     {
-        $request = RequestBuilder::aGetRequest();
-        $request
-            ->withMethod('POST');
+        $request = RequestBuilder::aGetRequest()->withMethod('POST');
 
-        list($method) = $request->build();
+        [$method] = $request->build();
         $this->assertEquals('POST', $method);
     }
 
     public function testBuildRequestWithUri(): void
     {
-        $request = RequestBuilder::aGetRequest();
-        $request
-            ->withUri('/v1/uri');
+        $request = RequestBuilder::aGetRequest()->withUri('/v1/uri');
 
-        list(, $uri) = $request->build();
+        [, $uri] = $request->build();
         $this->assertEquals('/v1/uri', $uri);
     }
 
     public function testBuildRequestWithContent(): void
     {
-        $request = RequestBuilder::aGetRequest();
-        $request
-            ->withContent(['data' => ['key' => 'value']]);
+        $request = RequestBuilder::aGetRequest()->withContent(['data' => ['key' => 'value']]);
 
-        list(, , , , , $content) = $request->build();
+        [, , , , , $content] = $request->build();
         $this->assertEquals(json_encode(['data' => ['key' => 'value']]), $content);
     }
 
     public function testBuildRequestWithRawContent(): void
     {
-        $request = RequestBuilder::aGetRequest();
-        $request
-            ->withRawContent('just a content');
+        $request = RequestBuilder::aGetRequest()->withRawContent('just a content');
 
-        list(, , , , , $content) = $request->build();
+        [, , , , , $content] = $request->build();
         $this->assertEquals('just a content', $content);
     }
 
     public function testBuildRequestWithAuthorization(): void
     {
-        $request = RequestBuilder::aGetRequest();
-        $request
-            ->withAuthorization('ACCESS_TOKEN_VALUE');
+        $request = RequestBuilder::aGetRequest()->withAuthorization('ACCESS_TOKEN_VALUE');
 
-        list(, , , , $server) = $request->build();
+        [, , , , $server] = $request->build();
         $this->assertEquals('Bearer ACCESS_TOKEN_VALUE', $server['HTTP_AUTHORIZATION']);
     }
 
@@ -136,18 +125,16 @@ final class RequestBuilderTest extends TestCase
     {
         $headerValue = 'value';
 
-        $request = RequestBuilder::aGetRequest();
-        $request
-            ->withHeader($headerName, $headerValue);
+        $request = RequestBuilder::aGetRequest()->withHeader($headerName, $headerValue);
 
-        list(, , , , $server) = $request->build();
+        [, , , , $server] = $request->build();
         $this->assertEquals($headerValue, $server[$expectedHeaderName]);
     }
 
     public function buildRequestWithHeaderDataProvider(): array
     {
         return [
-            'with_http' => [
+            'with_http'    => [
                 'HTTP_AuthOrization',
                 'HTTP_AUTHORIZATION',
             ],
@@ -160,12 +147,11 @@ final class RequestBuilderTest extends TestCase
 
     public function testBuildRequestWithServerParameters(): void
     {
-        $request = RequestBuilder::aGetRequest();
-        $request
+        $request = RequestBuilder::aGetRequest()
             ->withServerParameter('REMOTE_ADDR', '127.0.0.1')
             ->withServerParameter('HTTP_ACCEPT', 'application/json');
 
-        list(, , , , $server) = $request->build();
+        [, , , , $server] = $request->build();
         $this->assertEquals(['REMOTE_ADDR' => '127.0.0.1', 'HTTP_ACCEPT' => 'application/json'], $server);
     }
 }
