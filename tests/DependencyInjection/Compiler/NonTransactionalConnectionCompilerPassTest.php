@@ -5,6 +5,7 @@ namespace Kununu\TestingBundle\Tests\DependencyInjection\Compiler;
 
 use Kununu\DataFixtures\Executor\NonTransactionalConnectionExecutor;
 use Kununu\DataFixtures\Purger\NonTransactionalConnectionPurger;
+use Kununu\TestingBundle\Command\LoadNonTransactionalConnectionFixturesCommand;
 use Kununu\TestingBundle\DependencyInjection\Compiler\AbstractConnectionCompilerPass;
 use Kununu\TestingBundle\DependencyInjection\Compiler\NonTransactionalConnectionCompilerPass;
 
@@ -28,5 +29,10 @@ final class NonTransactionalConnectionCompilerPassTest extends BaseConnectionCom
     protected function getExecutorClass(): string
     {
         return NonTransactionalConnectionExecutor::class;
+    }
+
+    protected function getLoadFixturesCommandClass(): string
+    {
+        return LoadNonTransactionalConnectionFixturesCommand::class;
     }
 }

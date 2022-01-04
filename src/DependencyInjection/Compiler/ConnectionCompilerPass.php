@@ -5,6 +5,7 @@ namespace Kununu\TestingBundle\DependencyInjection\Compiler;
 
 use Kununu\DataFixtures\Executor\ConnectionExecutor;
 use Kununu\DataFixtures\Purger\ConnectionPurger;
+use Kununu\TestingBundle\Command\LoadConnectionFixturesCommand;
 
 final class ConnectionCompilerPass extends AbstractConnectionCompilerPass
 {
@@ -21,5 +22,10 @@ final class ConnectionCompilerPass extends AbstractConnectionCompilerPass
     protected function getConnectionExecutorClass(): string
     {
         return ConnectionExecutor::class;
+    }
+
+    protected function getLoadFixturesCommandClass(): string
+    {
+        return LoadConnectionFixturesCommand::class;
     }
 }

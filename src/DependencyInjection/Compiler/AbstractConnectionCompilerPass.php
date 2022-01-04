@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace Kununu\TestingBundle\DependencyInjection\Compiler;
 
 use Kununu\DataFixtures\Loader\ConnectionFixturesLoader;
-use Kununu\TestingBundle\Command\LoadConnectionFixturesCommand;
 use Kununu\TestingBundle\Service\Orchestrator;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -63,7 +62,7 @@ abstract class AbstractConnectionCompilerPass implements CompilerPassInterface
             $container,
             $this->getSectionName(),
             $orchestratorId,
-            LoadConnectionFixturesCommand::class,
+            $this->getLoadFixturesCommandClass(),
             $connName,
             $connConfig[self::LOAD_COMMAND_FIXTURES_CLASSES_NAMESPACE_CONFIG] ?? []
         );
@@ -74,6 +73,8 @@ abstract class AbstractConnectionCompilerPass implements CompilerPassInterface
     abstract protected function getConnectionPurgerClass(): string;
 
     abstract protected function getConnectionExecutorClass(): string;
+
+    abstract protected function getLoadFixturesCommandClass(): string;
 
     private function buildConnectionOrchestrator(
         ContainerBuilder $container,

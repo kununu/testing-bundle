@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace Kununu\TestingBundle\Tests\DependencyInjection\Compiler;
 
 use Kununu\DataFixtures\Loader\ConnectionFixturesLoader;
-use Kununu\TestingBundle\Command\LoadConnectionFixturesCommand;
 use Kununu\TestingBundle\DependencyInjection\Compiler\AbstractConnectionCompilerPass;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
@@ -74,7 +73,7 @@ abstract class BaseConnectionCompilerPassTestCase extends BaseCompilerPassTestCa
                 $this->assertFixturesCommand(
                     $consoleCommandId,
                     $consoleCommandName,
-                    LoadConnectionFixturesCommand::class,
+                    $this->getLoadFixturesCommandClass(),
                     $connName,
                     $orchestratorId,
                     $loadCommandFixturesClassesNamespace[$connName]
@@ -124,6 +123,8 @@ abstract class BaseConnectionCompilerPassTestCase extends BaseCompilerPassTestCa
     abstract protected function getPurgerClass(): string;
 
     abstract protected function getExecutorClass(): string;
+
+    abstract protected function getLoadFixturesCommandClass(): string;
 
     protected function registerCompilerPass(ContainerBuilder $container): void
     {
