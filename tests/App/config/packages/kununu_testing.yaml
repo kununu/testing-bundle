@@ -8,6 +8,15 @@ kununu_testing:
         monolithic:
             excluded_tables:
                 - table_to_exclude
+    non_transactional_connections:
+        def:
+            load_command_fixtures_classes_namespace:
+                - 'Kununu\TestingBundle\Tests\App\Fixtures\Connection\ConnectionFixture3'
+            excluded_tables:
+                - table_to_exclude
+        monolithic:
+            excluded_tables:
+                - table_to_exclude
     elastic_search:
         my_index_alias:
             load_command_fixtures_classes_namespace:

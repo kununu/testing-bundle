@@ -6,6 +6,7 @@ namespace Kununu\TestingBundle\Tests\Test;
 use Elasticsearch\Client as ElasticSearch;
 use Elasticsearch\Common\Exceptions\Missing404Exception;
 use Kununu\TestingBundle\Test\FixturesAwareTestCase;
+use Kununu\TestingBundle\Test\Options\Options;
 use Kununu\TestingBundle\Tests\App\Fixtures\ElasticSearch\ElasticSearchFixture1;
 use Kununu\TestingBundle\Tests\App\Fixtures\ElasticSearch\ElasticSearchFixture2;
 
@@ -34,10 +35,7 @@ final class FixturesAwareTestCaseElasticsearchTest extends FixturesAwareTestCase
             ['a' => 'name']
         );
 
-        $this->loadElasticSearchFixtures(
-            'my_index_alias',
-            [ElasticSearchFixture1::class, ElasticSearchFixture2::class]
-        );
+        $this->loadElasticSearchFixtures('my_index_alias', Options::create(), ElasticSearchFixture1::class, ElasticSearchFixture2::class);
 
         $purgedDocument = null;
 
@@ -71,8 +69,9 @@ final class FixturesAwareTestCaseElasticsearchTest extends FixturesAwareTestCase
 
         $this->loadElasticSearchFixtures(
             'my_index_alias',
-            [ElasticSearchFixture1::class, ElasticSearchFixture2::class],
-            true
+            Options::create()->withAppend(),
+            ElasticSearchFixture1::class,
+            ElasticSearchFixture2::class
         );
 
         $this->elasticSearch->get(['index' => 'my_index', 'id' => 'document_to_not_purge']);
@@ -86,7 +85,7 @@ final class FixturesAwareTestCaseElasticsearchTest extends FixturesAwareTestCase
 
     public function testClearFixtures(): void
     {
-        $this->loadElasticSearchFixtures('my_index_alias', [ElasticSearchFixture1::class, ElasticSearchFixture2::class]);
+        $this->loadElasticSearchFixtures('my_index_alias', Options::create(), ElasticSearchFixture1::class, ElasticSearchFixture2::class);
         $this->clearElasticSearchFixtures('my_index_alias');
         $this->assertEmpty($this->getElasticSearchFixtures('my_index_alias'));
     }

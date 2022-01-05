@@ -13,7 +13,7 @@ use Kununu\TestingBundle\Traits\ConnectionToolsTrait;
 /**
  * @group legacy
  */
-final class FixturesAwareTestCaseConnectionsTest extends FixturesAwareTestCase
+final class FixturesAwareTestCaseNonTransactionalConnectionsTest extends FixturesAwareTestCase
 {
     use ConnectionToolsTrait;
 
@@ -25,13 +25,13 @@ final class FixturesAwareTestCaseConnectionsTest extends FixturesAwareTestCase
 
     public function testLoadDbFixturesWithAppend(): void
     {
-        $this->registerInitializableFixtureForDb(
+        $this->registerInitializableFixtureForNonTransactionalDb(
             'def',
             ConnectionFixture1::class,
             'default_connection',
             true
         );
-        $this->registerInitializableFixtureForDb(
+        $this->registerInitializableFixtureForNonTransactionalDb(
             'monolithic',
             ConnectionFixture1::class,
             'monolithic_connection',
@@ -40,7 +40,7 @@ final class FixturesAwareTestCaseConnectionsTest extends FixturesAwareTestCase
 
         $this->loadDbFixtures(
             'def',
-            $options = DbOptions::create()->withAppend(),
+            $options = DbOptions::createNonTransactional()->withAppend(),
             ConnectionFixture1::class,
             ConnectionFixture1::class,
             ConnectionSqlFixture1::class
@@ -67,7 +67,7 @@ final class FixturesAwareTestCaseConnectionsTest extends FixturesAwareTestCase
     {
         $this->loadDbFixtures(
             'def',
-            $options = DbOptions::create(),
+            $options = DbOptions::createNonTransactional(),
             ConnectionFixture1::class,
             ConnectionFixture1::class,
             ConnectionSqlFixture1::class
@@ -94,13 +94,12 @@ final class FixturesAwareTestCaseConnectionsTest extends FixturesAwareTestCase
     {
         $this->loadDbFixtures(
             'def',
-            $options = DbOptions::create(),
+            $options = DbOptions::createNonTransactional(),
             ConnectionFixture1::class,
             ConnectionFixture1::class,
             ConnectionSqlFixture1::class
         );
         $this->clearDbFixtures('def', $options);
-
         $this->assertEmpty($this->getDbFixtures('def', $options));
     }
 

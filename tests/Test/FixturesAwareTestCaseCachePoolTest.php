@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Kununu\TestingBundle\Tests\Test;
 
 use Kununu\TestingBundle\Test\FixturesAwareTestCase;
+use Kununu\TestingBundle\Test\Options\Options;
 use Kununu\TestingBundle\Tests\App\Fixtures\CachePool\CachePoolFixture1;
 use Kununu\TestingBundle\Tests\App\Fixtures\CachePool\CachePoolFixture2;
 use Psr\Cache\CacheItemPoolInterface;
@@ -38,10 +39,7 @@ final class FixturesAwareTestCaseCachePoolTest extends FixturesAwareTestCase
             CachePoolFixture1::class,
             self::EXTRA_DATA_FOR_INIT
         );
-        $this->loadCachePoolFixtures(
-            'app.cache.first',
-            [CachePoolFixture1::class, CachePoolFixture2::class]
-        );
+        $this->loadCachePoolFixtures('app.cache.first', Options::create(), CachePoolFixture1::class, CachePoolFixture2::class);
 
         $cachePool1ItemAfterPurge1 = $this->cachePool->getItem('cache_pool_1_key_to_purge_1');
         $cachePool1Item1 = $this->cachePool->getItem('key_1');
@@ -62,8 +60,9 @@ final class FixturesAwareTestCaseCachePoolTest extends FixturesAwareTestCase
 
         $this->loadCachePoolFixtures(
             'app.cache.first',
-            [CachePoolFixture1::class, CachePoolFixture2::class],
-            true
+            Options::create()->withAppend(),
+            CachePoolFixture1::class,
+            CachePoolFixture2::class
         );
 
         $cachePool1ItemAfterToNotPurge1 = $this->cachePool->getItem('cache_pool_1_key_to_not_purge_1');
@@ -90,10 +89,7 @@ final class FixturesAwareTestCaseCachePoolTest extends FixturesAwareTestCase
             self::EXTRA_DATA_FOR_INIT
         );
 
-        $this->loadCachePoolFixtures(
-            'app.cache.third',
-            [CachePoolFixture1::class, CachePoolFixture2::class]
-        );
+        $this->loadCachePoolFixtures('app.cache.third', Options::create(), CachePoolFixture1::class, CachePoolFixture2::class);
 
         $cachePool1ItemAfterPurge1 = $this->tagAwareCachePool->getItem('cache_pool_1_key_to_purge_1');
         $cachePool1Item1 = $this->tagAwareCachePool->getItem('key_1');
@@ -114,8 +110,9 @@ final class FixturesAwareTestCaseCachePoolTest extends FixturesAwareTestCase
 
         $this->loadCachePoolFixtures(
             'app.cache.third',
-            [CachePoolFixture1::class, CachePoolFixture2::class],
-            true
+            Options::create()->withAppend(),
+            CachePoolFixture1::class,
+            CachePoolFixture2::class
         );
 
         $cachePool1ItemAfterToNotPurge1 = $this->tagAwareCachePool->getItem('cache_pool_1_key_to_not_purge_1');
@@ -142,10 +139,7 @@ final class FixturesAwareTestCaseCachePoolTest extends FixturesAwareTestCase
             self::EXTRA_DATA_FOR_INIT
         );
 
-        $this->loadCachePoolFixtures(
-            'app.cache.fourth',
-            [CachePoolFixture1::class, CachePoolFixture2::class]
-        );
+        $this->loadCachePoolFixtures('app.cache.fourth', Options::create(), CachePoolFixture1::class, CachePoolFixture2::class);
 
         $cachePool1ItemAfterPurge1 = $this->tagAwarePoolCachePool->getItem('cache_pool_1_key_to_purge_1');
         $cachePool1Item1 = $this->tagAwarePoolCachePool->getItem('key_1');
@@ -166,8 +160,9 @@ final class FixturesAwareTestCaseCachePoolTest extends FixturesAwareTestCase
 
         $this->loadCachePoolFixtures(
             'app.cache.fourth',
-            [CachePoolFixture1::class, CachePoolFixture2::class],
-            true
+            Options::create()->withAppend(),
+            CachePoolFixture1::class,
+            CachePoolFixture2::class
         );
 
         $cachePool1ItemAfterToNotPurge1 = $this->tagAwarePoolCachePool->getItem('cache_pool_1_key_to_not_purge_1');
@@ -194,10 +189,7 @@ final class FixturesAwareTestCaseCachePoolTest extends FixturesAwareTestCase
             self::EXTRA_DATA_FOR_INIT
         );
 
-        $this->loadCachePoolFixtures(
-            'app.cache.fifth',
-            [CachePoolFixture1::class, CachePoolFixture2::class]
-        );
+        $this->loadCachePoolFixtures('app.cache.fifth', Options::create(), CachePoolFixture1::class, CachePoolFixture2::class);
 
         $cachePool1ItemAfterPurge1 = $this->chainCachePool->getItem('cache_pool_1_key_to_purge_1');
         $cachePool1Item1 = $this->chainCachePool->getItem('key_1');
@@ -218,8 +210,9 @@ final class FixturesAwareTestCaseCachePoolTest extends FixturesAwareTestCase
 
         $this->loadCachePoolFixtures(
             'app.cache.fifth',
-            [CachePoolFixture1::class, CachePoolFixture2::class],
-            true
+            Options::create()->withAppend(),
+            CachePoolFixture1::class,
+            CachePoolFixture2::class
         );
 
         $cachePool1ItemAfterToNotPurge1 = $this->chainCachePool->getItem('cache_pool_1_key_to_not_purge_1');
@@ -235,7 +228,7 @@ final class FixturesAwareTestCaseCachePoolTest extends FixturesAwareTestCase
 
     public function testClearFixtures(): void
     {
-        $this->loadCachePoolFixtures('app.cache.fifth', [CachePoolFixture1::class, CachePoolFixture2::class]);
+        $this->loadCachePoolFixtures('app.cache.fifth', Options::create(), CachePoolFixture1::class, CachePoolFixture2::class);
         $this->clearCachePoolFixtures('app.cache.fifth');
         $this->assertEmpty($this->getCachePoolFixtures('app.cache.fifth'));
     }
