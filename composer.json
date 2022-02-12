@@ -28,7 +28,7 @@
         "doctrine/dbal": "^2.13",
         "doctrine/doctrine-bundle": "^2.3.1",
         "doctrine/doctrine-migrations-bundle": "^3.1.1",
-        "elasticsearch/elasticsearch": "^7.10",
+        "elasticsearch/elasticsearch": "^8.0",
         "kununu/scripts": "*",
         "matthiasnoback/symfony-dependency-injection-test": "^4.2",
         "phpunit/phpunit": "^8.5 || ^9.0",
