@@ -29,6 +29,8 @@ abstract class WebTestCase extends FixturesAwareTestCase
             );
         }
 
+        $this->ensureKernelShutdown();
+
         return $response;
     }
 
