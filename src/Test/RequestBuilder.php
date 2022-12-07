@@ -44,6 +44,11 @@ final class RequestBuilder
         return new self(Request::METHOD_PUT);
     }
 
+    public static function aPatchRequest(): self
+    {
+        return new self(Request::METHOD_PATCH);
+    }
+
     public function build(): array
     {
         return [$this->method, $this->uri, $this->parameters, $this->files, $this->server, $this->content];
