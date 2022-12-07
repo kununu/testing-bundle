@@ -99,6 +99,9 @@ public static function aDeleteRequest(): self;
 // Creates and returns a Builder that you can use to do a PUT request
 public static function aPutRequest(): self;
 
+// Creates and returns a Builder that you can use to do a PATCH request
+public static function aPatchRequest(): self;
+
 // Set The Request parameters
 public function withParameters(array $parameters): self;
 
