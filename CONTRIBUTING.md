@@ -18,6 +18,6 @@ We accept contributions via Pull Requests on [Github](https://github.com/kununu/
 
 - **One pull request per feature** - If you want to do more than one thing, send multiple pull requests.
 
-- **Be respectful** - Be excellent to other contributors.
+- **Be respectful** - Be excellent to other contributors. See our [Code of Conduct](CODE_OF_CONDUCT.md).
 
 **Happy coding**!
