@@ -64,6 +64,20 @@ final class RequestBuilderTest extends TestCase
         $this->assertNull($content);
     }
 
+    public function testBuildPatchRequest(): void
+    {
+        $request = RequestBuilder::aPatchRequest();
+
+        [$method, $uri, $parameters, $files, $server, $content] = $request->build();
+
+        $this->assertEquals('PATCH', $method);
+        $this->assertNull($uri);
+        $this->assertEmpty($parameters);
+        $this->assertEmpty($files);
+        $this->assertEmpty($server);
+        $this->assertNull($content);
+    }
+
     public function testBuildDeleteRequest(): void
     {
         $request = RequestBuilder::aDeleteRequest();
