@@ -11,7 +11,7 @@ abstract class WebTestCase extends FixturesAwareTestCase
     /** @var KernelBrowser */
     private $client;
 
-    final protected function doRequest(RequestBuilder $builder): Response
+    final protected function doRequest(RequestBuilder $builder, bool $shutdown = true): Response
     {
         $this->initClient();
 
@@ -27,6 +27,10 @@ abstract class WebTestCase extends FixturesAwareTestCase
                     'application/json'
                 )
             );
+        }
+
+        if ($shutdown) {
+            $this->ensureKernelShutdown();
         }
 
         return $response;
