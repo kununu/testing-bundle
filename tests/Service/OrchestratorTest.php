@@ -7,27 +7,26 @@ use Kununu\DataFixtures\Executor\ExecutorInterface;
 use Kununu\DataFixtures\FixtureInterface;
 use Kununu\DataFixtures\Loader\LoaderInterface;
 use Kununu\TestingBundle\Service\Orchestrator;
-use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 final class OrchestratorTest extends TestCase
 {
-    /**
-     * @dataProvider executesAsExpectedDataProvider
-     *
-     * @param bool $append
-     */
+    /** @dataProvider executesAsExpectedDataProvider */
     public function testThatExecutesAsExpected(bool $append): void
     {
         $fixture1 = $this->getMockBuilder(FixtureInterface::class)->setMockClassName('Mock1')->getMock();
         $fixture2 = $this->getMockBuilder(FixtureInterface::class)->setMockClassName('Mock2')->getMock();
 
-        /** @var LoaderInterface|MockObject $loader */
         $loader = $this->createMock(LoaderInterface::class);
         $loader
             ->expects($this->exactly(2))
             ->method('loadFromClassName')
-            ->withConsecutive(['Mock1'], ['Mock2']);
+            ->with(
+                $this->callback(fn(string $class): bool => match ($class) {
+                    'Mock1', 'Mock2' => true,
+                    default => false
+                })
+            );
         $loader
             ->expects($this->once())
             ->method('getFixtures')
@@ -36,7 +35,6 @@ final class OrchestratorTest extends TestCase
             ->expects($this->once())
             ->method('clearFixtures');
 
-        /** @var ExecutorInterface|MockObject $executor */
         $executor = $this->createMock(ExecutorInterface::class);
         $executor
             ->expects($this->once())
@@ -48,7 +46,7 @@ final class OrchestratorTest extends TestCase
         $orchestrator->execute(['Mock1', 'Mock2'], $append);
     }
 
-    public function executesAsExpectedDataProvider(): array
+    public static function executesAsExpectedDataProvider(): array
     {
         return [
             'with_append'    => [true],

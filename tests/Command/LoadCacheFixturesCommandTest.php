@@ -8,16 +8,13 @@ use Kununu\TestingBundle\Test\Options\Options;
 use Kununu\TestingBundle\Tests\App\Fixtures\CachePool\CachePoolFixture3;
 use Psr\Cache\CacheItemPoolInterface;
 
-/**
- * @group legacy
- */
+/** @group legacy */
 final class LoadCacheFixturesCommandTest extends AbstractFixturesCommandTestCase
 {
     private const COMMAND_1 = 'kununu_testing:load_fixtures:cache_pools:app.cache.first';
     private const COMMAND_2 = 'kununu_testing:load_fixtures:cache_pools:app.cache.second';
 
-    /** @var CacheItemPoolInterface */
-    private $cachePool;
+    private CacheItemPoolInterface $cachePool;
 
     protected function doAssertionsForExecuteAppend(): void
     {

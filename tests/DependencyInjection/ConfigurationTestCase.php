@@ -11,26 +11,15 @@ abstract class ConfigurationTestCase extends TestCase
 {
     use ConfigurationTestCaseTrait;
 
-    /**
-     * @dataProvider validProcessedConfigurationDataProvider
-     *
-     * @param array $values
-     * @param array $expectedProcessedConfiguration
-     */
+    /** @dataProvider validProcessedConfigurationDataProvider */
     public function testProcessedConfigurationForNode(array $values, array $expectedProcessedConfiguration): void
     {
         $this->assertProcessedConfigurationEquals($values, $expectedProcessedConfiguration, $this->getNodeName());
     }
 
-    abstract public function validProcessedConfigurationDataProvider(): array;
+    abstract public static function validProcessedConfigurationDataProvider(): array;
 
-    /**
-     * @dataProvider invalidProcessedConfigurationDataProvider
-     *
-     * @param array|null $values
-     *
-     * @return void
-     */
+    /** @dataProvider invalidProcessedConfigurationDataProvider */
     public function testInvalidConfigurationForNode(?array $values): void
     {
         if (null === $values) {
@@ -40,9 +29,9 @@ abstract class ConfigurationTestCase extends TestCase
         }
     }
 
-    public function invalidProcessedConfigurationDataProvider(): ?array
+    public static function invalidProcessedConfigurationDataProvider(): ?array
     {
-        if (empty($data = $this->getInvalidProcessedConfigurationData())) {
+        if (empty($data = static::getInvalidProcessedConfigurationData())) {
             return [
                 'no_tests' => [null],
             ];
@@ -51,7 +40,7 @@ abstract class ConfigurationTestCase extends TestCase
         return $data;
     }
 
-    protected function getInvalidProcessedConfigurationData(): array
+    protected static function getInvalidProcessedConfigurationData(): array
     {
         return [];
     }

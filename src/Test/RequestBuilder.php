@@ -7,21 +7,14 @@ use Symfony\Component\HttpFoundation\Request;
 
 final class RequestBuilder
 {
-    private $method;
+    private ?string $uri = null;
+    private array $parameters = [];
+    private array $files = [];
+    private array $server = [];
+    private ?string $content = null;
 
-    private $uri;
-
-    private $parameters = [];
-
-    private $files = [];
-
-    private $server = [];
-
-    private $content;
-
-    private function __construct(string $method)
+    private function __construct(private string $method)
     {
-        $this->method = $method;
     }
 
     public static function aGetRequest(): self
@@ -96,7 +89,7 @@ final class RequestBuilder
     {
         $headerName = strtoupper($headerName);
 
-        if (substr($headerName, 0, 5) !== 'HTTP_') {
+        if (!str_starts_with($headerName, 'HTTP_')) {
             $headerName = sprintf('HTTP_%s', $headerName);
         }
 

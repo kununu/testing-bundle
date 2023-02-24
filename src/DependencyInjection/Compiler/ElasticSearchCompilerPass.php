@@ -49,38 +49,50 @@ final class ElasticSearchCompilerPass implements CompilerPassInterface
 
     private function buildElasticSearchOrchestrator(ContainerBuilder $container, string $alias, array $config): string
     {
-        $indexName = $config['index_name'];
         $id = $config['service'];
 
-        $client = new Reference($id);
-
-        // Purger Definition
+        // Purger Definition for Client with provided $id
         $purgerId = sprintf('%s.%s.purger', self::SERVICE_PREFIX, $alias);
-        $purgerDefinition = new Definition(ElasticSearchPurger::class, [$client, $indexName]);
+        $purgerDefinition = new Definition(
+            ElasticSearchPurger::class,
+            [
+                $client = new Reference($id),
+                $indexName = $config['index_name'],
+            ]
+        );
         $container->setDefinition($purgerId, $purgerDefinition);
 
-        // Executor Definition
+        // Executor Definition for Client with provided $id
         $executorId = sprintf('%s.%s.executor', self::SERVICE_PREFIX, $alias);
-        $executorDefinition = new Definition(ElasticSearchExecutor::class, [$client, $indexName, new Reference($purgerId)]);
+        $executorDefinition = new Definition(
+            ElasticSearchExecutor::class,
+            [
+                $client,
+                $indexName,
+                new Reference($purgerId),
+            ]
+        );
         $container->setDefinition($executorId, $executorDefinition);
 
-        // Loader definition
+        // Loader definition for Client with provided $id
         $loaderId = sprintf('%s.%s.loader', self::SERVICE_PREFIX, $alias);
         $loaderDefinition = new Definition(ElasticSearchFixturesLoader::class);
         $container->setDefinition($loaderId, $loaderDefinition);
 
-        $connectionOrchestratorDefinition = new Definition(
+        // Orchestrator definition for Client with provided $id
+        $orchestratorDefinition = new Definition(
             Orchestrator::class,
             [
                 new Reference($executorId),
                 new Reference($loaderId),
             ]
         );
-        $connectionOrchestratorDefinition->setPublic(true);
+        $orchestratorDefinition->setPublic(true);
 
-        $orchestratorId = sprintf('%s.%s', self::SERVICE_PREFIX, $alias);
-
-        $container->setDefinition($orchestratorId, $connectionOrchestratorDefinition);
+        $container->setDefinition(
+            $orchestratorId = sprintf('%s.%s', self::SERVICE_PREFIX, $alias),
+            $orchestratorDefinition
+        );
 
         return $orchestratorId;
     }

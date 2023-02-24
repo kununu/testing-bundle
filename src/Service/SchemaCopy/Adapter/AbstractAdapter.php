@@ -13,11 +13,8 @@ abstract class AbstractAdapter implements SchemaCopyAdapterInterface
 
     protected const TYPE = '';
 
-    protected $connection;
-
-    public function __construct(Connection $connection)
+    public function __construct(protected Connection $connection)
     {
-        $this->connection = $connection;
     }
 
     public function runCopy(callable $fn): void

@@ -15,32 +15,41 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 
 final class CopyConnectionSchemaCommand extends Command
 {
-    private $schemaCopy;
-    private $registry;
+    private const OPTION_FROM = 'from';
+    private const OPTION_FROM_SHORT = 'f';
+    private const OPTION_TO = 'to';
+    private const OPTION_TO_SHORT = 't';
 
-    public function __construct(SchemaCopyInterface $schemaCopy, ManagerRegistry $registry)
+    public function __construct(private SchemaCopyInterface $schemaCopy, private ManagerRegistry $registry)
     {
         parent::__construct('kununu_testing:connections:schema:copy');
-
-        $this->schemaCopy = $schemaCopy;
-        $this->registry = $registry;
     }
 
     protected function configure(): void
     {
         $this
             ->setDescription('Copy a schema from one connection to another')
-            ->addOption('from', 'f', InputOption::VALUE_REQUIRED, 'The source connection to use for this command')
-            ->addOption('to', 't', InputOption::VALUE_REQUIRED, 'The destination connection to use for this command');
+            ->addOption(
+                self::OPTION_FROM,
+                self::OPTION_FROM_SHORT,
+                InputOption::VALUE_REQUIRED,
+                'The source connection to use for this command'
+            )
+            ->addOption(
+                self::OPTION_TO,
+                self::OPTION_TO_SHORT,
+                InputOption::VALUE_REQUIRED,
+                'The destination connection to use for this command'
+            );
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $from = $input->getOption('from') ?? '';
-        $to = $input->getOption('to') ?? '';
+        $from = $input->getOption(self::OPTION_FROM) ?? '';
+        $to = $input->getOption(self::OPTION_TO) ?? '';
 
-        if (!$this->checkConnection($source = $this->getConnection($from), 'from', $from, $output) ||
-            !$this->checkConnection($destination = $this->getConnection($to), 'to', $to, $output)
+        if (!$this->checkConnection($source = $this->getConnection($from), self::OPTION_FROM, $from, $output) ||
+            !$this->checkConnection($destination = $this->getConnection($to), self::OPTION_TO, $to, $output)
         ) {
             return 2;
         }
@@ -60,8 +69,12 @@ final class CopyConnectionSchemaCommand extends Command
         return 1;
     }
 
-    private function checkConnection(?Connection $connection, string $arg, string $connectionName, OutputInterface $output): bool
-    {
+    private function checkConnection(
+        ?Connection $connection,
+        string $arg,
+        string $connectionName,
+        OutputInterface $output
+    ): bool {
         $connectionName = trim($connectionName);
 
         if ('' === $connectionName) {
@@ -74,7 +87,9 @@ final class CopyConnectionSchemaCommand extends Command
 
         if (!$connection instanceof Connection) {
             $output->writeln('');
-            $output->writeln(sprintf('Connection wanted to "--%s" argument: "%s" was not found!', $arg, $connectionName));
+            $output->writeln(
+                sprintf('Connection wanted to "--%s" argument: "%s" was not found!', $arg, $connectionName)
+            );
             $output->writeln('');
 
             return false;
@@ -83,12 +98,12 @@ final class CopyConnectionSchemaCommand extends Command
         return true;
     }
 
-    private function getConnection(string $connectionName): ?Connection
+    private function getConnection(string $connectionName): Connection|null
     {
         /* @var Connection|null $connection */
         try {
             $connection = $this->registry->getConnection($connectionName);
-        } catch (InvalidArgumentException $e) {
+        } catch (InvalidArgumentException) {
             $connection = null;
         }
 

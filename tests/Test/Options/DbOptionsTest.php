@@ -9,16 +9,7 @@ use PHPUnit\Framework\TestCase;
 
 final class DbOptionsTest extends TestCase
 {
-    /**
-     * @dataProvider dbOptionsDataProvider
-     *
-     * @param DbOptionsInterface $options
-     * @param bool               $expectedAppend
-     * @param bool               $expectedClear
-     * @param bool               $expectedTransactional
-     *
-     * @return void
-     */
+    /** @dataProvider dbOptionsDataProvider */
     public function testDbOptions(DbOptionsInterface $options, bool $expectedAppend, bool $expectedClear, bool $expectedTransactional): void
     {
         $this->assertEquals($expectedAppend, $options->append());
@@ -26,7 +17,7 @@ final class DbOptionsTest extends TestCase
         $this->assertEquals($expectedTransactional, $options->transactional());
     }
 
-    public function dbOptionsDataProvider(): array
+    public static function dbOptionsDataProvider(): array
     {
         return [
             'default'                               => [

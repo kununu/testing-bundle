@@ -8,8 +8,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 abstract class WebTestCase extends FixturesAwareTestCase
 {
-    /** @var KernelBrowser */
-    private $client;
+    private ?KernelBrowser $client = null;
 
     final protected function doRequest(RequestBuilder $builder, bool $shutdown = true): Response
     {

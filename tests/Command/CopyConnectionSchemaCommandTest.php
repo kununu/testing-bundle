@@ -6,10 +6,9 @@ namespace Kununu\TestingBundle\Tests\Command;
 use Doctrine\DBAL\Connection;
 use Kununu\TestingBundle\Command\CopyConnectionSchemaCommand;
 use Kununu\TestingBundle\Service\SchemaCopy\SchemaCopyAdapterFactoryInterface;
+use Kununu\TestingBundle\Service\SchemaCopy\SchemaCopyAdapterInterface;
 
-/**
- * @group legacy
- */
+/** @group legacy */
 final class CopyConnectionSchemaCommandTest extends AbstractCommandTestCase
 {
     private const COMMAND = 'kununu_testing:connections:schema:copy';
@@ -26,7 +25,7 @@ final class CopyConnectionSchemaCommandTest extends AbstractCommandTestCase
         'my_view',
     ];
 
-    private $adapter;
+    private SchemaCopyAdapterInterface $adapter;
 
     public function testCommandValidNonInteractive(): void
     {

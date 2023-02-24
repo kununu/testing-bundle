@@ -5,15 +5,14 @@ namespace Kununu\TestingBundle\Tests\Service\SchemaCopy\Adapter;
 
 use Doctrine\DBAL\Connection;
 use Kununu\TestingBundle\Service\SchemaCopy\Adapter\MySqlAdapter;
+use Kununu\TestingBundle\Service\SchemaCopy\SchemaCopyAdapterInterface;
 use Kununu\TestingBundle\Tests\Service\SchemaCopy\SchemaCopyTestCase;
 use PHPUnit\Framework\MockObject\MockObject;
 
 final class MySqlAdapterTest extends SchemaCopyTestCase
 {
-    /** @var Connection|MockObject */
-    private $connection;
-    /** @var MySqlAdapter */
-    private $adapter;
+    private MockObject|Connection $connection;
+    private SchemaCopyAdapterInterface $adapter;
 
     public function testSameTypeAsEqual(): void
     {

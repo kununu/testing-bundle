@@ -5,9 +5,7 @@ namespace Kununu\TestingBundle\Tests\Command;
 
 use Kununu\TestingBundle\Command\LoadConnectionFixturesCommand;
 
-/**
- * @group legacy
- */
+/** @group legacy */
 final class LoadConnectionFixturesCommandTest extends AbstractLoadConnectionTestCase
 {
     private const COMMAND_1 = 'kununu_testing:load_fixtures:connections:def';

@@ -11,25 +11,32 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
-/**
- * @group legacy
- */
+/** @group legacy */
 final class FixturesAwareTestCaseHttpClientTest extends FixturesAwareTestCase
 {
-    /** @var HttpClientInterface */
-    private $httpClient;
+    private HttpClientInterface $httpClient;
 
     public function testLoadHttpClientFixturesWithAppend(): void
     {
         $this->registerInitializableFixtureForHttpClient('http_client', HttpClientFixture1::class);
 
-        $this->loadHttpClientFixtures('http_client', $options = Options::create()->withAppend(), HttpClientFixture1::class);
+        $this->loadHttpClientFixtures(
+            'http_client',
+            $options = Options::create()->withAppend(),
+            HttpClientFixture1::class
+        );
         $this->loadHttpClientFixtures('http_client', $options, HttpClientFixture2::class);
 
-        $response = $this->httpClient->request(Request::METHOD_GET, 'https://my.server/b7dd0cc2-381d-4e92-bc9b-b78245142e0a/data');
+        $response = $this->httpClient->request(
+            Request::METHOD_GET,
+            'https://my.server/b7dd0cc2-381d-4e92-bc9b-b78245142e0a/data'
+        );
         $this->assertEquals(Response::HTTP_NOT_FOUND, $response->getStatusCode());
 
-        $response = $this->httpClient->request(Request::METHOD_GET, 'https://my.server/f2895c23-28cb-4020-b038-717cca64bf2d/data');
+        $response = $this->httpClient->request(
+            Request::METHOD_GET,
+            'https://my.server/f2895c23-28cb-4020-b038-717cca64bf2d/data'
+        );
         $this->assertEquals(Response::HTTP_OK, $response->getStatusCode());
         $this->assertJsonStringEqualsJsonString(
             <<<'JSON'
@@ -53,10 +60,16 @@ JSON
         $this->loadHttpClientFixtures('http_client', $options = Options::create(), HttpClientFixture1::class);
         $this->loadHttpClientFixtures('http_client', $options, HttpClientFixture2::class);
 
-        $response = $this->httpClient->request(Request::METHOD_GET, 'https://my.server/b7dd0cc2-381d-4e92-bc9b-b78245142e0a/data');
+        $response = $this->httpClient->request(
+            Request::METHOD_GET,
+            'https://my.server/b7dd0cc2-381d-4e92-bc9b-b78245142e0a/data'
+        );
         $this->assertEquals(Response::HTTP_INTERNAL_SERVER_ERROR, $response->getStatusCode());
 
-        $response = $this->httpClient->request(Request::METHOD_GET, 'https://my.server/f2895c23-28cb-4020-b038-717cca64bf2d/data');
+        $response = $this->httpClient->request(
+            Request::METHOD_GET,
+            'https://my.server/f2895c23-28cb-4020-b038-717cca64bf2d/data'
+        );
         $this->assertEquals(Response::HTTP_OK, $response->getStatusCode());
         $this->assertJsonStringEqualsJsonString(
             <<<'JSON'
@@ -77,7 +90,12 @@ JSON
 
     public function testClearFixtures(): void
     {
-        $this->loadHttpClientFixtures('http_client', Options::create(), HttpClientFixture1::class, HttpClientFixture2::class);
+        $this->loadHttpClientFixtures(
+            'http_client',
+            Options::create(),
+            HttpClientFixture1::class,
+            HttpClientFixture2::class
+        );
         $this->clearHttpClientFixtures('http_client');
         $this->assertEmpty($this->getHttpClientFixtures('http_client'));
     }

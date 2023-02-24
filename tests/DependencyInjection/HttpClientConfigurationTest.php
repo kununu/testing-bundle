@@ -5,7 +5,7 @@ namespace Kununu\TestingBundle\Tests\DependencyInjection;
 
 final class HttpClientConfigurationTest extends ConfigurationTestCase
 {
-    public function validProcessedConfigurationDataProvider(): array
+    public static function validProcessedConfigurationDataProvider(): array
     {
         return [
             'no_configuration'   => [

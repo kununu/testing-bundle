@@ -10,8 +10,7 @@ abstract class AbstractLoadConnectionTestCase extends AbstractFixturesCommandTes
 {
     use ConnectionToolsTrait;
 
-    /** @var Connection */
-    private $connection;
+    private Connection $connection;
 
     public function testExecuteInteractiveCancelled(): void
     {

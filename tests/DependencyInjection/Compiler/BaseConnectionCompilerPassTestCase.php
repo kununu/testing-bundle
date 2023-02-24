@@ -108,11 +108,11 @@ abstract class BaseConnectionCompilerPassTestCase extends BaseCompilerPassTestCa
 
         $sectionName = $this->getSectionName();
         foreach ($this->container->getServiceIds() as $serviceId) {
-            $this->assertThatDoesNotMatchRegularExpression('/^kununu_testing\.orchestrator\.%s\.\w+$/m', $sectionName, $serviceId);
-            $this->assertThatDoesNotMatchRegularExpression('/^kununu_testing\.orchestrator\.%s\.\w+\.purger$/m', $sectionName, $serviceId);
-            $this->assertThatDoesNotMatchRegularExpression('/^kununu_testing\.orchestrator\.%s\.\w+\.executor/m', $sectionName, $serviceId);
-            $this->assertThatDoesNotMatchRegularExpression('/^kununu_testing\.orchestrator\.%s\.\w+\.loader/m', $sectionName, $serviceId);
-            $this->assertThatDoesNotMatchRegularExpression('/^kununu_testing\.load_fixtures\.%s\.\w+\.command/m', $sectionName, $serviceId);
+            $this->assertDoesNotMatchRegularExpression('/^kununu_testing\.orchestrator\.%s\.\w+$/m', $sectionName, $serviceId);
+            $this->assertDoesNotMatchRegularExpression('/^kununu_testing\.orchestrator\.%s\.\w+\.purger$/m', $sectionName, $serviceId);
+            $this->assertDoesNotMatchRegularExpression('/^kununu_testing\.orchestrator\.%s\.\w+\.executor/m', $sectionName, $serviceId);
+            $this->assertDoesNotMatchRegularExpression('/^kununu_testing\.orchestrator\.%s\.\w+\.loader/m', $sectionName, $serviceId);
+            $this->assertDoesNotMatchRegularExpression('/^kununu_testing\.load_fixtures\.%s\.\w+\.command/m', $sectionName, $serviceId);
         }
     }
 

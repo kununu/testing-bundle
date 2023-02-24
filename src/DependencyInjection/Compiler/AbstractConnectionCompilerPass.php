@@ -5,12 +5,11 @@ namespace Kununu\TestingBundle\DependencyInjection\Compiler;
 
 use Kununu\DataFixtures\Loader\ConnectionFixturesLoader;
 use Kununu\TestingBundle\Service\Orchestrator;
-use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Reference;
 
-abstract class AbstractConnectionCompilerPass implements CompilerPassInterface
+abstract class AbstractConnectionCompilerPass extends AbstractCompilerPass
 {
     use LoadFixturesCommandsTrait;
 
@@ -18,7 +17,7 @@ abstract class AbstractConnectionCompilerPass implements CompilerPassInterface
     private const LOAD_COMMAND_FIXTURES_CLASSES_NAMESPACE_CONFIG = 'load_command_fixtures_classes_namespace';
     private const ORCHESTRATOR_SERVICE_PREFIX = 'kununu_testing.orchestrator.%s';
 
-    private $orchestratorServicePrefix;
+    private string $orchestratorServicePrefix;
 
     public function __construct()
     {
@@ -36,7 +35,7 @@ abstract class AbstractConnectionCompilerPass implements CompilerPassInterface
         foreach ($connections as $connName => $connId) {
             $connConfigsParameterName = sprintf('kununu_testing.%s.%s', $this->getSectionName(), $connName);
 
-            // Connection is not configured for kununu\testing-bundle
+            // Connection is not configured for usage with this bundle
             if (!$container->hasParameter($connConfigsParameterName)) {
                 continue;
             }
@@ -82,18 +81,26 @@ abstract class AbstractConnectionCompilerPass implements CompilerPassInterface
         string $connName,
         array $connConfig
     ): string {
-        $excludedTables = $connConfig[self::EXCLUDED_TABLES_CONFIG] ?? [];
-
-        $connection = new Reference($id);
-
         // Purger Definition for the Connection with provided $id
         $purgerId = sprintf('%s.%s.purger', $this->orchestratorServicePrefix, $connName);
-        $purgerDefinition = new Definition($this->getConnectionPurgerClass(), [$connection, $excludedTables]);
+        $purgerDefinition = new Definition(
+            $this->getConnectionPurgerClass(),
+            [
+                $connection = new Reference($id),
+                $connConfig[self::EXCLUDED_TABLES_CONFIG] ?? [],
+            ]
+        );
         $container->setDefinition($purgerId, $purgerDefinition);
 
         // Executor Definition for the Connection with provided $id
         $executorId = sprintf('%s.%s.executor', $this->orchestratorServicePrefix, $connName);
-        $executorDefinition = new Definition($this->getConnectionExecutorClass(), [$connection, new Reference($purgerId)]);
+        $executorDefinition = new Definition(
+            $this->getConnectionExecutorClass(),
+            [
+                $connection,
+                new Reference($purgerId),
+            ]
+        );
         $container->setDefinition($executorId, $executorDefinition);
 
         // Loader Definition for the Connection with provided $id
@@ -101,18 +108,20 @@ abstract class AbstractConnectionCompilerPass implements CompilerPassInterface
         $loaderDefinition = new Definition(ConnectionFixturesLoader::class);
         $container->setDefinition($loaderId, $loaderDefinition);
 
-        $connectionOrchestratorDefinition = new Definition(
+        // Orchestrator definition for the Connection with provided $id
+        $orchestratorDefinition = new Definition(
             Orchestrator::class,
             [
                 new Reference($executorId),
                 new Reference($loaderId),
             ]
         );
-        $connectionOrchestratorDefinition->setPublic(true);
+        $orchestratorDefinition->setPublic(true);
 
-        $orchestratorId = sprintf('%s.%s', $this->orchestratorServicePrefix, $connName);
-
-        $container->setDefinition($orchestratorId, $connectionOrchestratorDefinition);
+        $container->setDefinition(
+            $orchestratorId = sprintf('%s.%s', $this->orchestratorServicePrefix, $connName),
+            $orchestratorDefinition
+        );
 
         return $orchestratorId;
     }

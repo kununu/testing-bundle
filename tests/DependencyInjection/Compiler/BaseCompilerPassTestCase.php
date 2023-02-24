@@ -51,17 +51,7 @@ abstract class BaseCompilerPassTestCase extends AbstractCompilerPassTestCase
         $this->assertTrue($this->container->getDefinition($orchestratorId)->isPublic());
     }
 
-    protected function assertThatDoesNotMatchRegularExpression(string $pattern, string $string, string $message = ''): void
-    {
-        // Support both phpunit ^8.5 and ^9.0 as "assertNotRegExp" is now deprecated
-        if (method_exists($this, 'assertDoesNotMatchRegularExpression')) {
-            $this->assertDoesNotMatchRegularExpression($pattern, $string, $message);
-        } else {
-            $this->assertNotRegExp($pattern, $string, $message);
-        }
-    }
-
-    protected function assertPurger(string $purgerId, string $purgerClass, ...$arguments): void
+    protected function assertPurger(string $purgerId, string $purgerClass, mixed ...$arguments): void
     {
         $this->assertContainerBuilderHasService($purgerId, $purgerClass);
         $this->assertTrue($this->container->getDefinition($purgerId)->isPrivate());
@@ -70,7 +60,7 @@ abstract class BaseCompilerPassTestCase extends AbstractCompilerPassTestCase
         }
     }
 
-    protected function assertExecutor(string $executorId, string $executorClass, ...$arguments): void
+    protected function assertExecutor(string $executorId, string $executorClass, mixed ...$arguments): void
     {
         $this->assertContainerBuilderHasService($executorId, $executorClass);
         $this->assertTrue($this->container->getDefinition($executorId)->isPrivate());
@@ -93,11 +83,19 @@ abstract class BaseCompilerPassTestCase extends AbstractCompilerPassTestCase
         $this->assertContainerBuilderHasServiceDefinitionWithArgument($orchestratorId, 1, new Reference($loaderId));
     }
 
-    protected function getMockKununuTestingExtension(): ExtensionInterface
+    protected function getMockKununuTestingExtension(string $alias = KununuTestingExtension::ALIAS): ExtensionInterface
     {
         $mock = $this->createMock(ExtensionInterface::class);
-        $mock->expects($this->any())->method('getAlias')->willReturn(KununuTestingExtension::ALIAS);
-        $mock->expects($this->any())->method('getNamespace')->willReturn(false);
+
+        $mock
+            ->expects($this->any())
+            ->method('getAlias')
+            ->willReturn($alias);
+
+        $mock
+            ->expects($this->any())
+            ->method('getNamespace')
+            ->willReturn(false);
 
         return $mock;
     }

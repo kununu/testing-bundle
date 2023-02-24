@@ -9,8 +9,8 @@ use Kununu\DataFixtures\InitializableFixtureInterface;
 
 final class ElasticSearchFixture1 implements ElasticSearchFixtureInterface, InitializableFixtureInterface
 {
-    private $arg1;
-    private $arg2;
+    private ?int $arg1 = null;
+    private ?array $arg2 = null;
 
     public function load(Client $elasticSearch, string $indexName): void
     {
@@ -23,7 +23,7 @@ final class ElasticSearchFixture1 implements ElasticSearchFixtureInterface, Init
         );
     }
 
-    public function initializeFixture(...$args): void
+    public function initializeFixture(mixed ...$args): void
     {
         foreach ($args as $index => $arg) {
             if (0 === $index && is_int($arg)) {

@@ -10,7 +10,7 @@ abstract class AbstractOptions
     private const PREFIX_WITH = 'with';
     private const PREFIX_WITHOUT = 'without';
 
-    private $options = [];
+    private array $options = [];
 
     protected function __construct()
     {
@@ -24,14 +24,12 @@ abstract class AbstractOptions
         }
     }
 
-    /** @return static */
-    public static function create(): self
+    public static function create(): static
     {
         return new static();
     }
 
-    /** @return static */
-    public function __call(string $method, array $args)
+    public function __call(string $method, array $args): static
     {
         foreach ([self::PREFIX_WITHOUT => false, self::PREFIX_WITH => true] as $prefix => $value) {
             if ($prefix === substr($method, 0, $setterPrefixLen = strlen($prefix))) {

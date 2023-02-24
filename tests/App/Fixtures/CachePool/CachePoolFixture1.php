@@ -9,7 +9,7 @@ use Psr\Cache\CacheItemPoolInterface;
 
 final class CachePoolFixture1 implements CachePoolFixtureInterface, InitializableFixtureInterface
 {
-    private $arg1;
+    private mixed $arg1;
 
     public function load(CacheItemPoolInterface $cachePool): void
     {
@@ -22,14 +22,14 @@ final class CachePoolFixture1 implements CachePoolFixtureInterface, Initializabl
         $cachePool->save($item1);
     }
 
-    public function initializeFixture(...$args): void
+    public function initializeFixture(mixed ...$args): void
     {
         if (count($args)) {
             $this->arg1 = $args[0];
         }
     }
 
-    public function arg1()
+    public function arg1(): mixed
     {
         return $this->arg1;
     }
