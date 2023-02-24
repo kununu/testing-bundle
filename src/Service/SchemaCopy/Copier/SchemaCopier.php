@@ -13,11 +13,8 @@ final class SchemaCopier implements SchemaCopyInterface
 {
     use ConnectionToolsTrait;
 
-    private $adapterFactory;
-
-    public function __construct(SchemaCopyAdapterFactoryInterface $adapterFactory)
+    public function __construct(private SchemaCopyAdapterFactoryInterface $adapterFactory)
     {
-        $this->adapterFactory = $adapterFactory;
     }
 
     public function copy(Connection $source, Connection $destination): void

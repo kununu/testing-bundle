@@ -5,7 +5,7 @@ namespace Kununu\TestingBundle\Tests\DependencyInjection;
 
 final class NonTransactionalConnectionsConfigurationTest extends ConfigurationTestCase
 {
-    public function validProcessedConfigurationDataProvider(): array
+    public static function validProcessedConfigurationDataProvider(): array
     {
         return [
             'no_configuration'                                        => [
@@ -140,7 +140,7 @@ final class NonTransactionalConnectionsConfigurationTest extends ConfigurationTe
         ];
     }
 
-    protected function getInvalidProcessedConfigurationData(): array
+    protected static function getInvalidProcessedConfigurationData(): array
     {
         return [
             'connections_as_null'        => [

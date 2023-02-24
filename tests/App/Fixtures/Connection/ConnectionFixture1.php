@@ -12,8 +12,8 @@ final class ConnectionFixture1 implements ConnectionFixtureInterface, Initializa
 {
     use ConnectionToolsTrait;
 
-    private $arg1;
-    private $arg2 = false;
+    private ?string $arg1 = null;
+    private bool $arg2 = false;
 
     public function load(Connection $connection): void
     {
@@ -21,7 +21,7 @@ final class ConnectionFixture1 implements ConnectionFixtureInterface, Initializa
         $this->executeQuery($connection, 'INSERT INTO `table_2` (`name`, `description`) VALUES (\'name\', \'description\');');
     }
 
-    public function initializeFixture(...$args): void
+    public function initializeFixture(mixed ...$args): void
     {
         foreach ($args as $index => $arg) {
             if (0 === $index && is_string($arg)) {

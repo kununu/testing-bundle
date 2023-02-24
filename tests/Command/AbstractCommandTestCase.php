@@ -10,10 +10,8 @@ use Symfony\Component\Console\Tester\CommandTester;
 
 abstract class AbstractCommandTestCase extends FixturesAwareTestCase
 {
-    /** @var Application */
-    protected $application;
-    /** @var CommandTester */
-    protected $commandTester;
+    protected Application $application;
+    protected CommandTester $commandTester;
 
     public function testExistsCommands(): void
     {

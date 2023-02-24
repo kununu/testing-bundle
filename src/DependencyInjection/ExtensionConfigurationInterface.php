@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Kununu\TestingBundle\DependencyInjection;
 
-interface ExtensionConfiguration
+interface ExtensionConfigurationInterface
 {
     public function getConfig(): array;
 }

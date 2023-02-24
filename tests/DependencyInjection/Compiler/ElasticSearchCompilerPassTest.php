@@ -81,11 +81,11 @@ final class ElasticSearchCompilerPassTest extends BaseCompilerPassTestCase
         $this->compile();
 
         foreach ($this->container->getServiceIds() as $serviceId) {
-            $this->assertThatDoesNotMatchRegularExpression('/^kununu_testing\.orchestrator\.elastic_search\.\w+$/m', $serviceId);
-            $this->assertThatDoesNotMatchRegularExpression('/^kununu_testing\.orchestrator\.elastic_search\.\w+\.purger$/m', $serviceId);
-            $this->assertThatDoesNotMatchRegularExpression('/^kununu_testing\.orchestrator\.elastic_search\.\w+\.executor/m', $serviceId);
-            $this->assertThatDoesNotMatchRegularExpression('/^kununu_testing\.orchestrator\.elastic_search\.\w+\.loader/m', $serviceId);
-            $this->assertThatDoesNotMatchRegularExpression('/^kununu_testing\.load_fixtures\.elastic_search\.\w+\.command/m', $serviceId);
+            $this->assertDoesNotMatchRegularExpression('/^kununu_testing\.orchestrator\.elastic_search\.\w+$/m', $serviceId);
+            $this->assertDoesNotMatchRegularExpression('/^kununu_testing\.orchestrator\.elastic_search\.\w+\.purger$/m', $serviceId);
+            $this->assertDoesNotMatchRegularExpression('/^kununu_testing\.orchestrator\.elastic_search\.\w+\.executor/m', $serviceId);
+            $this->assertDoesNotMatchRegularExpression('/^kununu_testing\.orchestrator\.elastic_search\.\w+\.loader/m', $serviceId);
+            $this->assertDoesNotMatchRegularExpression('/^kununu_testing\.load_fixtures\.elastic_search\.\w+\.command/m', $serviceId);
         }
     }
 

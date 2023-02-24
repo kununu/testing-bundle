@@ -9,22 +9,14 @@ use PHPUnit\Framework\TestCase;
 
 final class OptionsTest extends TestCase
 {
-    /**
-     * @dataProvider optionsDataProvider
-     *
-     * @param OptionsInterface $options
-     * @param bool             $expectedAppend
-     * @param bool             $expectedClear
-     *
-     * @return void
-     */
+    /** @dataProvider optionsDataProvider */
     public function testOptions(OptionsInterface $options, bool $expectedAppend, bool $expectedClear): void
     {
         $this->assertEquals($expectedAppend, $options->append());
         $this->assertEquals($expectedClear, $options->clear());
     }
 
-    public function optionsDataProvider(): array
+    public static function optionsDataProvider(): array
     {
         return [
             'default'               => [

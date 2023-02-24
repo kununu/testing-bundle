@@ -15,7 +15,7 @@ final class HttpClientFixture1 extends HttpClientPhpArrayFixture implements Init
         ];
     }
 
-    public function initializeFixture(...$args): void
+    public function initializeFixture(mixed ...$args): void
     {
     }
 }

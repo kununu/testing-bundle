@@ -132,9 +132,7 @@ final class RequestBuilderTest extends TestCase
         $this->assertEquals('Bearer ACCESS_TOKEN_VALUE', $server['HTTP_AUTHORIZATION']);
     }
 
-    /**
-     * @dataProvider buildRequestWithHeaderDataProvider
-     */
+    /** @dataProvider buildRequestWithHeaderDataProvider */
     public function testBuildRequestWithHeader(string $headerName, string $expectedHeaderName): void
     {
         $headerValue = 'value';
@@ -145,7 +143,7 @@ final class RequestBuilderTest extends TestCase
         $this->assertEquals($headerValue, $server[$expectedHeaderName]);
     }
 
-    public function buildRequestWithHeaderDataProvider(): array
+    public static function buildRequestWithHeaderDataProvider(): array
     {
         return [
             'with_http'    => [

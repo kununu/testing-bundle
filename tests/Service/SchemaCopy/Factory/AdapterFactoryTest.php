@@ -12,12 +12,7 @@ use PHPUnit\Framework\TestCase;
 
 final class AdapterFactoryTest extends TestCase
 {
-    /**
-     * @dataProvider createAdapterDataProvider
-     *
-     * @param string      $platformClass
-     * @param string|null $expectedType
-     */
+    /** @dataProvider createAdapterDataProvider */
     public function testCreateAdapter(string $platformClass, ?string $expectedType): void
     {
         $connection = $this->createMock(Connection::class);
@@ -37,7 +32,7 @@ final class AdapterFactoryTest extends TestCase
         }
     }
 
-    public function createAdapterDataProvider(): array
+    public static function createAdapterDataProvider(): array
     {
         return [
             'mysql'   => [

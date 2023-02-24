@@ -13,12 +13,8 @@ final class CreateElasticsearchIndexCommand extends Command
 {
     protected static $defaultName = 'app:elasticsearch:create-index';
 
-    private $elasticsearchClient;
-
-    public function __construct(Client $elasticsearchClient)
+    public function __construct(private Client $elasticsearchClient)
     {
-        $this->elasticsearchClient = $elasticsearchClient;
-
         parent::__construct();
     }
 

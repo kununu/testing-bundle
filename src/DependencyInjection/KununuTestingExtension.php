@@ -8,11 +8,11 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\Extension;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 
-final class KununuTestingExtension extends Extension implements ExtensionConfiguration
+final class KununuTestingExtension extends Extension implements ExtensionConfigurationInterface
 {
     public const ALIAS = 'kununu_testing';
 
-    private $config = [];
+    private array $config = [];
 
     public function load(array $configs, ContainerBuilder $container): void
     {

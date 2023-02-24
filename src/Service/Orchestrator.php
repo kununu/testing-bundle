@@ -6,15 +6,10 @@ namespace Kununu\TestingBundle\Service;
 use Kununu\DataFixtures\Executor\ExecutorInterface;
 use Kununu\DataFixtures\Loader\LoaderInterface;
 
-final class Orchestrator
+final class Orchestrator implements OrchestratorInterface
 {
-    private $executor;
-    private $loader;
-
-    public function __construct(ExecutorInterface $executor, LoaderInterface $loader)
+    public function __construct(private ExecutorInterface $executor, private LoaderInterface $loader)
     {
-        $this->executor = $executor;
-        $this->loader = $loader;
     }
 
     public function execute(array $fixturesClassNames, bool $append, bool $clearFixtures = true): void
@@ -30,7 +25,7 @@ final class Orchestrator
         $this->executor->execute($this->loader->getFixtures(), $append);
     }
 
-    public function registerInitializableFixture(string $className, ...$args): void
+    public function registerInitializableFixture(string $className, mixed ...$args): void
     {
         $this->loader->registerInitializableFixture($className, ...$args);
     }

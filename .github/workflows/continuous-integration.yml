@@ -17,9 +17,6 @@ jobs:
     strategy:
       matrix:
         php-version:
-          - 7.2
-          - 7.3
-          - 7.4
           - 8.0
         mysql-version:
           - 5.7
@@ -107,7 +104,7 @@ jobs:
 
       - uses: actions/download-artifact@v2
         with:
-          name: build-7.4-coverage
+          name: build-8-coverage
           path: tests/.results/
 
       - name: Fix Code Coverage Paths

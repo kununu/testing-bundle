@@ -1,36 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<phpunit
-        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:noNamespaceSchemaLocation="./vendor/phpunit/phpunit/phpunit.xsd"
-        bootstrap="tests/bootstrap.php"
-        colors="true"
-        beStrictAboutChangesToGlobalState="true">
+<!-- https://phpunit.readthedocs.io/en/9.6/ -->
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.6/phpunit.xsd" bootstrap="tests/bootstrap.php"
+         colors="true" beStrictAboutChangesToGlobalState="true">
+    <coverage processUncoveredFiles="false">
+        <include>
+            <directory>src</directory>
+        </include>
+        <exclude>
+            <file>src/Traits/ConnectionToolsTrait.php</file>
+        </exclude>
+        <report>
+            <clover outputFile="tests/.results/tests-clover.xml"/>
+            <html outputDirectory="tests/.results/html/"/>
+        </report>
+    </coverage>
     <php>
         <ini name="error_reporting" value="-1"/>
         <server name="APP_ENV" value="test" force="true"/>
     </php>
     <testsuites>
         <testsuite name="TestingBundle Test Suite">
-            <directory>./tests/</directory>
+            <directory>tests</directory>
         </testsuite>
     </testsuites>
-
-    <filter>
-        <whitelist processUncoveredFilesFromWhitelist="false">
-            <directory>src</directory>
-            <exclude>
-                <file>src/Traits/ConnectionToolsTrait.php</file>
-            </exclude>
-        </whitelist>
-    </filter>
-
     <listeners>
         <listener class="Symfony\Bridge\PhpUnit\SymfonyTestsListener"/>
     </listeners>
-
     <logging>
-        <log type="coverage-clover" target="tests/.results/tests-clover.xml"/>
-        <log type="junit" target="tests/.results/tests-junit.xml"/>
-        <log type="coverage-html" target="tests/.results/html/"/>
+        <junit outputFile="tests/.results/tests-junit.xml"/>
     </logging>
 </phpunit>

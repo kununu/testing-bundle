@@ -5,9 +5,7 @@ namespace Kununu\TestingBundle\Tests\Command;
 
 use Kununu\TestingBundle\Command\LoadNonTransactionalConnectionFixturesCommand;
 
-/**
- * @group legacy
- */
+/** @group legacy */
 final class LoadNonTransactionalConnectionFixturesCommandTest extends AbstractLoadConnectionTestCase
 {
     private const COMMAND_1 = 'kununu_testing:load_fixtures:non_transactional_connections:def';

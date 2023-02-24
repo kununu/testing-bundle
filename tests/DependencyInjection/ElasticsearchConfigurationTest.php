@@ -5,7 +5,7 @@ namespace Kununu\TestingBundle\Tests\DependencyInjection;
 
 final class ElasticsearchConfigurationTest extends ConfigurationTestCase
 {
-    public function validProcessedConfigurationDataProvider(): array
+    public static function validProcessedConfigurationDataProvider(): array
     {
         return [
             'no_configuration'   => [
@@ -66,7 +66,7 @@ final class ElasticsearchConfigurationTest extends ConfigurationTestCase
         ];
     }
 
-    protected function getInvalidProcessedConfigurationData(): array
+    protected static function getInvalidProcessedConfigurationData(): array
     {
         return [
             'elastic_search_as_null'        => [

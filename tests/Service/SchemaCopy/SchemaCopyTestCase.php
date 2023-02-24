@@ -7,24 +7,16 @@ use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Platforms\MySqlPlatform;
 use Doctrine\DBAL\Result;
 use Kununu\TestingBundle\Service\SchemaCopy\SchemaCopyAdapterInterface;
+use LogicException;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 abstract class SchemaCopyTestCase extends TestCase
 {
-    /** @var string */
-    protected $executeStatementMethod;
-    /** @var string */
-    protected $fetchNumericMethod;
-    /** @var string */
-    protected $fetchAllFirstColumnMethod;
+    protected string $executeStatementMethod;
+    protected string $fetchNumericMethod;
+    protected string $fetchAllFirstColumnMethod;
 
-    /**
-     * @param string $type
-     * @param int    $expectedCalls
-     *
-     * @return SchemaCopyAdapterInterface|MockObject
-     */
     protected function createAdapterMock(string $type, int $expectedCalls = 1): SchemaCopyAdapterInterface
     {
         $mock = $this->createMock(SchemaCopyAdapterInterface::class);
@@ -36,10 +28,7 @@ abstract class SchemaCopyTestCase extends TestCase
         return $mock;
     }
 
-    /**
-     * @return Connection|MockObject
-     */
-    protected function createConnectionMock(): Connection
+    protected function createConnectionMock(): MockObject|Connection
     {
         $mock = $this->createMock(Connection::class);
         $mock
@@ -52,29 +41,31 @@ abstract class SchemaCopyTestCase extends TestCase
 
     protected function mockExecuteQuery(MockObject $connection, array $results, string ...$statements): void
     {
+        $map = array_combine($statements, $results);
+
         $connection
             ->expects($this->exactly(count($statements)))
             ->method('executeQuery')
-            ->withConsecutive(...$this->createConsecutiveStatements($statements))
-            ->willReturnOnConsecutiveCalls(...$results);
+            ->willReturnCallback(fn(string $statement): Result => match (true) {
+                isset($map[$statement]) => $map[$statement],
+                default                 => throw new LogicException(sprintf('Statement "%s" not found', $statement))
+            });
     }
 
     protected function mockExecuteStatement(MockObject $connection, string ...$statements): void
     {
+        $map = array_combine($statements, array_fill(0, count($statements), 0));
+
         $connection
             ->expects($this->exactly(count($statements)))
             ->method($this->executeStatementMethod)
-            ->withConsecutive(...$this->createConsecutiveStatements($statements))
-            ->willReturn(0);
+            ->willReturnCallback(fn(string $statement): int => match (true) {
+                isset($map[$statement]) => $map[$statement],
+                default                 => throw new LogicException(sprintf('Statement "%s" not found', $statement))
+            });
     }
 
-    /**
-     * @param string $method
-     * @param mixed  $result
-     *
-     * @return Result
-     */
-    protected function createResultMock(string $method, $result): Result
+    protected function createResultMock(string $method, mixed $result): Result
     {
         $mock = $this->createMock(Result::class);
         $mock
@@ -86,12 +77,7 @@ abstract class SchemaCopyTestCase extends TestCase
         return $mock;
     }
 
-    /**
-     * @param mixed $result
-     *
-     * @return mixed|array
-     */
-    protected function createResultForFetchNumericMethod($result)
+    protected function createResultForFetchNumericMethod(mixed $result): mixed
     {
         if ('fetchNumeric' === $this->fetchNumericMethod) {
             return [0 => null, 1 => $result];
@@ -102,18 +88,12 @@ abstract class SchemaCopyTestCase extends TestCase
 
     protected function setUp(): void
     {
-        $this->executeStatementMethod = method_exists(Connection::class, 'executeStatement') ? 'executeStatement' : 'exec';
+        $this->executeStatementMethod = method_exists(Connection::class, 'executeStatement')
+            ? 'executeStatement'
+            : 'exec';
         $this->fetchNumericMethod = method_exists(Result::class, 'fetchNumeric') ? 'fetchNumeric' : 'fetchColumn';
-        $this->fetchAllFirstColumnMethod = method_exists(Result::class, 'fetchFirstColumn') ? 'fetchFirstColumn' : 'fetchAll';
-    }
-
-    private function createConsecutiveStatements(array $statements): array
-    {
-        return array_map(
-            function(string $statement): array {
-                return [$statement];
-            },
-            $statements
-        );
+        $this->fetchAllFirstColumnMethod = method_exists(Result::class, 'fetchFirstColumn')
+            ? 'fetchFirstColumn'
+            : 'fetchAll';
     }
 }

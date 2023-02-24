@@ -17,45 +17,30 @@ final class KununuTestingBundleTest extends TestCase
 {
     public function testBuild(): void
     {
-        $containerMock = $this->createMock(ContainerBuilder::class);
-        $containerMock
+        $executedCompilerPasses = [];
+
+        $container = $this->createMock(ContainerBuilder::class);
+        $container
             ->expects($this->exactly(6))
             ->method('addCompilerPass')
-            ->withConsecutive(
-                [
-                    $this->callback(function($subject) {
-                        return $subject instanceof CachePoolCompilerPass;
-                    }),
-                ],
-                [
-                    $this->callback(function($subject) {
-                        return $subject instanceof ConnectionCompilerPass;
-                    }),
-                ],
-                [
-                    $this->callback(function($subject) {
-                        return $subject instanceof NonTransactionalConnectionCompilerPass;
-                    }),
-                ],
-                [
-                    $this->callback(function($subject) {
-                        return $subject instanceof ElasticSearchCompilerPass;
-                    }),
-                ],
-                [
-                    $this->callback(function($subject) {
-                        return $subject instanceof HttpClientCompilerPass;
-                    }),
-                ],
-                [
-                    $this->callback(function($subject) {
-                        return $subject instanceof CopyConnectionSchemaCommandCompilerPass;
-                    }),
-                ]
+            ->willReturnCallback(
+                function($subject) use (&$executedCompilerPasses): void {
+                    $executedCompilerPasses[] = $subject::class;
+                }
             );
 
-        $bundle = new KununuTestingBundle();
+        (new KununuTestingBundle())->build($container);
 
-        $bundle->build($containerMock);
+        $this->assertEquals(
+            [
+                CachePoolCompilerPass::class,
+                ConnectionCompilerPass::class,
+                NonTransactionalConnectionCompilerPass::class,
+                ElasticSearchCompilerPass::class,
+                HttpClientCompilerPass::class,
+                CopyConnectionSchemaCommandCompilerPass::class,
+            ],
+            $executedCompilerPasses
+        );
     }
 }

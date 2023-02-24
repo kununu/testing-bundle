@@ -12,10 +12,9 @@ final class Configuration implements ConfigurationInterface
     public function getConfigTreeBuilder(): TreeBuilder
     {
         $treeBuilder = new TreeBuilder('kununu_testing');
-        $rootNode = $treeBuilder->getRootNode()->fixXmlConfig('connection');
 
         $this
-            ->addConnectionsSection($rootNode, 'connections')
+            ->addConnectionsSection($rootNode = $treeBuilder->getRootNode()->fixXmlConfig('connection'), 'connections')
             ->addConnectionsSection($rootNode, 'non_transactional_connections')
             ->addElasticSearchSection($rootNode)
             ->addCacheSection($rootNode)
