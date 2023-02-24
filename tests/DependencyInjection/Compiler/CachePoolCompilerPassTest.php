@@ -100,10 +100,26 @@ final class CachePoolCompilerPassTest extends BaseCompilerPassTestCase
         );
     }
 
+    public function testThatCreatesOrchestratorWhenContainerDoesNotHaveKununuTestingExtension(): void
+    {
+        $this->container->registerExtension($this->getMockKununuTestingExtension('another-extension'));
+
+        $this->doAssertionsOnCachePoolsServices(
+            function(string $purgerId, string $executorId, string $loaderId, string $orchestratorId): void {
+                $this->assertContainerBuilderNotHasService($purgerId);
+                $this->assertContainerBuilderNotHasService($executorId);
+                $this->assertContainerBuilderNotHasService($loaderId);
+                $this->assertContainerBuilderNotHasService($orchestratorId);
+            }
+        );
+    }
+
     protected function registerCompilerPass(ContainerBuilder $container): void
     {
         $container->addCompilerPass(new CachePoolCompilerPass());
-        $container->registerExtension(new KununuTestingExtension());
+        if ($this->getName() !== 'testThatCreatesOrchestratorWhenContainerDoesNotHaveKununuTestingExtension') {
+            $container->registerExtension(new KununuTestingExtension());
+        }
 
         foreach (self::CACHE_POOL_IDS as $cachePoolId => $tagAttributes) {
             $cachePoolDefinition = new Definition();

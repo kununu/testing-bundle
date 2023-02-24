@@ -83,14 +83,14 @@ abstract class BaseCompilerPassTestCase extends AbstractCompilerPassTestCase
         $this->assertContainerBuilderHasServiceDefinitionWithArgument($orchestratorId, 1, new Reference($loaderId));
     }
 
-    protected function getMockKununuTestingExtension(): ExtensionInterface
+    protected function getMockKununuTestingExtension(string $alias = KununuTestingExtension::ALIAS): ExtensionInterface
     {
         $mock = $this->createMock(ExtensionInterface::class);
 
         $mock
             ->expects($this->any())
             ->method('getAlias')
-            ->willReturn(KununuTestingExtension::ALIAS);
+            ->willReturn($alias);
 
         $mock
             ->expects($this->any())

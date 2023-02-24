@@ -12,14 +12,10 @@ abstract class AbstractCompilerPass implements CompilerPassInterface
 {
     protected function getExtensionConfiguration(ContainerBuilder $containerBuilder): ?array
     {
-        if (!$containerBuilder->hasExtension(KununuTestingExtension::ALIAS)) {
-            return null;
-        }
-
-        $extension = $containerBuilder->getExtension(KununuTestingExtension::ALIAS);
-
-        return $extension instanceof ExtensionConfigurationInterface
-            ? $extension->getConfig()
+        $extension = $containerBuilder->hasExtension(KununuTestingExtension::ALIAS)
+            ? $containerBuilder->getExtension(KununuTestingExtension::ALIAS)
             : null;
+
+        return $extension instanceof ExtensionConfigurationInterface ? $extension->getConfig() : null;
     }
 }
