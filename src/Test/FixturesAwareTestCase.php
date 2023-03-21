@@ -6,10 +6,8 @@ namespace Kununu\TestingBundle\Test;
 use Kununu\TestingBundle\Service\Orchestrator;
 use Kununu\TestingBundle\Test\Options\DbOptionsInterface;
 use Kununu\TestingBundle\Test\Options\OptionsInterface;
-use Psr\Container\ContainerInterface;
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase as BaseWebTestCase;
 
-abstract class FixturesAwareTestCase extends BaseWebTestCase
+abstract class FixturesAwareTestCase extends AbstractTestCase
 {
     private const KEY_CONNECTIONS = 'connections';
     private const KEY_NON_TRANSACTIONAL_CONNECTIONS = 'non_transactional_connections';
@@ -108,18 +106,6 @@ abstract class FixturesAwareTestCase extends BaseWebTestCase
         $this
             ->getOrchestrator(self::KEY_HTTP_CLIENT, $httpClientServiceId)
             ->registerInitializableFixture($className, ...$args);
-    }
-
-    final protected function getFixturesContainer(): ContainerInterface
-    {
-        if (
-            !static::$kernel ||
-            !(method_exists(static::class, 'getContainer') ? static::getContainer() : static::$container)
-        ) {
-            static::createClient();
-        }
-
-        return method_exists(static::class, 'getContainer') ? static::getContainer() : static::$container;
     }
 
     final protected function clearDbFixtures(string $connectionName, DbOptionsInterface $options): self

@@ -3,20 +3,17 @@ declare(strict_types=1);
 
 namespace Kununu\TestingBundle\Test;
 
-use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Component\HttpFoundation\Response;
 
 abstract class WebTestCase extends FixturesAwareTestCase
 {
-    private ?KernelBrowser $client = null;
-
     final protected function doRequest(RequestBuilder $builder, bool $shutdown = true): Response
     {
-        $this->initClient();
+        $client = $this->getKernelBrowser();
 
-        $this->client->request(...$builder->build());
+        $client->request(...$builder->build());
 
-        $response = $this->client->getResponse();
+        $response = $client->getResponse();
 
         // Since there is no content, then there is also no content-type header.
         if (Response::HTTP_NO_CONTENT !== $response->getStatusCode()) {
@@ -29,16 +26,9 @@ abstract class WebTestCase extends FixturesAwareTestCase
         }
 
         if ($shutdown) {
-            $this->ensureKernelShutdown();
+            $this->shutdown();
         }
 
         return $response;
-    }
-
-    private function initClient(): void
-    {
-        if (!$this->client) {
-            $this->client = static::createClient();
-        }
     }
 }
