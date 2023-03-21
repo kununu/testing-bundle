@@ -6,14 +6,9 @@ namespace Kununu\TestingBundle\Test;
 use Kununu\TestingBundle\Service\Orchestrator;
 use Kununu\TestingBundle\Test\Options\DbOptionsInterface;
 use Kununu\TestingBundle\Test\Options\OptionsInterface;
-use Psr\Container\ContainerInterface;
-use Symfony\Bundle\FrameworkBundle\KernelBrowser;
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase as BaseWebTestCase;
 
-abstract class FixturesAwareTestCase extends BaseWebTestCase
+abstract class FixturesAwareTestCase extends AbstractTestCase
 {
-    protected ?KernelBrowser $kernelBrowser = null;
-
     private const KEY_CONNECTIONS = 'connections';
     private const KEY_NON_TRANSACTIONAL_CONNECTIONS = 'non_transactional_connections';
     private const KEY_CACHE_POOLS = 'cache_pools';
@@ -113,18 +108,6 @@ abstract class FixturesAwareTestCase extends BaseWebTestCase
             ->registerInitializableFixture($className, ...$args);
     }
 
-    final protected function getFixturesContainer(): ContainerInterface
-    {
-        if (
-            !static::$kernel ||
-            !(method_exists(static::class, 'getContainer') ? static::getContainer() : static::$container)
-        ) {
-            $this->getKernelBrowser();
-        }
-
-        return method_exists(static::class, 'getContainer') ? static::getContainer() : static::$container;
-    }
-
     final protected function clearDbFixtures(string $connectionName, DbOptionsInterface $options): self
     {
         $this
@@ -181,21 +164,6 @@ abstract class FixturesAwareTestCase extends BaseWebTestCase
     final protected function getHttpClientFixtures(string $httpClientServiceId): array
     {
         return $this->getOrchestrator(self::KEY_HTTP_CLIENT, $httpClientServiceId)->getFixtures();
-    }
-
-    final protected function getKernelBrowser(): KernelBrowser
-    {
-        if (!$this->kernelBrowser) {
-            $this->kernelBrowser = static::createClient();
-        }
-
-        return $this->kernelBrowser;
-    }
-
-    final protected function shutdown(): void
-    {
-        $this->kernelBrowser = null;
-        $this->ensureKernelShutdown();
     }
 
     private function getOrchestrator(string $type, string $key): Orchestrator
