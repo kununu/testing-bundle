@@ -133,10 +133,8 @@ public function withServerParameter(string $parameterName, string $parameterValu
 This bundle exposes the [WebTestCase](https://github.com/kununu/testing-bundle/blob/master/src/Test/WebTestCase.php) that you can extend which exposes a method that helps you testing your controllers without having to care about create the kernel. This class also allows you load fixtures in your tests.
 
 ```php
-final protected function doRequest(RequestBuilder $builder, bool $shutdown = true): Symfony\Component\HttpFoundation\Response
+final protected function doRequest(RequestBuilder $builder): Symfony\Component\HttpFoundation\Response
 ```
-
-The `shutdown` parameter, if set to true (default), will ensure that Symfony kernel is shutdown after the request, which is required to avoid exceptions on Symfony 5 and up.
 
 Internally this method calls the Symfony client with:
 

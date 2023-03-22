@@ -7,8 +7,10 @@ use Symfony\Component\HttpFoundation\Response;
 
 abstract class WebTestCase extends FixturesAwareTestCase
 {
-    final protected function doRequest(RequestBuilder $builder, bool $shutdown = true): Response
+    final protected function doRequest(RequestBuilder $builder): Response
     {
+        $this->shutdown();
+
         $client = $this->getKernelBrowser();
 
         $client->request(...$builder->build());
@@ -23,10 +25,6 @@ abstract class WebTestCase extends FixturesAwareTestCase
                     'application/json'
                 )
             );
-        }
-
-        if ($shutdown) {
-            $this->shutdown();
         }
 
         return $response;
