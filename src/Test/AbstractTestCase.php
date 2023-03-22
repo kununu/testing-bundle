@@ -34,7 +34,7 @@ abstract class AbstractTestCase extends WebTestCase
 
     final protected function shutdown(): void
     {
-        $this->kernelBrowser = null;
         $this->ensureKernelShutdown();
+        $this->kernelBrowser = null;
     }
 }
