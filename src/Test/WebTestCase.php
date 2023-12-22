@@ -5,23 +5,22 @@ namespace Kununu\TestingBundle\Test;
 
 use Kununu\TestingBundle\Test\Options\Options;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 abstract class WebTestCase extends FixturesAwareTestCase
 {
     final protected function doRequest(RequestBuilder $builder, string $httpClientName = 'http_client', ?Options $options = null): Response
     {
-        $httpClientFixtures = $this->getHttpClientFixtures($httpClientName);
-
-        if (!$options) {
-            $options = Options::create();
-        }
+        $httpClientFixtures = interface_exists(HttpClientInterface::class)
+            ? $this->getHttpClientFixtures($httpClientName)
+            : null;
 
         $this->shutdown();
 
         $client = $this->getKernelBrowser();
 
-        foreach ($httpClientFixtures as $fixtureClass => $fixture) {
-            $this->loadHttpClientFixtures($httpClientName, $options, $fixtureClass);
+        foreach ($httpClientFixtures ?? [] as $fixtureClass => $fixture) {
+            $this->loadHttpClientFixtures($httpClientName, $options ?? Options::create(), $fixtureClass);
         }
 
         $client->request(...$builder->build());
