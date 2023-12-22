@@ -4,24 +4,25 @@ declare(strict_types=1);
 namespace Kununu\TestingBundle\Test;
 
 use Kununu\TestingBundle\Test\Options\Options;
+use Symfony\Component\DependencyInjection\Exception\ServiceNotFoundException;
 use Symfony\Component\HttpFoundation\Response;
 
 abstract class WebTestCase extends FixturesAwareTestCase
 {
     final protected function doRequest(RequestBuilder $builder, string $httpClientName = 'http_client', ?Options $options = null): Response
     {
-        $httpClientFixtures = $this->getHttpClientFixtures($httpClientName);
-
-        if (!$options) {
-            $options = Options::create();
+        try {
+            $httpClientFixtures = $this->getHttpClientFixtures($httpClientName);
+        } catch (ServiceNotFoundException) {
+            $httpClientFixtures = null;
         }
 
         $this->shutdown();
 
         $client = $this->getKernelBrowser();
 
-        foreach ($httpClientFixtures as $fixtureClass => $fixture) {
-            $this->loadHttpClientFixtures($httpClientName, $options, $fixtureClass);
+        foreach ($httpClientFixtures ?? [] as $fixtureClass => $fixture) {
+            $this->loadHttpClientFixtures($httpClientName, $options ?? Options::create(), $fixtureClass);
         }
 
         $client->request(...$builder->build());
