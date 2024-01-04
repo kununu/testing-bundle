@@ -1,66 +1,70 @@
 {
-    "name": "kununu/testing-bundle",
-    "description": "Testing made easy by providing helper classes and fixtures loading",
-    "type": "symfony-bundle",
-    "keywords": ["tests", "symfony", "fixtures"],
-    "license": "MIT",
-    "authors": [
-        {
-            "name": "Hugo Gonçalves",
-            "email": "hugo.goncalves@kununu.com"
-        },
-        {
-            "name": "João Alves",
-            "email": "joao.alves@kununu.com"
-        }
-    ],
-    "require": {
-        "php": ">=8.0",
-        "symfony/framework-bundle": "^4.4 || ^5.0",
-        "kununu/data-fixtures": "^10.0",
-        "symfony/config": "^4.4 || ^5.0",
-        "symfony/dependency-injection": "^4.4 || ^5.0",
-        "symfony/http-kernel": "^4.4 || ^5.0"
+  "name": "kununu/testing-bundle",
+  "description": "Testing made easy by providing helper classes and fixtures loading",
+  "type": "symfony-bundle",
+  "keywords": [
+    "tests",
+    "symfony",
+    "fixtures"
+  ],
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Hugo Gonçalves",
+      "email": "hugo.goncalves@kununu.com"
     },
-    "require-dev": {
-        "ext-json": "*",
-        "ext-pdo": "*",
-        "doctrine/dbal": "^2.13",
-        "doctrine/doctrine-bundle": "^2.3.1",
-        "doctrine/doctrine-migrations-bundle": "^3.1.1",
-        "elasticsearch/elasticsearch": "^7.10",
-        "kununu/scripts": ">=3.0.1",
-        "matthiasnoback/symfony-dependency-injection-test": "^4.2",
-        "phpunit/phpunit": "^8.5 || ^9.0",
-        "psr/cache": "^1.0",
-        "symfony/browser-kit": "^5.2",
-        "symfony/dotenv": "^5.2",
-        "symfony/phpunit-bridge": "^5.2",
-        "symfony/http-client": "^4.4 | ^5.2",
-        "symfony/http-foundation": "^4.4 | ^5.2"
-    },
-    "suggest": {
-        "ext-pdo_mysql": "To run Integration Tests.",
-        "doctrine/doctrine-bundle": "To run Integration Tests.",
-        "elasticsearch/elasticsearch": "To run Integration Tests.",
-        "psr/cache": "To run Integration Tests.",
-        "symfony/http-client": "To run Integration Tests.",
-        "symfony/http-foundation": "To run Integration Tests."
-    },
-    "autoload": {
-        "psr-4": {
-            "Kununu\\TestingBundle\\": "src/"
-        }
-    },
-    "autoload-dev": {
-        "psr-4": {
-            "Kununu\\TestingBundle\\Tests\\": "tests/"
-        }
-    },
-    "config": {
-        "sort-packages": true,
-        "allow-plugins": {
-            "kununu/scripts": true
-        }
+    {
+      "name": "João Alves",
+      "email": "joao.alves@kununu.com"
     }
+  ],
+  "require": {
+    "php": ">=8.0",
+    "symfony/framework-bundle": "^4.4 || ^5.0",
+    "kununu/data-fixtures": "^10.2",
+    "symfony/config": "^4.4 || ^5.0",
+    "symfony/dependency-injection": "^4.4 || ^5.0",
+    "symfony/http-kernel": "^4.4 || ^5.0"
+  },
+  "require-dev": {
+    "ext-json": "*",
+    "ext-pdo": "*",
+    "doctrine/dbal": "^2.13",
+    "doctrine/doctrine-bundle": "^2.3.1",
+    "doctrine/doctrine-migrations-bundle": "^3.1.1",
+    "elasticsearch/elasticsearch": "^7.10",
+    "kununu/scripts": ">=3.0.1",
+    "matthiasnoback/symfony-dependency-injection-test": "^4.2",
+    "phpunit/phpunit": "^8.5 || ^9.0",
+    "psr/cache": "^1.0",
+    "symfony/browser-kit": "^5.2",
+    "symfony/dotenv": "^5.2",
+    "symfony/phpunit-bridge": "^5.2",
+    "symfony/http-client": "^4.4 | ^5.2",
+    "symfony/http-foundation": "^4.4 | ^5.2"
+  },
+  "suggest": {
+    "ext-pdo_mysql": "To run Integration Tests.",
+    "doctrine/doctrine-bundle": "To run Integration Tests.",
+    "elasticsearch/elasticsearch": "To run Integration Tests.",
+    "psr/cache": "To run Integration Tests.",
+    "symfony/http-client": "To run Integration Tests.",
+    "symfony/http-foundation": "To run Integration Tests."
+  },
+  "autoload": {
+    "psr-4": {
+      "Kununu\\TestingBundle\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Kununu\\TestingBundle\\Tests\\": "tests/"
+    }
+  },
+  "config": {
+    "sort-packages": true,
+    "allow-plugins": {
+      "kununu/scripts": true
+    }
+  }
 }
