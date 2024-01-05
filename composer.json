@@ -2,12 +2,13 @@
   "name": "kununu/testing-bundle",
   "description": "Testing made easy by providing helper classes and fixtures loading",
   "type": "symfony-bundle",
+  "license": "MIT",
+  "minimum-stability": "stable",
   "keywords": [
     "tests",
     "symfony",
     "fixtures"
   ],
-  "license": "MIT",
   "authors": [
     {
       "name": "Hugo Gonçalves",

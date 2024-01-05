@@ -13,7 +13,7 @@ env:
 jobs:
   build:
     name: PHPUnit
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     strategy:
       matrix:
         php-version:
@@ -54,7 +54,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
@@ -64,7 +64,7 @@ jobs:
           extensions: ${{ matrix.extensions }}
 
       - name: Install Composer Dependencies
-        uses: ramsey/composer-install@v1
+        uses: ramsey/composer-install@v2
         with:
           dependency-versions: ${{ matrix.dependencies }}
           composer-options: "--prefer-stable"
@@ -88,23 +88,23 @@ jobs:
           DATABASE_SERVER_VERSION: ${{ matrix.mysql-version }}
 
       - name: Upload coverage files
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
-          name: ${{ github.job }}-${{ matrix.php-version }}-coverage
+          name: ${{ github.job }}-${{ matrix.php-version }}-${{ matrix.dependencies }}-coverage
           path: tests/.results/
 
   sonarcloud:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
         with:
           # Disabling shallow clone is recommended for improving relevancy of reporting
           fetch-depth: 0
 
-      - uses: actions/download-artifact@v2
+      - uses: actions/download-artifact@v4
         with:
-          name: build-8-coverage
+          name: build-8-highest-coverage
           path: tests/.results/
 
       - name: Fix Code Coverage Paths
