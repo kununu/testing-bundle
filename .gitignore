@@ -8,3 +8,4 @@ tests/App/.env.local
 tests/App/.env.test
 tests/App/var/
 vendor/
+phpunit.log

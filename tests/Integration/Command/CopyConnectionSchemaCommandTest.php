@@ -125,8 +125,12 @@ final class CopyConnectionSchemaCommandTest extends AbstractCommandTestCase
         $this->adapter->purgeTablesAndViews();
     }
 
-    private function executeCommand(?string $from, ?string $to, string $confirmation = 'yes', bool $interactive = true): void
-    {
+    private function executeCommand(
+        ?string $from,
+        ?string $to,
+        string $confirmation = 'yes',
+        bool $interactive = true
+    ): void {
         $args = [];
 
         if (null !== $from) {

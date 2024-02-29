@@ -69,27 +69,27 @@
     }
   },
   "scripts": {
-    "unit": "phpunit --no-coverage --no-logging --no-progress --testsuite Unit",
-    "unit-coverage": "XDEBUG_MODE=coverage phpunit --no-progress --testsuite Unit --log-junit tests/.results/unit-junit.xml --coverage-clover tests/.results/coverage-unit.xml --coverage-html tests/.results/Unit",
+    "unit": "phpunit --log-events-text phpunit.log --no-coverage --no-logging --no-progress --testsuite Unit",
+    "unit-coverage": "XDEBUG_MODE=coverage phpunit --log-events-text phpunit.log --no-progress --testsuite Unit --log-junit tests/.results/unit-junit.xml --coverage-clover tests/.results/coverage-unit.xml --coverage-html tests/.results/Unit",
     "integration": [
       "rm -rf tests/App/var/*",
       "tests/App/bin/setup_databases.sh test",
-      "phpunit --no-coverage --no-logging --no-progress --testsuite Integration"
+      "phpunit --log-events-text phpunit.log --no-coverage --no-logging --no-progress --testsuite Integration"
     ],
     "integration-coverage": [
       "rm -rf tests/App/var/*",
       "tests/App/bin/setup_databases.sh test",
-      "XDEBUG_MODE=coverage phpunit --no-progress --testsuite Integration --log-junit tests/.results/integration-junit.xml --coverage-clover tests/.results/coverage-integration.xml --coverage-html tests/.results/Integration"
+      "XDEBUG_MODE=coverage phpunit --log-events-text phpunit.log --no-progress --testsuite Integration --log-junit tests/.results/integration-junit.xml --coverage-clover tests/.results/coverage-integration.xml --coverage-html tests/.results/Integration"
     ],
     "test": [
       "rm -rf tests/App/var/*",
       "tests/App/bin/setup_databases.sh test",
-      "phpunit --no-coverage --no-logging --no-progress --testsuite Full"
+      "phpunit --log-events-text phpunit.log --no-coverage --no-logging --no-progress --testsuite Full"
     ],
     "test-coverage": [
       "rm -rf tests/App/var/*",
       "tests/App/bin/setup_databases.sh test",
-      "XDEBUG_MODE=coverage phpunit --no-progress --testsuite Full"
+      "XDEBUG_MODE=coverage phpunit --log-events-text phpunit.log --no-progress --testsuite Full"
     ]
   },
   "scripts-descriptions": {

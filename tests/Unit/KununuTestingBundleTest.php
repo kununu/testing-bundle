@@ -16,7 +16,7 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 final class KununuTestingBundleTest extends TestCase
 {
-    public function testBuild(): void
+    public function testBuildContainerExpectedCompilerPasses(): void
     {
         $executedCompilerPasses = [];
 

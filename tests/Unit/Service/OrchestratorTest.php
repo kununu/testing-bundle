@@ -7,11 +7,12 @@ use Kununu\DataFixtures\Executor\ExecutorInterface;
 use Kununu\DataFixtures\FixtureInterface;
 use Kununu\DataFixtures\Loader\LoaderInterface;
 use Kununu\TestingBundle\Service\Orchestrator;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 final class OrchestratorTest extends TestCase
 {
-    /** @dataProvider executesAsExpectedDataProvider */
+    #[DataProvider('executesAsExpectedDataProvider')]
     public function testThatExecutesAsExpected(bool $append): void
     {
         $fixture1 = $this->getMockBuilder(FixtureInterface::class)->setMockClassName('Mock1')->getMock();

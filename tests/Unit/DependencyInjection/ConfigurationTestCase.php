@@ -5,13 +5,14 @@ namespace Kununu\TestingBundle\Tests\Unit\DependencyInjection;
 
 use Kununu\TestingBundle\DependencyInjection\Configuration;
 use Matthias\SymfonyConfigTest\PhpUnit\ConfigurationTestCaseTrait;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 abstract class ConfigurationTestCase extends TestCase
 {
     use ConfigurationTestCaseTrait;
 
-    /** @dataProvider validProcessedConfigurationDataProvider */
+    #[DataProvider('validProcessedConfigurationDataProvider')]
     public function testProcessedConfigurationForNode(array $values, array $expectedProcessedConfiguration): void
     {
         $this->assertProcessedConfigurationEquals($values, $expectedProcessedConfiguration, $this->getNodeName());
@@ -19,7 +20,7 @@ abstract class ConfigurationTestCase extends TestCase
 
     abstract public static function validProcessedConfigurationDataProvider(): array;
 
-    /** @dataProvider invalidProcessedConfigurationDataProvider */
+    #[DataProvider('invalidProcessedConfigurationDataProvider')]
     public function testInvalidConfigurationForNode(?array $values): void
     {
         if (null === $values) {

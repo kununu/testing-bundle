@@ -1,17 +1,22 @@
 <?php
 declare(strict_types=1);
 
-namespace Kununu\TestingBundle\Tests\Functional\Test\Options;
+namespace Kununu\TestingBundle\Tests\Integration\Test\Options;
 
 use Kununu\TestingBundle\Test\Options\DbOptions;
 use Kununu\TestingBundle\Test\Options\DbOptionsInterface;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 final class DbOptionsTest extends TestCase
 {
-    /** @dataProvider dbOptionsDataProvider */
-    public function testDbOptions(DbOptionsInterface $options, bool $expectedAppend, bool $expectedClear, bool $expectedTransactional): void
-    {
+    #[DataProvider('dbOptionsDataProvider')]
+    public function testDbOptions(
+        DbOptionsInterface $options,
+        bool $expectedAppend,
+        bool $expectedClear,
+        bool $expectedTransactional
+    ): void {
         $this->assertEquals($expectedAppend, $options->append());
         $this->assertEquals($expectedClear, $options->clear());
         $this->assertEquals($expectedTransactional, $options->transactional());

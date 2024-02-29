@@ -1,15 +1,16 @@
 <?php
 declare(strict_types=1);
 
-namespace Kununu\TestingBundle\Tests\Functional\Test\Options;
+namespace Kununu\TestingBundle\Tests\Integration\Test\Options;
 
 use Kununu\TestingBundle\Test\Options\Options;
 use Kununu\TestingBundle\Test\Options\OptionsInterface;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 final class OptionsTest extends TestCase
 {
-    /** @dataProvider optionsDataProvider */
+    #[DataProvider('optionsDataProvider')]
     public function testOptions(OptionsInterface $options, bool $expectedAppend, bool $expectedClear): void
     {
         $this->assertEquals($expectedAppend, $options->append());

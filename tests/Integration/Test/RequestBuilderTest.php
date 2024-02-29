@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Kununu\TestingBundle\Tests\Integration\Test;
 
 use Kununu\TestingBundle\Test\RequestBuilder;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 final class RequestBuilderTest extends TestCase
@@ -132,7 +133,7 @@ final class RequestBuilderTest extends TestCase
         $this->assertEquals('Bearer ACCESS_TOKEN_VALUE', $server['HTTP_AUTHORIZATION']);
     }
 
-    /** @dataProvider buildRequestWithHeaderDataProvider */
+    #[DataProvider('buildRequestWithHeaderDataProvider')]
     public function testBuildRequestWithHeader(string $headerName, string $expectedHeaderName): void
     {
         $headerValue = 'value';
