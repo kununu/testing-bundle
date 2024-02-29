@@ -3,9 +3,9 @@ declare(strict_types=1);
 
 namespace Kununu\TestingBundle\Tests\Integration\Command;
 
-use Kununu\TestingBundle\Tests\App\Fixtures\CachePool\CachePoolFixture3;
 use Kununu\TestingBundle\Command\LoadCacheFixturesCommand;
 use Kununu\TestingBundle\Test\Options\Options;
+use Kununu\TestingBundle\Tests\App\Fixtures\CachePool\CachePoolFixture3;
 use Psr\Cache\CacheItemPoolInterface;
 
 final class LoadCacheFixturesCommandTest extends AbstractFixturesCommandTestCase

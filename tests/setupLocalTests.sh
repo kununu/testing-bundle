@@ -18,5 +18,5 @@ rm -rf tests/App/var/*
 echo
 . tests/App/bin/setup_databases.sh test
 echo "DONE!"
-echo "You can now run your tests by running vendor/bin/phpunit"
+echo "You can now run your tests by running composer test"
 echo
