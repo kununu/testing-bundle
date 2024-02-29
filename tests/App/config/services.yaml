@@ -9,7 +9,6 @@ services:
   Kununu\TestingBundle\Tests\App\Elasticsearch\ClientFactory: ~
 
   Elasticsearch\Client:
-#    class: Elasticsearch\Client
     factory: [ '@Kununu\TestingBundle\Tests\App\Elasticsearch\ClientFactory', 'getInstance' ]
     arguments:
       - [ '%elasticsearch_url%' ]
