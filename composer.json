@@ -20,29 +20,29 @@
     }
   ],
   "require": {
-    "php": ">=8.0",
-    "symfony/framework-bundle": "^4.4 || ^5.0",
-    "kununu/data-fixtures": "^10.2",
-    "symfony/config": "^4.4 || ^5.0",
-    "symfony/dependency-injection": "^4.4 || ^5.0",
-    "symfony/http-kernel": "^4.4 || ^5.0"
+    "php": ">=8.1",
+    "symfony/framework-bundle": "^5.4|^6.4",
+    "kununu/data-fixtures": "^11.0",
+    "symfony/config": "^5.4|^6.4",
+    "symfony/dependency-injection": "^5.4|^6.4",
+    "symfony/http-kernel": "^5.4|^6.4"
   },
   "require-dev": {
     "ext-json": "*",
     "ext-pdo": "*",
-    "doctrine/dbal": "^2.13",
-    "doctrine/doctrine-bundle": "^2.3.1",
-    "doctrine/doctrine-migrations-bundle": "^3.1.1",
+    "doctrine/dbal": "^3.8",
+    "doctrine/doctrine-bundle": "^2.7",
+    "doctrine/doctrine-migrations-bundle": "^3.3",
+    "doctrine/orm": "^3.0",
     "elasticsearch/elasticsearch": "^7.10",
-    "kununu/scripts": ">=3.0.1",
-    "matthiasnoback/symfony-dependency-injection-test": "^4.2",
-    "phpunit/phpunit": "^8.5 || ^9.0",
-    "psr/cache": "^1.0",
-    "symfony/browser-kit": "^5.2",
-    "symfony/dotenv": "^5.2",
-    "symfony/phpunit-bridge": "^5.2",
-    "symfony/http-client": "^4.4 | ^5.2",
-    "symfony/http-foundation": "^4.4 | ^5.2"
+    "kununu/scripts": ">=4.0",
+    "matthiasnoback/symfony-dependency-injection-test": "^5.1",
+    "phpunit/phpunit": "^10.5",
+    "psr/cache": "^1.0|^2.0",
+    "symfony/browser-kit": "^6.4",
+    "symfony/dotenv": "^6.4",
+    "symfony/http-client": "^5.4|^6.4",
+    "symfony/http-foundation": "^5.4|^6.4"
   },
   "suggest": {
     "ext-pdo_mysql": "To run Integration Tests.",
@@ -67,5 +67,37 @@
     "allow-plugins": {
       "kununu/scripts": true
     }
+  },
+  "scripts": {
+    "unit": "phpunit --no-coverage --no-logging --no-progress --testsuite Unit",
+    "unit-coverage": "XDEBUG_MODE=coverage phpunit --no-progress --testsuite Unit --log-junit tests/.results/unit-junit.xml --coverage-clover tests/.results/coverage-unit.xml --coverage-html tests/.results/Unit",
+    "integration": [
+      "rm -rf tests/App/var/*",
+      "tests/App/bin/setup_databases.sh test",
+      "phpunit --no-coverage --no-logging --no-progress --testsuite Integration"
+    ],
+    "integration-coverage": [
+      "rm -rf tests/App/var/*",
+      "tests/App/bin/setup_databases.sh test",
+      "XDEBUG_MODE=coverage phpunit --no-progress --testsuite Integration --log-junit tests/.results/integration-junit.xml --coverage-clover tests/.results/coverage-integration.xml --coverage-html tests/.results/Integration"
+    ],
+    "test": [
+      "rm -rf tests/App/var/*",
+      "tests/App/bin/setup_databases.sh test",
+      "phpunit --no-coverage --no-logging --no-progress --testsuite Full"
+    ],
+    "test-coverage": [
+      "rm -rf tests/App/var/*",
+      "tests/App/bin/setup_databases.sh test",
+      "XDEBUG_MODE=coverage phpunit --no-progress --testsuite Full"
+    ]
+  },
+  "scripts-descriptions": {
+    "unit": "Run all unit tests",
+    "unit-coverage": "Run all unit tests with coverage report",
+    "integration": "Run all integration tests",
+    "integration-coverage": "Run all integration tests with coverage report",
+    "test": "Run all tests",
+    "test-coverage": "Run all tests with coverage report"
   }
 }

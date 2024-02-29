@@ -13,14 +13,11 @@ abstract class AbstractTestCase extends WebTestCase
 
     final protected function getFixturesContainer(): ContainerInterface
     {
-        if (
-            !static::$kernel ||
-            !(method_exists(static::class, 'getContainer') ? static::getContainer() : static::$container)
-        ) {
+        if (!static::$kernel || !static::getContainer()) {
             $this->getKernelBrowser();
         }
 
-        return method_exists(static::class, 'getContainer') ? static::getContainer() : static::$container;
+        return static::getContainer();
     }
 
     final protected function getKernelBrowser(): KernelBrowser

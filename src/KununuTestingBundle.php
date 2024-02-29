@@ -6,7 +6,7 @@ namespace Kununu\TestingBundle;
 use Kununu\TestingBundle\DependencyInjection\Compiler\CachePoolCompilerPass;
 use Kununu\TestingBundle\DependencyInjection\Compiler\ConnectionCompilerPass;
 use Kununu\TestingBundle\DependencyInjection\Compiler\CopyConnectionSchemaCommandCompilerPass;
-use Kununu\TestingBundle\DependencyInjection\Compiler\ElasticSearchCompilerPass;
+use Kununu\TestingBundle\DependencyInjection\Compiler\ElasticsearchCompilerPass;
 use Kununu\TestingBundle\DependencyInjection\Compiler\HttpClientCompilerPass;
 use Kununu\TestingBundle\DependencyInjection\Compiler\NonTransactionalConnectionCompilerPass;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -19,7 +19,7 @@ final class KununuTestingBundle extends Bundle
         $container->addCompilerPass(new CachePoolCompilerPass());
         $container->addCompilerPass(new ConnectionCompilerPass());
         $container->addCompilerPass(new NonTransactionalConnectionCompilerPass());
-        $container->addCompilerPass(new ElasticSearchCompilerPass());
+        $container->addCompilerPass(new ElasticsearchCompilerPass());
         $container->addCompilerPass(new HttpClientCompilerPass());
         $container->addCompilerPass(new CopyConnectionSchemaCommandCompilerPass());
     }

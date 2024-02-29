@@ -1,9 +1,10 @@
-.php_cs.cache
-composer.lock
 .idea/
+.php_cs.cache
+.phpunit.cache
 .phpunit.result.cache
+composer.lock
+tests/.results/
+tests/App/.env.local
+tests/App/.env.test
 tests/App/var/
 vendor/
-tests/.results/
-tests/App/.env.test
-tests/App/.env.local

@@ -1,4 +1,4 @@
 services:
-  '@Kununu\TestingBundle\Tests\App\ElasticSearch':
+  '@Elasticsearch\Client':
     public: true
     synthetic: true

@@ -7,6 +7,11 @@ else
   command_env="--env ${1}"
 fi
 
+echo "Dropping Databases..."
+php console doctrine:database:drop ${command_env} --connection=def --if-exists --force
+php console doctrine:database:drop ${command_env} --connection=monolithic --if-exists --force
+php console doctrine:database:drop ${command_env} --connection=monolithic_test --if-exists --force
+
 echo "Creating Databases..."
 php console doctrine:database:create ${command_env} --connection=def --if-not-exists
 php console doctrine:database:create ${command_env} --connection=monolithic --if-not-exists

@@ -8,7 +8,7 @@ use Kununu\DataFixtures\Loader\LoaderInterface;
 
 final class Orchestrator implements OrchestratorInterface
 {
-    public function __construct(private ExecutorInterface $executor, private LoaderInterface $loader)
+    public function __construct(private readonly ExecutorInterface $executor, private readonly LoaderInterface $loader)
     {
     }
 

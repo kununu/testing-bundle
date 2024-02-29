@@ -34,7 +34,7 @@ use Kununu\TestingBundle\Test\Options\Options;
 
 final class IntegrationTest extends FixturesAwareTestCase
 {
-    public function testIntegration()
+    public function testIntegration(): void
     {
         // Start with a clean pool loading data from Fixture1
         $this->loadCachePoolFixtures(
@@ -73,7 +73,7 @@ php bin/console kununu_testing:load_fixtures:cache_pools:MY_CACHE_ID [--append]
 
 ### 1. Enable Symfony Command for a Cache Pool
 
-By default Symfony Commands are not created for any cache pool. If you want to enable the creation of a Symfony Command for a specific cache pool you will need to enable it the configuration of the bundle by setting the option `load_command_fixtures_classes_namespace` where you specify the classes names of the fixtures that the command should run.
+By default, Symfony Commands are not created for any cache pool. If you want to enable the creation of a Symfony Command for a specific cache pool you will need to enable it the configuration of the bundle by setting the option `load_command_fixtures_classes_namespace` where you specify the classes names of the fixtures that the command should run.
 
 ```yaml
 kununu_testing:
@@ -109,7 +109,7 @@ use Kununu\TestingBundle\Test\Options\Options;
 
 final class IntegrationTest extends FixturesAwareTestCase
 {
-    public function testIntegration()
+    public function testIntegration(): void
     {
         $this->registerInitializableFixtureForCachePool(
             'app.cache.first',

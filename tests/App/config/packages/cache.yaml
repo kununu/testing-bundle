@@ -1,20 +1,20 @@
 framework:
-    cache:
-        pools:
-            app.cache.first:
-                adapter: cache.adapter.array
-            app.cache.second:
-                adapter: cache.adapter.array
-            app.cache.third:
-                adapter: cache.adapter.array
-                tags: true
-            app.cache.fourth:
-                adapter: cache.adapter.array
-                tags: app.cache.tag_pool
-            app.cache.fifth:
-                default_lifetime: 3600
-                adapters:
-                  - cache.adapter.array
-                  - cache.adapter.filesystem
-            app.cache.tag_pool:
-                adapter: cache.adapter.filesystem
+  cache:
+    pools:
+      app.cache.first:
+        adapter: cache.adapter.array
+      app.cache.second:
+        adapter: cache.adapter.array
+      app.cache.third:
+        adapter: cache.adapter.array
+        tags: true
+      app.cache.fourth:
+        adapter: cache.adapter.array
+        tags: app.cache.tag_pool
+      app.cache.fifth:
+        default_lifetime: 3600
+        adapters:
+          - cache.adapter.array
+          - cache.adapter.filesystem
+      app.cache.tag_pool:
+        adapter: cache.adapter.filesystem

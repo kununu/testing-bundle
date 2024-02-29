@@ -12,14 +12,14 @@ First you will need to configure the bundle. In this example, we will configure 
 kununu_testing:
   elastic_search:
     my_index_alias:
-      service: 'My\Elasticsearch\Client'
+      service: 'Elasticsearch\Client' # Your Elasticsearch client service id
       index_name: 'my_index_name'
 ```
 
 In your tests you can extend the classes [FixturesAwareTestCase](/src/Test/FixturesAwareTestCase.php) or [WebTestCase](/src/Test/WebTestCase.php) which expose the following method:
 
 ```php
-protected function loadElasticSearchFixtures(string $alias, OptionsInterface $options, string ...$classNames): void
+protected function loadElasticsearchFixtures(string $alias, OptionsInterface $options, string ...$classNames): void
 ```
 
 - `$alias` - Alias defined above
@@ -38,20 +38,20 @@ final class IntegrationTest extends FixturesAwareTestCase
     public function testIntegration()
     {
         // Start with an empty index and loading data from Fixture1
-        $this->loadElasticSearchFixtures(
+        $this->loadElasticsearchFixtures(
             'my_index_alias',
             Options::create(),
             Fixture1::class
         );
         
         // Start from a empty index
-        $this->loadElasticSearchFixtures(
+        $this->loadElasticsearchFixtures(
             'my_index_alias',
             Options::create()
         );
         
         // Do not purge index before loading fixtures
-        $this->loadElasticSearchFixtures(
+        $this->loadElasticsearchFixtures(
             'my_index_alias',
             Options::create()->withAppend(),
             Fixture1::class
@@ -72,15 +72,15 @@ php bin/console kununu_testing:load_fixtures:elastic_search:MY_INDEX_ALIAS [--ap
 
 ### 1. Enable Symfony Command for a Elasticsearch Index
 
-By default Symfony Commands are not created for any Elasticsearch Index. If you want to enable the creation of a Symfony Command for a specific Index you will need to enable it the configuration of the bundle by setting the option `load_command_fixtures_classes_namespace` where you specify the classes names of the fixtures that the command should run.
+By default, Symfony Commands are not created for any Elasticsearch Index. If you want to enable the creation of a Symfony Command for a specific Index you will need to enable it the configuration of the bundle by setting the option `load_command_fixtures_classes_namespace` where you specify the classes names of the fixtures that the command should run.
 
 ```yaml
 kununu_testing:
   elastic_search:
     my_index_alias:
       load_command_fixtures_classes_namespace:
-        - 'Kununu\TestingBundle\Tests\App\Fixtures\ElasticSearch\ElasticSearchFixture1'
-        - 'Kununu\TestingBundle\Tests\App\Fixtures\ElasticSearch\ElasticSearchFixture2'
+        - 'Kununu\TestingBundle\Tests\App\Fixtures\Elasticsearch\ElasticsearchFixture1'
+        - 'Kununu\TestingBundle\Tests\App\Fixtures\Elasticsearch\ElasticsearchFixture2'
 ```
 
 ### 2. Run Symfony Command
@@ -109,7 +109,7 @@ final class IntegrationTest extends FixturesAwareTestCase
 {
     public function testIntegration()
     {
-        $this->registerInitializableFixtureForElasticSearch(
+        $this->registerInitializableFixtureForElasticsearch(
             'my_index_alias',
             YourElasticsearchFixtureClass::class,
             $yourArg1,
@@ -117,7 +117,7 @@ final class IntegrationTest extends FixturesAwareTestCase
             $yourArgN
         );
 
-        $this->loadElasticSearchFixtures(
+        $this->loadElasticsearchFixtures(
             'my_index_alias',
             Options::create(),
             YourElasticsearchFixtureClass::class
@@ -137,7 +137,7 @@ kununu_testing:
   elastic_search:
     my_index_alias: # Alias to be used to load fixtures for the configured index using the defined service
       load_command_fixtures_classes_namespace:
-        - 'Kununu\TestingBundle\Tests\App\Fixtures\ElasticSearch\ElasticSearchFixture2' # FQDN for a fixtures class
-      service: 'Kununu\TestingBundle\Tests\App\ElasticSearch' # Service Id of an instance of Elasticsearch\Client 
+        - 'Kununu\TestingBundle\Tests\App\Fixtures\Elasticsearch\ElasticsearchFixture2' # FQDN for a fixtures class
+      service: 'Kununu\TestingBundle\Tests\App\Elasticsearch' # Service Id of an instance of Elasticsearch\Client 
       index_name: 'my_index_name' # name of your index
 ```
