@@ -38,7 +38,7 @@ abstract class FixturesAwareTestCase extends AbstractTestCase
             ->execute($classNames, $options->append(), $options->clear());
     }
 
-    final protected function loadElasticSearchFixtures(
+    final protected function loadElasticsearchFixtures(
         string $alias,
         OptionsInterface $options,
         string ...$classNames
@@ -88,7 +88,7 @@ abstract class FixturesAwareTestCase extends AbstractTestCase
             ->registerInitializableFixture($className, ...$args);
     }
 
-    final protected function registerInitializableFixtureForElasticSearch(
+    final protected function registerInitializableFixtureForElasticsearch(
         string $alias,
         string $className,
         mixed ...$args
@@ -142,14 +142,14 @@ abstract class FixturesAwareTestCase extends AbstractTestCase
         return $this->getOrchestrator(self::KEY_CACHE_POOLS, $cachePoolServiceId)->getFixtures();
     }
 
-    final protected function clearElasticSearchFixtures(string $alias): self
+    final protected function clearElasticsearchFixtures(string $alias): self
     {
         $this->getOrchestrator(self::KEY_ELASTICSEARCH, $alias)->clearFixtures();
 
         return $this;
     }
 
-    final protected function getElasticSearchFixtures(string $alias): array
+    final protected function getElasticsearchFixtures(string $alias): array
     {
         return $this->getOrchestrator(self::KEY_ELASTICSEARCH, $alias)->getFixtures();
     }

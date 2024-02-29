@@ -2,13 +2,11 @@
 <?php
 declare(strict_types=1);
 
+use Kununu\TestingBundle\Tests\App\Kernel;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Dotenv\Dotenv;
 use Symfony\Component\ErrorHandler\Debug;
-use Kununu\TestingBundle\Tests\App\LegacyKernel;
-use Kununu\TestingBundle\Tests\App\NewKernel;
-use Symfony\Component\HttpKernel\Kernel as BaseKernel;
 
 set_time_limit(0);
 
@@ -26,13 +24,11 @@ if (null !== $env = $input->getParameterOption(['--env', '-e'], $_ENV['APP_ENV']
     putenv('APP_ENV=' . $_SERVER['APP_ENV'] = $_ENV['APP_ENV'] = $env);
 }
 
-if ($input->hasParameterOption('--no-debug', true) ||
-    $_ENV['APP_ENV'] === 'prod'
-) {
+if ($input->hasParameterOption('--no-debug', true) || $_ENV['APP_ENV'] === 'prod') {
     putenv('APP_DEBUG=' . $_SERVER['APP_DEBUG'] = $_ENV['APP_DEBUG'] = '0');
 }
 
-(new Dotenv())->bootEnv(dirname(__DIR__).'/.env');
+(new Dotenv())->bootEnv(dirname(__DIR__) . '/.env');
 
 if ($_SERVER['APP_DEBUG']) {
     umask(0000);
@@ -42,12 +38,6 @@ if ($_SERVER['APP_DEBUG']) {
     }
 }
 
-// Support changes introduced in Symfony 5.2
-if (BaseKernel::MAJOR_VERSION >= 5 && BaseKernel::MINOR_VERSION >= 2) {
-    $kernel = new NewKernel($_SERVER['APP_ENV'], (bool) $_SERVER['APP_DEBUG']);
-} else {
-    $kernel = new LegacyKernel($_SERVER['APP_ENV'], (bool) $_SERVER['APP_DEBUG']);
-}
-
+$kernel = new Kernel($_SERVER['APP_ENV'], (bool) $_SERVER['APP_DEBUG']);
 $application = new Application($kernel);
 $application->run($input);

@@ -5,15 +5,12 @@ namespace Kununu\TestingBundle\Service\SchemaCopy\Adapter;
 
 use Doctrine\DBAL\Connection;
 use Kununu\TestingBundle\Service\SchemaCopy\SchemaCopyAdapterInterface;
-use Kununu\TestingBundle\Traits\ConnectionToolsTrait;
 
 abstract class AbstractAdapter implements SchemaCopyAdapterInterface
 {
-    use ConnectionToolsTrait;
-
     protected const TYPE = '';
 
-    public function __construct(protected Connection $connection)
+    public function __construct(protected readonly Connection $connection)
     {
     }
 
@@ -32,5 +29,12 @@ abstract class AbstractAdapter implements SchemaCopyAdapterInterface
     public function sameTypeAs(SchemaCopyAdapterInterface $other): bool
     {
         return $this->type() === $other->type();
+    }
+
+    protected function fetchColumn(Connection $connection, string $sql, int $columnIndex = 0): mixed
+    {
+        $row = $connection->executeQuery($sql)->fetchNumeric();
+
+        return $row === false ? false : ($row[$columnIndex] ?? false);
     }
 }

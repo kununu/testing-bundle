@@ -11,9 +11,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 final class CreateElasticsearchIndexCommand extends Command
 {
-    protected static $defaultName = 'app:elasticsearch:create-index';
-
-    public function __construct(private Client $elasticsearchClient)
+    public function __construct(private readonly Client $client)
     {
         parent::__construct();
     }
@@ -21,14 +19,15 @@ final class CreateElasticsearchIndexCommand extends Command
     protected function configure(): void
     {
         $this
+            ->setName('app:elasticsearch:create-index')
             ->setDescription('Creates a new Elasticsearch index')
             ->addArgument('index_name', InputArgument::OPTIONAL, 'The name of the index to create', 'my_index');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        if (!$this->elasticsearchClient->indices()->exists(['index' => $input->getArgument('index_name')])) {
-            $this->elasticsearchClient
+        if (!$this->client->indices()->exists(['index' => $input->getArgument('index_name')])) {
+            $this->client
                 ->indices()
                 ->create(['index' => $input->getArgument('index_name')]);
         }

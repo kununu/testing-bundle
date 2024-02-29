@@ -35,7 +35,7 @@ use Kununu\TestingBundle\Test\Options\DbOptions;
 
 final class IntegrationTest extends FixturesAwareTestCase
 {
-    public function testIntegration()
+    public function testIntegration(): void
     {
         // Start with an empty database and loading data from Fixture1
         $this->loadDbFixtures(
@@ -67,7 +67,7 @@ use Kununu\TestingBundle\Test\Options\DbOptions;
 
 final class IntegrationTest extends FixturesAwareTestCase
 {
-    public function testIntegration()
+    public function testIntegration(): void
     {
         // Start with an empty database and loading data from Fixture1
         $this->loadDbFixtures(
@@ -110,7 +110,7 @@ php bin/console kununu_testing:load_fixtures:non_transactional_connections:CONNE
 
 ### 1. Enable Symfony Command for a Doctrine Connection
 
-By default Symfony Commands are not created for any Doctrine Connection. If you want to enable the creation of a Symfony Command for a specific Connection you will need to enable it the configuration of the bundle by setting the option `load_command_fixtures_classes_namespace` where you specify the classes names of the fixtures that the command should run.
+By default, Symfony Commands are not created for any Doctrine Connection. If you want to enable the creation of a Symfony Command for a specific Connection you will need to enable it the configuration of the bundle by setting the option `load_command_fixtures_classes_namespace` where you specify the classes names of the fixtures that the command should run.
 
 ```yaml
 kununu_testing:
@@ -134,7 +134,7 @@ The fixtures can be loaded for a Connection by running:
 php bin/console kununu_testing:load_fixtures:connections:default --append
 ```
 
-Or for non transactional fixtures:
+Or for non-transactional fixtures:
 
 ```bash
 php bin/console kununu_testing:load_fixtures:non_transactional_connections:default --append
@@ -156,7 +156,7 @@ use Kununu\TestingBundle\Test\Options\DbOptions;
 
 final class IntegrationTest extends FixturesAwareTestCase
 {
-    public function testIntegration()
+    public function testIntegration(): void
     {
         $this->registerInitializableFixtureForDb(
             'default',
@@ -183,7 +183,7 @@ use Kununu\TestingBundle\Test\Options\DbOptions;
 
 final class IntegrationTest extends FixturesAwareTestCase
 {
-    public function testIntegration()
+    public function testIntegration(): void
     {
         $this->registerInitializableFixtureForNonTransactionalDb(
 	        'default',

@@ -17,7 +17,7 @@ abstract class AbstractConnectionCompilerPass extends AbstractCompilerPass
     private const LOAD_COMMAND_FIXTURES_CLASSES_NAMESPACE_CONFIG = 'load_command_fixtures_classes_namespace';
     private const ORCHESTRATOR_SERVICE_PREFIX = 'kununu_testing.orchestrator.%s';
 
-    private string $orchestratorServicePrefix;
+    private readonly string $orchestratorServicePrefix;
 
     public function __construct()
     {

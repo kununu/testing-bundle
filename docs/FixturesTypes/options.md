@@ -22,7 +22,7 @@ If this method returns `true` then it will clear any previous loaded fixtures cl
 
 ## Options
 
-The class [Options](/src/Test/Options/Options.php) is provided and it implements the `OptionsInterface` and also provides a builder pattern.
+The class [Options](/src/Test/Options/Options.php) is provided, and it implements the `OptionsInterface` and also provides a builder pattern.
 
 ```php
 use Kununu\TestingBundle\Test\Options\Options;
@@ -67,10 +67,9 @@ If this method returns `true` then it will use a transactional executor, otherwi
 
 ## DbOptions
 
-The class [DbOptions](/src/Test/Options/DbOptions.php) is provided and it implements the `DbOptionsInterface` and also provides a builder pattern.
+The class [DbOptions](/src/Test/Options/DbOptions.php) is provided, and it implements the `DbOptionsInterface` and also provides a builder pattern.
 
 It extends the `Options` class so all the methods available there are still in this class.
-
 
 ```php
 use Kununu\TestingBundle\Test\Options\DbOptions;

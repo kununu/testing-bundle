@@ -15,9 +15,9 @@ abstract class LoadFixturesCommand extends Command
     protected const OPTION_APPEND = 'append';
 
     public function __construct(
-        private string $alias,
-        private OrchestratorInterface $orchestrator,
-        private array $fixturesClassNames
+        private readonly string $alias,
+        private readonly OrchestratorInterface $orchestrator,
+        private readonly array $fixturesClassNames
     ) {
         parent::__construct(sprintf('kununu_testing:load_fixtures:%s:%s', static::getFixtureType(), $alias));
     }
@@ -42,8 +42,8 @@ abstract class LoadFixturesCommand extends Command
     {
         $fixtureType = static::getFixtureType();
 
-        if (!($append = (bool) filter_var($input->getOption(self::OPTION_APPEND), FILTER_VALIDATE_BOOLEAN)) &&
-            !(new SymfonyStyle($input, $output))->confirm(
+        if (!($append = (bool) filter_var($input->getOption(self::OPTION_APPEND), FILTER_VALIDATE_BOOLEAN))
+            && !(new SymfonyStyle($input, $output))->confirm(
                 sprintf(
                     'Careful, Fixture type "%s" named "%s" will be purged. Do you want to continue?',
                     $fixtureType,

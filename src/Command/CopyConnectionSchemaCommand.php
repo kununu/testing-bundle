@@ -20,8 +20,10 @@ final class CopyConnectionSchemaCommand extends Command
     private const OPTION_TO = 'to';
     private const OPTION_TO_SHORT = 't';
 
-    public function __construct(private SchemaCopyInterface $schemaCopy, private ManagerRegistry $registry)
-    {
+    public function __construct(
+        private readonly SchemaCopyInterface $schemaCopy,
+        private readonly ManagerRegistry $registry
+    ) {
         parent::__construct('kununu_testing:connections:schema:copy');
     }
 
@@ -48,8 +50,8 @@ final class CopyConnectionSchemaCommand extends Command
         $from = $input->getOption(self::OPTION_FROM) ?? '';
         $to = $input->getOption(self::OPTION_TO) ?? '';
 
-        if (!$this->checkConnection($source = $this->getConnection($from), self::OPTION_FROM, $from, $output) ||
-            !$this->checkConnection($destination = $this->getConnection($to), self::OPTION_TO, $to, $output)
+        if (!$this->checkConnection($source = $this->getConnection($from), self::OPTION_FROM, $from, $output)
+            || !$this->checkConnection($destination = $this->getConnection($to), self::OPTION_TO, $to, $output)
         ) {
             return 2;
         }

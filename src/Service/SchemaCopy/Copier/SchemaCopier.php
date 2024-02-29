@@ -7,13 +7,10 @@ use Doctrine\DBAL\Connection;
 use Kununu\TestingBundle\Service\SchemaCopy\Exception\IncompatibleAdaptersException;
 use Kununu\TestingBundle\Service\SchemaCopy\SchemaCopyAdapterFactoryInterface;
 use Kununu\TestingBundle\Service\SchemaCopy\SchemaCopyInterface;
-use Kununu\TestingBundle\Traits\ConnectionToolsTrait;
 
 final class SchemaCopier implements SchemaCopyInterface
 {
-    use ConnectionToolsTrait;
-
-    public function __construct(private SchemaCopyAdapterFactoryInterface $adapterFactory)
+    public function __construct(private readonly SchemaCopyAdapterFactoryInterface $adapterFactory)
     {
     }
 
@@ -31,11 +28,11 @@ final class SchemaCopier implements SchemaCopyInterface
                 $destinationAdapter->purgeTablesAndViews();
 
                 foreach ($sourceAdapter->getTables() as $table) {
-                    $this->executeQuery($destination, $sourceAdapter->getTableCreateStatement($table));
+                    $destination->executeStatement($sourceAdapter->getTableCreateStatement($table));
                 }
 
                 foreach ($sourceAdapter->getViews() as $view) {
-                    $this->executeQuery($destination, $sourceAdapter->getViewCreateStatement($view));
+                    $destination->executeStatement($sourceAdapter->getViewCreateStatement($view));
                 }
             }
         );

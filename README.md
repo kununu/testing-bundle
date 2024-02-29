@@ -161,9 +161,9 @@ Using concepts provided by this bundle, like *Loading Fixtures*, the *RequestBui
 ```php
 <?php
 
-namespace App\Tests\Functional\Controller;
+namespace App\Tests\Integration\Controller;
 
-use App\Tests\Functional\Controller\DataFixtures\MySQL\CreateCompanyDataFixtures;
+use App\Tests\Integration\Controller\DataFixtures\MySQL\CreateCompanyDataFixtures;
 use Kununu\TestingBundle\Test\RequestBuilder;
 use Kununu\TestingBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;

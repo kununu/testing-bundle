@@ -1,7 +1,6 @@
 # Symfony Http Client Fixtures
 
-This bundle integrates seamless with *Symfony Http Client Fixtures*
-from [kununu/data-fixtures](https://github.com/kununu/data-fixtures).
+This bundle integrates seamless with *Symfony Http Client Fixtures* from [kununu/data-fixtures](https://github.com/kununu/data-fixtures).
 
 In the rest of the documentation we will assume that you are using the [Symfony Http Client](https://github.com/symfony/http-client) and [Symfony Http Foundation](https://github.com/symfony/http-foundation) and have configured an Http client service called *app.my.http_client*.
 
@@ -19,7 +18,7 @@ protected function loadHttpClientFixtures(string $httpClientServiceId, OptionsIn
 - `$options` - [Options](options.md) for the fixtures load process
 - `...$classNames` - Classes names of fixtures to load
 
-**Example of loading fixtures in a Integration Test**
+**Example of loading fixtures in an Integration Test**
 
 ```php
 use Kununu\TestingBundle\Test\FixturesAwareTestCase;

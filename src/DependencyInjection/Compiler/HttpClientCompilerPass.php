@@ -24,7 +24,7 @@ final class HttpClientCompilerPass extends AbstractCompilerPass
         }
 
         foreach ($this->config['clients'] as $client) {
-            $this->buildHttpClientOrchestrator($container, $client, $this->config);
+            $this->buildHttpClientOrchestrator($container, $client);
         }
     }
 

@@ -16,7 +16,7 @@ final class Configuration implements ConfigurationInterface
         $this
             ->addConnectionsSection($rootNode = $treeBuilder->getRootNode()->fixXmlConfig('connection'), 'connections')
             ->addConnectionsSection($rootNode, 'non_transactional_connections')
-            ->addElasticSearchSection($rootNode)
+            ->addElasticsearchSection($rootNode)
             ->addCacheSection($rootNode)
             ->addHttpClientSection($rootNode);
 
@@ -50,7 +50,7 @@ final class Configuration implements ConfigurationInterface
         return $this;
     }
 
-    private function addElasticSearchSection(ArrayNodeDefinition $node): self
+    private function addElasticsearchSection(ArrayNodeDefinition $node): self
     {
         $node
             ->children()

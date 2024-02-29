@@ -10,6 +10,6 @@ final class UnsupportedDatabasePlatformException extends RuntimeException
 {
     public function __construct(AbstractPlatform $platform)
     {
-        parent::__construct(sprintf('Unsupported database platform %s', $platform->getName()));
+        parent::__construct(sprintf('Unsupported database platform %s', $platform::class));
     }
 }

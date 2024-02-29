@@ -1,8 +1,11 @@
 framework:
-    secret: 'secret'
-    session:
-        handler_id: ~
-        cookie_secure: auto
-        cookie_samesite: lax
-    php_errors:
-        log: true
+  http_method_override: false
+  handle_all_throwables: true
+  session:
+    storage_factory_id: session.storage.factory.native
+    handler_id: ~
+    cookie_secure: auto
+    cookie_samesite: lax
+  secret: 'secret'
+  php_errors:
+    log: true

@@ -17,15 +17,17 @@ final class CopyConnectionSchemaCommandCompilerPass implements CompilerPassInter
             return;
         }
 
+        $definition = new Definition(
+            CopyConnectionSchemaCommand::class,
+            [
+                new Reference('kununu_testing.schema_copy'),
+                new Reference('doctrine'),
+            ]
+        );
+
         $container->setDefinition(
             'kununu_testing:connections:schema:copy.command',
-            (new Definition(
-                CopyConnectionSchemaCommand::class,
-                [
-                    new Reference('kununu_testing.schema_copy'),
-                    new Reference('doctrine'),
-                ]
-            ))->setPublic(true)->addTag('console.command')
+            $definition->setPublic(true)->addTag('console.command')
         );
     }
 }
