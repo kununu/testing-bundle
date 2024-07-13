@@ -42,7 +42,7 @@
     "symfony/browser-kit": "^6.4",
     "symfony/dotenv": "^6.4",
     "symfony/http-client": "^5.4|^6.4",
-    "symfony/http-foundation": "^5.4|^6.4"
+    "symfony/http-foundation": "^7.1.1"
   },
   "suggest": {
     "ext-pdo_mysql": "To run Integration Tests.",
