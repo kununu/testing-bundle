@@ -18,7 +18,7 @@ final class AdapterFactoryTest extends TestCase
     {
         $connection = $this->createMock(Connection::class);
         $connection
-            ->expects($this->any())
+            ->expects(self::any())
             ->method('getDatabasePlatform')
             ->willReturn($this->createMock($platformClass));
 
@@ -29,7 +29,7 @@ final class AdapterFactoryTest extends TestCase
         $adapter = (new AdapterFactory())->createAdapter($connection);
 
         if (null !== $expectedType) {
-            $this->assertEquals($expectedType, $adapter->type());
+            self::assertEquals($expectedType, $adapter->type());
         }
     }
 

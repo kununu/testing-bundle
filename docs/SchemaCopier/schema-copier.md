@@ -14,7 +14,7 @@ This bundle will provide you with a command that can fetch the schema for that e
 
 This bundle will automatically create a Symfony Command allow copying databases schemas (if you have at least a Doctrine connection configured).
 
-```bash
+```shell
 php bin/console kununu_testing:connections:schema:copy --from SOURCE --to DESTINATION
 ```
 

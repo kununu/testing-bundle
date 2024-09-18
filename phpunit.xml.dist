@@ -1,14 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- https://phpunit.readthedocs.io/en/10.5/ -->
+<!-- https://docs.phpunit.de/en/11.3/ -->
 <phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/10.5/phpunit.xsd" bootstrap="tests/bootstrap.php"
          colors="true" beStrictAboutChangesToGlobalState="true" cacheDirectory=".phpunit.cache" testdox="true">
-  <coverage>
-    <report>
-      <clover outputFile="tests/.results/tests-clover.xml"/>
-      <html outputDirectory="tests/.results/html/"/>
-    </report>
-  </coverage>
   <php>
     <ini name="error_reporting" value="-1"/>
     <server name="APP_ENV" value="test" force="true"/>
@@ -16,9 +10,6 @@
     <server name="KERNEL_CLASS" value="Kununu\TestingBundle\Tests\App\Kernel"/>
   </php>
   <testsuites>
-    <testsuite name="Full">
-      <directory>tests</directory>
-    </testsuite>
     <testsuite name="Integration">
       <directory>tests/Integration</directory>
     </testsuite>
@@ -26,9 +17,6 @@
       <directory>tests/Unit</directory>
     </testsuite>
   </testsuites>
-  <logging>
-    <junit outputFile="tests/.results/tests-junit.xml"/>
-  </logging>
   <source>
     <include>
       <directory>src</directory>

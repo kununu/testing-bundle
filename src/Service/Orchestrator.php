@@ -6,9 +6,9 @@ namespace Kununu\TestingBundle\Service;
 use Kununu\DataFixtures\Executor\ExecutorInterface;
 use Kununu\DataFixtures\Loader\LoaderInterface;
 
-final class Orchestrator implements OrchestratorInterface
+final readonly class Orchestrator implements OrchestratorInterface
 {
-    public function __construct(private readonly ExecutorInterface $executor, private readonly LoaderInterface $loader)
+    public function __construct(private ExecutorInterface $executor, private LoaderInterface $loader)
     {
     }
 

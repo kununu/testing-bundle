@@ -13,9 +13,9 @@ abstract class AbstractConnectionCompilerPass extends AbstractCompilerPass
 {
     use LoadFixturesCommandsTrait;
 
-    private const EXCLUDED_TABLES_CONFIG = 'excluded_tables';
-    private const LOAD_COMMAND_FIXTURES_CLASSES_NAMESPACE_CONFIG = 'load_command_fixtures_classes_namespace';
-    private const ORCHESTRATOR_SERVICE_PREFIX = 'kununu_testing.orchestrator.%s';
+    private const string EXCLUDED_TABLES_CONFIG = 'excluded_tables';
+    private const string LOAD_COMMAND_FIXTURES_CLASSES_NAMESPACE_CONFIG = 'load_command_fixtures_classes_namespace';
+    private const string ORCHESTRATOR_SERVICE_PREFIX = 'kununu_testing.orchestrator.%s';
 
     private readonly string $orchestratorServicePrefix;
 
@@ -53,7 +53,7 @@ abstract class AbstractConnectionCompilerPass extends AbstractCompilerPass
         ContainerBuilder $container,
         string $connId,
         string $connName,
-        array $connConfig
+        array $connConfig,
     ): void {
         $orchestratorId = $this->buildConnectionOrchestrator($container, $connId, $connName, $connConfig);
 
@@ -79,7 +79,7 @@ abstract class AbstractConnectionCompilerPass extends AbstractCompilerPass
         ContainerBuilder $container,
         string $id,
         string $connName,
-        array $connConfig
+        array $connConfig,
     ): string {
         // Purger Definition for the Connection with provided $id
         $purgerId = sprintf('%s.%s.purger', $this->orchestratorServicePrefix, $connName);

@@ -1,10 +1,10 @@
 # FixturesAwareTestCase Options
 
-The methods to load fixtures on [FixturesAwareTestCase](/src/Test/FixturesAwareTestCase.php) need to receive a parameter `$options`.
+The methods to load fixtures on [FixturesAwareTestCase](../../src/Test/FixturesAwareTestCase.php) need to receive a parameter `$options`.
 
 ## OptionsInterface
 
-That object must implement the interface [OptionsInterface](/src/Test/Options/OptionsInterface.php) which defines the following methods:
+That object must implement the interface [OptionsInterface](../../src/Test/Options/OptionsInterface.php) which defines the following methods:
 
 ```php
 public function append(): bool;
@@ -22,7 +22,7 @@ If this method returns `true` then it will clear any previous loaded fixtures cl
 
 ## Options
 
-The class [Options](/src/Test/Options/Options.php) is provided, and it implements the `OptionsInterface` and also provides a builder pattern.
+The class [Options](../../src/Test/Options/Options.php) is provided, and it implements the `OptionsInterface` and also provides a builder pattern.
 
 ```php
 use Kununu\TestingBundle\Test\Options\Options;
@@ -55,7 +55,7 @@ $options = Options::create()->withoutClear()->withAppend();
 
 To load fixtures with database connections (`loadDbFixtures`) it is required to pass a more specialized instance of options.
 
-That object must implement the interface [DbOptionsInterface](/src/Test/Options/DbOptionsInterface.php) which is an extension of `OptionsInterface` (thus having all the same methods) and adds the following method:
+That object must implement the interface [DbOptionsInterface](../../src/Test/Options/DbOptionsInterface.php) which is an extension of `OptionsInterface` (thus having all the same methods) and adds the following method:
 
 ```php
 public function transactional(): bool;
@@ -67,7 +67,7 @@ If this method returns `true` then it will use a transactional executor, otherwi
 
 ## DbOptions
 
-The class [DbOptions](/src/Test/Options/DbOptions.php) is provided, and it implements the `DbOptionsInterface` and also provides a builder pattern.
+The class [DbOptions](../../src/Test/Options/DbOptions.php) is provided, and it implements the `DbOptionsInterface` and also provides a builder pattern.
 
 It extends the `Options` class so all the methods available there are still in this class.
 

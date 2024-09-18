@@ -11,17 +11,17 @@ use PHPUnit\Framework\MockObject\MockObject;
 
 final class MySqlAdapterTest extends SchemaCopyTestCase
 {
-    private MockObject|Connection $connection;
+    private MockObject&Connection $connection;
     private SchemaCopyAdapterInterface $adapter;
 
     public function testSameTypeAsEqual(): void
     {
-        $this->assertTrue($this->adapter->sameTypeAs($this->adapter));
+        self::assertTrue($this->adapter->sameTypeAs($this->adapter));
     }
 
     public function testSameTypeAsNotEqual(): void
     {
-        $this->assertFalse($this->adapter->sameTypeAs($this->createAdapter('IT IS DIFFERENT!')));
+        self::assertFalse($this->adapter->sameTypeAs($this->createAdapter('IT IS DIFFERENT!')));
     }
 
     public function testRunCopy(): void
@@ -40,7 +40,7 @@ final class MySqlAdapterTest extends SchemaCopyTestCase
             $value = true;
         });
 
-        $this->assertTrue($value);
+        self::assertTrue($value);
     }
 
     public function testDisableConstraints(): void

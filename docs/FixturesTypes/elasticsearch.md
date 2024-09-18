@@ -16,7 +16,7 @@ kununu_testing:
       index_name: 'my_index_name'
 ```
 
-In your tests you can extend the classes [FixturesAwareTestCase](/src/Test/FixturesAwareTestCase.php) or [WebTestCase](/src/Test/WebTestCase.php) which expose the following method:
+In your tests you can extend the classes [FixturesAwareTestCase](../../src/Test/FixturesAwareTestCase.php) or [WebTestCase](../../src/Test/WebTestCase.php) which expose the following method:
 
 ```php
 protected function loadElasticsearchFixtures(string $alias, OptionsInterface $options, string ...$classNames): void
@@ -25,9 +25,9 @@ protected function loadElasticsearchFixtures(string $alias, OptionsInterface $op
 - `$alias` - Alias defined above
 - `$classNames` - Array with classes names of fixtures to load
 - `$options` - [Options](options.md) for the fixtures load process
-- `...$classNames` - Classes names of fixtures to load
+- `$classNames` - Classes names of fixtures to load
 
-**Example of loading fixtures in a Integration Test**
+**Example of loading fixtures in an Integration Test**
 
 ```php
 use Kununu\TestingBundle\Test\FixturesAwareTestCase;
@@ -66,11 +66,11 @@ final class IntegrationTest extends FixturesAwareTestCase
 
 This bundle can automatically create a Symfony Command to load default fixtures for any configured Elasticsearch Index. This can be useful for example when you want to have default fixtures for a Elasticsearch Index that are loaded when your service spins up. At kununu we make use of this and when one of our services starts, we call a script, *run_startup.sh*, that on the *dev* and *test* environments calls this commands so that each Elasticsearch Index starts with a set of a default fixtures.
 
-```bash
+```shell
 php bin/console kununu_testing:load_fixtures:elastic_search:MY_INDEX_ALIAS [--append]
 ```
 
-### 1. Enable Symfony Command for a Elasticsearch Index
+### 1. Enable Symfony Command for an Elasticsearch Index
 
 By default, Symfony Commands are not created for any Elasticsearch Index. If you want to enable the creation of a Symfony Command for a specific Index you will need to enable it the configuration of the bundle by setting the option `load_command_fixtures_classes_namespace` where you specify the classes names of the fixtures that the command should run.
 
@@ -87,7 +87,7 @@ kununu_testing:
 
 The fixtures can be loaded for an Elasticsearch Index by running:
 
-```bash
+```shell
 php bin/console kununu_testing:load_fixtures:elastic_search:my_index_alias --append
 ```
 

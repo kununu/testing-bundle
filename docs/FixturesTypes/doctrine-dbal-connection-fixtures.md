@@ -17,7 +17,7 @@ doctrine:
 
 ## How to load Doctrine Connection Fixtures?
 
-In your tests you can extend the classes [FixturesAwareTestCase](/src/Test/FixturesAwareTestCase.php) or [WebTestCase](/src/Test/WebTestCase.php) which expose the following method:
+In your tests you can extend the classes [FixturesAwareTestCase](../../src/Test/FixturesAwareTestCase.php) or [WebTestCase](../../src/Test/WebTestCase.php) which expose the following method:
 
 ```php
 protected function loadDbFixtures(string $connectionName, DbOptionsInterface $options, string ...$classNames)
@@ -25,9 +25,9 @@ protected function loadDbFixtures(string $connectionName, DbOptionsInterface $op
 
 - `$connectionName` - Name of your connection
 - `$options` - [Options](options.md) for the fixtures load process
-- `...$classNames` - Classes names of fixtures to load
+- `$classNames` - Classes names of fixtures to load
 
-**Example of loading fixtures in a Integration Test**
+**Example of loading fixtures in an Integration Test**
 
 ```php
 use Kununu\TestingBundle\Test\FixturesAwareTestCase;
@@ -98,13 +98,13 @@ final class IntegrationTest extends FixturesAwareTestCase
 
 This bundle can automatically create a Symfony Command to load default fixtures for any connection. This can be useful for example when you want to have default fixtures for a database that are loaded when your service spins up. At kununu we make use of this and when one of our services starts, we call a script, *run_startup.sh*, that on the *dev* and *test* environments calls this commands so that each database starts with a set of a default fixtures.
 
-```bash
+```shell
 php bin/console kununu_testing:load_fixtures:connections:CONNECTION_NAME [--append]
 ```
 
 Or for non-transactional fixtures:
 
-```bash
+```shell
 php bin/console kununu_testing:load_fixtures:non_transactional_connections:CONNECTION_NAME [--append]
 ```
 
@@ -130,13 +130,13 @@ kununu_testing:
 
 The fixtures can be loaded for a Connection by running:
 
-```bash
+```shell
 php bin/console kununu_testing:load_fixtures:connections:default --append
 ```
 
 Or for non-transactional fixtures:
 
-```bash
+```shell
 php bin/console kununu_testing:load_fixtures:non_transactional_connections:default --append
 ```
 

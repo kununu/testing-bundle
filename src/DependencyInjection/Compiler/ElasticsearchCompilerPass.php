@@ -17,8 +17,8 @@ final class ElasticsearchCompilerPass implements CompilerPassInterface
 {
     use LoadFixturesCommandsTrait;
 
-    private const SERVICE_PREFIX = 'kununu_testing.orchestrator.elastic_search';
-    private const LOAD_COMMAND_FIXTURES_CLASSES_NAMESPACE_CONFIG = 'load_command_fixtures_classes_namespace';
+    private const string SERVICE_PREFIX = 'kununu_testing.orchestrator.elastic_search';
+    private const string LOAD_COMMAND_FIXTURES_CLASSES_NAMESPACE_CONFIG = 'load_command_fixtures_classes_namespace';
 
     public function process(ContainerBuilder $container): void
     {

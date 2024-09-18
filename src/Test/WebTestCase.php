@@ -9,11 +9,12 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 abstract class WebTestCase extends FixturesAwareTestCase
 {
-    final protected function doRequest(RequestBuilder $builder, string $httpClientName = 'http_client', ?Options $options = null): Response
-    {
-        $httpClientFixtures = interface_exists(HttpClientInterface::class)
-            ? $this->getHttpClientFixtures($httpClientName)
-            : null;
+    final protected function doRequest(
+        RequestBuilder $builder,
+        string $httpClientName = 'http_client',
+        ?Options $options = null,
+    ): Response {
+        $httpClientFixtures = $this->getPreviousHttpClientFixtures($httpClientName);
 
         $this->shutdown();
 
@@ -38,5 +39,11 @@ abstract class WebTestCase extends FixturesAwareTestCase
         }
 
         return $response;
+    }
+
+    /** @codeCoverageIgnore */
+    private function getPreviousHttpClientFixtures(string $httpClientName): ?array
+    {
+        return interface_exists(HttpClientInterface::class) ? $this->getHttpClientFixtures($httpClientName) : null;
     }
 }

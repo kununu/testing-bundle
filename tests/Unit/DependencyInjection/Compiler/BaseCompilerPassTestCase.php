@@ -14,7 +14,7 @@ abstract class BaseCompilerPassTestCase extends AbstractCompilerPassTestCase
     protected function assertServiceDefinitionWithReferenceArgument(
         string $serviceId,
         string|int $argumentIndex,
-        string $expectedValue
+        string $expectedValue,
     ): void {
         $this->assertContainerBuilderHasServiceDefinitionWithArgument(
             $serviceId,
@@ -29,7 +29,7 @@ abstract class BaseCompilerPassTestCase extends AbstractCompilerPassTestCase
         string $commandClassName,
         string $alias,
         string $orchestratorId,
-        array $fixturesClassesNamespaces
+        array $fixturesClassesNamespaces,
     ): void {
         $this->assertContainerBuilderHasService(
             $commandId,
@@ -60,13 +60,13 @@ abstract class BaseCompilerPassTestCase extends AbstractCompilerPassTestCase
             $fixturesClassesNamespaces
         );
 
-        $this->assertTrue($this->container->getDefinition($orchestratorId)->isPublic());
+        self::assertTrue($this->container->getDefinition($orchestratorId)->isPublic());
     }
 
     protected function assertPurger(string $purgerId, string $purgerClass, mixed ...$arguments): void
     {
         $this->assertContainerBuilderHasService($purgerId, $purgerClass);
-        $this->assertTrue($this->container->getDefinition($purgerId)->isPrivate());
+        self::assertTrue($this->container->getDefinition($purgerId)->isPrivate());
         foreach ($arguments as $position => $argument) {
             $this->assertContainerBuilderHasServiceDefinitionWithArgument($purgerId, $position, $argument);
         }
@@ -75,7 +75,7 @@ abstract class BaseCompilerPassTestCase extends AbstractCompilerPassTestCase
     protected function assertExecutor(string $executorId, string $executorClass, mixed ...$arguments): void
     {
         $this->assertContainerBuilderHasService($executorId, $executorClass);
-        $this->assertTrue($this->container->getDefinition($executorId)->isPrivate());
+        self::assertTrue($this->container->getDefinition($executorId)->isPrivate());
         foreach ($arguments as $position => $argument) {
             $this->assertContainerBuilderHasServiceDefinitionWithArgument($executorId, $position, $argument);
         }
@@ -84,13 +84,13 @@ abstract class BaseCompilerPassTestCase extends AbstractCompilerPassTestCase
     protected function assertLoader(string $loaderId, string $loaderClass): void
     {
         $this->assertContainerBuilderHasService($loaderId, $loaderClass);
-        $this->assertTrue($this->container->getDefinition($loaderId)->isPrivate());
+        self::assertTrue($this->container->getDefinition($loaderId)->isPrivate());
     }
 
     protected function assertOrchestrator(string $orchestratorId, string $executorId, string $loaderId): void
     {
         $this->assertContainerBuilderHasService($orchestratorId, Orchestrator::class);
-        $this->assertTrue($this->container->getDefinition($orchestratorId)->isPublic());
+        self::assertTrue($this->container->getDefinition($orchestratorId)->isPublic());
         $this->assertContainerBuilderHasServiceDefinitionWithArgument($orchestratorId, 0, new Reference($executorId));
         $this->assertContainerBuilderHasServiceDefinitionWithArgument($orchestratorId, 1, new Reference($loaderId));
     }
@@ -100,12 +100,12 @@ abstract class BaseCompilerPassTestCase extends AbstractCompilerPassTestCase
         $mock = $this->createMock(ExtensionInterface::class);
 
         $mock
-            ->expects($this->any())
+            ->expects(self::any())
             ->method('getAlias')
             ->willReturn($alias);
 
         $mock
-            ->expects($this->any())
+            ->expects(self::any())
             ->method('getNamespace')
             ->willReturn(false);
 

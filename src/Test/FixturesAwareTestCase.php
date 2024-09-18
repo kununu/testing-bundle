@@ -9,16 +9,16 @@ use Kununu\TestingBundle\Test\Options\OptionsInterface;
 
 abstract class FixturesAwareTestCase extends AbstractTestCase
 {
-    private const KEY_CONNECTIONS = 'connections';
-    private const KEY_NON_TRANSACTIONAL_CONNECTIONS = 'non_transactional_connections';
-    private const KEY_CACHE_POOLS = 'cache_pools';
-    private const KEY_ELASTICSEARCH = 'elastic_search';
-    private const KEY_HTTP_CLIENT = 'http_client';
+    private const string KEY_CONNECTIONS = 'connections';
+    private const string KEY_NON_TRANSACTIONAL_CONNECTIONS = 'non_transactional_connections';
+    private const string KEY_CACHE_POOLS = 'cache_pools';
+    private const string KEY_ELASTICSEARCH = 'elastic_search';
+    private const string KEY_HTTP_CLIENT = 'http_client';
 
     final protected function loadDbFixtures(
         string $connectionName,
         DbOptionsInterface $options,
-        string ...$classNames
+        string ...$classNames,
     ): void {
         $this
             ->getOrchestrator(
@@ -31,7 +31,7 @@ abstract class FixturesAwareTestCase extends AbstractTestCase
     final protected function loadCachePoolFixtures(
         string $cachePoolServiceId,
         OptionsInterface $options,
-        string ...$classNames
+        string ...$classNames,
     ): void {
         $this
             ->getOrchestrator(self::KEY_CACHE_POOLS, $cachePoolServiceId)
@@ -41,7 +41,7 @@ abstract class FixturesAwareTestCase extends AbstractTestCase
     final protected function loadElasticsearchFixtures(
         string $alias,
         OptionsInterface $options,
-        string ...$classNames
+        string ...$classNames,
     ): void {
         $this
             ->getOrchestrator(self::KEY_ELASTICSEARCH, $alias)
@@ -51,7 +51,7 @@ abstract class FixturesAwareTestCase extends AbstractTestCase
     final protected function loadHttpClientFixtures(
         string $httpClientServiceId,
         OptionsInterface $options,
-        string ...$classNames
+        string ...$classNames,
     ): void {
         $this
             ->getOrchestrator(self::KEY_HTTP_CLIENT, $httpClientServiceId)
@@ -61,7 +61,7 @@ abstract class FixturesAwareTestCase extends AbstractTestCase
     final protected function registerInitializableFixtureForDb(
         string $connectionName,
         string $className,
-        mixed ...$args
+        mixed ...$args,
     ): void {
         $this
             ->getOrchestrator(self::KEY_CONNECTIONS, $connectionName)
@@ -71,7 +71,7 @@ abstract class FixturesAwareTestCase extends AbstractTestCase
     final protected function registerInitializableFixtureForNonTransactionalDb(
         string $connectionName,
         string $className,
-        mixed ...$args
+        mixed ...$args,
     ): void {
         $this
             ->getOrchestrator(self::KEY_NON_TRANSACTIONAL_CONNECTIONS, $connectionName)
@@ -81,7 +81,7 @@ abstract class FixturesAwareTestCase extends AbstractTestCase
     final protected function registerInitializableFixtureForCachePool(
         string $cachePoolServiceId,
         string $className,
-        mixed ...$args
+        mixed ...$args,
     ): void {
         $this
             ->getOrchestrator(self::KEY_CACHE_POOLS, $cachePoolServiceId)
@@ -91,7 +91,7 @@ abstract class FixturesAwareTestCase extends AbstractTestCase
     final protected function registerInitializableFixtureForElasticsearch(
         string $alias,
         string $className,
-        mixed ...$args
+        mixed ...$args,
     ): void {
         $this
             ->getOrchestrator(self::KEY_ELASTICSEARCH, $alias)
@@ -101,7 +101,7 @@ abstract class FixturesAwareTestCase extends AbstractTestCase
     final protected function registerInitializableFixtureForHttpClient(
         string $httpClientServiceId,
         string $className,
-        mixed ...$args
+        mixed ...$args,
     ): void {
         $this
             ->getOrchestrator(self::KEY_HTTP_CLIENT, $httpClientServiceId)
@@ -168,6 +168,9 @@ abstract class FixturesAwareTestCase extends AbstractTestCase
 
     private function getOrchestrator(string $type, string $key): Orchestrator
     {
-        return $this->getFixturesContainer()->get(sprintf('kununu_testing.orchestrator.%s.%s', $type, $key));
+        $orchestrator = $this->getServiceFromContainer(sprintf('kununu_testing.orchestrator.%s.%s', $type, $key));
+        assert($orchestrator instanceof Orchestrator);
+
+        return $orchestrator;
     }
 }

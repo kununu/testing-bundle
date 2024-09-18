@@ -8,7 +8,7 @@ use Kununu\TestingBundle\Service\SchemaCopy\SchemaCopyAdapterInterface;
 
 abstract class AbstractAdapter implements SchemaCopyAdapterInterface
 {
-    protected const TYPE = '';
+    protected const string TYPE = '';
 
     public function __construct(protected readonly Connection $connection)
     {

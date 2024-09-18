@@ -8,7 +8,7 @@ In the rest of the documentation we will assume that you are using the [Symfony 
 
 ## How to load Symfony Http Client Fixtures?
 
-In your tests you can extend the classes [FixturesAwareTestCase](/src/Test/FixturesAwareTestCase.php) or [WebTestCase](/src/Test/WebTestCase.php) which expose the following method:
+In your tests you can extend the classes [FixturesAwareTestCase](../../src/Test/FixturesAwareTestCase.php) or [WebTestCase](../../src/Test/WebTestCase.php) which expose the following method:
 
 ```php
 protected function loadHttpClientFixtures(string $httpClientServiceId, OptionsInterface $options, string ...$classNames): void
@@ -16,7 +16,7 @@ protected function loadHttpClientFixtures(string $httpClientServiceId, OptionsIn
 
 - `$httpClientServiceId` - Name of your Symfony Http Client service
 - `$options` - [Options](options.md) for the fixtures load process
-- `...$classNames` - Classes names of fixtures to load
+- `$classNames` - Classes names of fixtures to load
 
 **Example of loading fixtures in an Integration Test**
 
@@ -97,3 +97,28 @@ Also be mindful that **if you inject the same client on several services** you m
 Example: you are testing service A which uses component B. Component B is also injected with the same Http client but is calling totally different endpoints.
 
 To solve those cases create dedicated Http clients services for the service you are testing.
+
+### Common Problems and Solutions
+
+#### The mocked Http Client is not being used
+
+- Try to create an alias of the Symfony interface to your client in your *test* environment configuration:
+
+```yaml
+services:
+  http_client:
+    class: Kununu\DataFixtures\Tools\HttpClient
+    public: true
+
+  Symfony\Contracts\HttpClient\HttpClientInterface: '@http_client'
+```
+
+- If the mock Http client is still not loaded make sure to add to your *test* environment `framework.yaml` file:
+
+```yaml
+framework:
+  http_client:
+    enabled: false
+```
+
+To disable Symfony Framework bundle creating its own Http clients.

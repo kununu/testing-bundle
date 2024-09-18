@@ -11,7 +11,7 @@ It also provides some utilities that makes testing easier, like a `RequestBuilde
 
 **Please be aware that this bundle should not be used in production mode!**
 
-```bash
+```shell
 composer require --dev kununu/testing-bundle
 ```
 

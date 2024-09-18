@@ -13,7 +13,7 @@ namespace Kununu\TestingBundle\Test\Options;
  */
 class DbOptions extends Options implements DbOptionsInterface
 {
-    protected const OPTIONS = [
+    protected const array OPTIONS = [
         'transactional' => true,
     ];
 

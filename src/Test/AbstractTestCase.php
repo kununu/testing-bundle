@@ -3,9 +3,10 @@ declare(strict_types=1);
 
 namespace Kununu\TestingBundle\Test;
 
-use Psr\Container\ContainerInterface;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+use UnitEnum;
 
 abstract class AbstractTestCase extends WebTestCase
 {
@@ -18,6 +19,16 @@ abstract class AbstractTestCase extends WebTestCase
         }
 
         return static::getContainer();
+    }
+
+    final protected function getServiceFromContainer(string $service): ?object
+    {
+        return $this->getFixturesContainer()->get($service);
+    }
+
+    final protected function getParameterFromContainer(string $name): UnitEnum|float|array|bool|int|string|null
+    {
+        return $this->getFixturesContainer()->getParameter($name);
     }
 
     final protected function getKernelBrowser(): KernelBrowser

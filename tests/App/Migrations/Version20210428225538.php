@@ -59,4 +59,9 @@ SQL
         // I don't care!
         $this->throwIrreversibleMigrationException();
     }
+
+    public function isTransactional(): bool
+    {
+        return false;
+    }
 }

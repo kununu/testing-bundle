@@ -5,10 +5,10 @@ namespace Kununu\TestingBundle\Test\Options;
 
 abstract class AbstractOptions
 {
-    protected const OPTIONS = [];
+    protected const array OPTIONS = [];
 
-    private const PREFIX_WITH = 'with';
-    private const PREFIX_WITHOUT = 'without';
+    private const string PREFIX_WITH = 'with';
+    private const string PREFIX_WITHOUT = 'without';
 
     private array $options = [];
 

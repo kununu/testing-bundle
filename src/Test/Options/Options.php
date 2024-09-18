@@ -11,7 +11,7 @@ namespace Kununu\TestingBundle\Test\Options;
  */
 class Options extends AbstractOptions implements OptionsInterface
 {
-    protected const OPTIONS = [
+    protected const array OPTIONS = [
         'append' => false,
         'clear'  => true,
     ];

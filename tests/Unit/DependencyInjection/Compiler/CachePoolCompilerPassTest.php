@@ -15,7 +15,7 @@ use Symfony\Component\DependencyInjection\Reference;
 
 final class CachePoolCompilerPassTest extends BaseCompilerPassTestCase
 {
-    private const CACHE_POOL_IDS = [
+    private const array CACHE_POOL_IDS = [
         'cache_pool.service_1'           => [
             'creates_command' => true,
         ],
@@ -25,7 +25,7 @@ final class CachePoolCompilerPassTest extends BaseCompilerPassTestCase
         ],
     ];
 
-    private const CONFIG = [
+    private const array CONFIG = [
         'cache' => [
             'pools' => [
                 'cache_pool.service_1' => [
@@ -50,7 +50,7 @@ final class CachePoolCompilerPassTest extends BaseCompilerPassTestCase
                 string $orchestratorId,
                 string $cachePoolId,
                 ?string $consoleCommandId,
-                ?string $consoleCommandName
+                ?string $consoleCommandName,
             ): void {
                 $this->assertPurger($purgerId, CachePoolPurger::class, new Reference($cachePoolId));
                 $this->assertExecutor($executorId, CachePoolExecutor::class, new Reference($cachePoolId), new Reference($purgerId));

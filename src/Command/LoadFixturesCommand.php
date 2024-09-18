@@ -12,12 +12,12 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 
 abstract class LoadFixturesCommand extends Command
 {
-    protected const OPTION_APPEND = 'append';
+    protected const string OPTION_APPEND = 'append';
 
     public function __construct(
         private readonly string $alias,
         private readonly OrchestratorInterface $orchestrator,
-        private readonly array $fixturesClassNames
+        private readonly array $fixturesClassNames,
     ) {
         parent::__construct(sprintf('kununu_testing:load_fixtures:%s:%s', static::getFixtureType(), $alias));
     }

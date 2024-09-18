@@ -24,7 +24,7 @@ abstract class ConfigurationTestCase extends TestCase
     public function testInvalidConfigurationForNode(?array $values): void
     {
         if (null === $values) {
-            $this->assertTrue(true);
+            self::assertTrue(true);
         } else {
             $this->assertConfigurationIsInvalid($values, sprintf('kununu_testing.%s', $this->getNodeName()));
         }

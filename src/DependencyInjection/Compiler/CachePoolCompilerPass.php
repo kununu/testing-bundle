@@ -16,8 +16,8 @@ final class CachePoolCompilerPass extends AbstractCompilerPass
 {
     use LoadFixturesCommandsTrait;
 
-    private const SERVICE_PREFIX = 'kununu_testing.orchestrator.cache_pools';
-    private const CACHE_POOL_TAG = 'cache.pool';
+    private const string SERVICE_PREFIX = 'kununu_testing.orchestrator.cache_pools';
+    private const string CACHE_POOL_TAG = 'cache.pool';
 
     private array $config = [];
 

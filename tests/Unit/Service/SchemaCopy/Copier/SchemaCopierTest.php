@@ -16,21 +16,21 @@ use PHPUnit\Framework\MockObject\MockObject;
 
 final class SchemaCopierTest extends SchemaCopyTestCase
 {
-    private MockObject|Connection $source;
-    private MockObject|Connection $destination;
-    private MockObject|SchemaCopyAdapterFactoryInterface $factory;
+    private MockObject&Connection $source;
+    private MockObject&Connection $destination;
+    private MockObject&SchemaCopyAdapterFactoryInterface $factory;
     private SchemaCopyInterface $copier;
 
     public function testCopy(): void
     {
         $this->factory
-            ->expects($this->exactly(2))
+            ->expects(self::exactly(2))
             ->method('createAdapter')
             ->willReturnCallback(
                 fn(Connection $connection): SchemaCopyAdapterInterface => match ($connection) {
                     $this->source      => new MySqlAdapter($this->source),
                     $this->destination => new MySqlAdapter($this->destination),
-                    default            => throw new LogicException('Unknown connection')
+                    default            => throw new LogicException('Unknown connection'),
                 }
             );
 
@@ -94,13 +94,13 @@ final class SchemaCopierTest extends SchemaCopyTestCase
     public function testCopyWithIncompatibleAdapters(): void
     {
         $this->factory
-            ->expects($this->exactly(2))
+            ->expects(self::exactly(2))
             ->method('createAdapter')
             ->willReturnCallback(
                 fn(Connection $connection): SchemaCopyAdapterInterface => match ($connection) {
                     $this->source      => new MySqlAdapter($this->source),
                     $this->destination => $this->createAdapter('YourSql', 2),
-                    default            => throw new LogicException('Unknown connection')
+                    default            => throw new LogicException('Unknown connection'),
                 }
             );
 
@@ -114,7 +114,6 @@ final class SchemaCopierTest extends SchemaCopyTestCase
 
     protected function setUp(): void
     {
-        parent::setUp();
         $this->source = $this->createConnection();
         $this->destination = $this->createConnection();
         $this->factory = $this->createMock(SchemaCopyAdapterFactoryInterface::class);
