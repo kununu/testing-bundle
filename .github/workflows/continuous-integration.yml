@@ -23,7 +23,6 @@ jobs:
         elasticsearch-version:
           - 6.8.15
         dependencies:
-          - lowest
           - highest
 
     services:
