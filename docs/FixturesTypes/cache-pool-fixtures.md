@@ -16,7 +16,7 @@ framework:
 
 ## How to load Cache Pool Fixtures?
 
-In your tests you can extend the classes [FixturesAwareTestCase](/src/Test/FixturesAwareTestCase.php) or [WebTestCase](/src/Test/WebTestCase.php) which expose the following method:
+In your tests you can extend the classes [FixturesAwareTestCase](../../src/Test/FixturesAwareTestCase.php) or [WebTestCase](../../src/Test/WebTestCase.php) which expose the following method:
 
 ```php
 protected function loadCachePoolFixtures(string $cachePoolServiceId, OptionsInterface $options, string ...$classNames): void
@@ -24,9 +24,9 @@ protected function loadCachePoolFixtures(string $cachePoolServiceId, OptionsInte
 
 - `$cachePoolServiceId` - Name of your pool as configured in the config above
 - `$options` - [Options](options.md) for the fixtures load process
-- `...$classNames` - Classes names of fixtures to load
+- `$classNames` - Classes names of fixtures to load
 
-**Example of loading fixtures in a Integration Test**
+**Example of loading fixtures in an Integration Test**
 
 ```php
 use Kununu\TestingBundle\Test\FixturesAwareTestCase;
@@ -59,7 +59,7 @@ final class IntegrationTest extends FixturesAwareTestCase
 }
 ```
 
-You can also disable the creation of orchestrators services for cache pools if you don't want to use fixtures on cache pools (see [configuration](#Configuration)).
+You can also disable the creation of orchestrators services for cache pools if you don't want to use fixtures on cache pools (see [configuration](#configuration)).
 
 -----------------------
 
@@ -67,7 +67,7 @@ You can also disable the creation of orchestrators services for cache pools if y
 
 This bundle can automatically create a Symfony Command to load default fixtures for any cache pool. This can be useful for example when you want to have default fixtures for a cache pool that are loaded when your service spins up. At kununu we make use of this and when one of our services starts, we call a script, *run_startup.sh*, that on the *dev* and *test* environments calls this commands so that each cache pool starts with a set of a default fixtures.
 
-```bash
+```shell
 php bin/console kununu_testing:load_fixtures:cache_pools:MY_CACHE_ID [--append]
 ```
 
@@ -89,7 +89,7 @@ kununu_testing:
 
 The fixtures can be loaded for a cache pool by running:
 
-```bash
+```shell
 php bin/console kununu_testing:load_fixtures:cache_pools:app.cache.first --append
 ```
 

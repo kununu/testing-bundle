@@ -17,12 +17,12 @@ final class WebTestCaseTest extends WebTestCase
             RequestBuilder::aGetRequest()->withUri('/app/response')
         );
 
-        $this->assertEquals('{"key":"value"}', $response->getContent());
+        self::assertEquals('{"key":"value"}', $response->getContent());
     }
 
     public function testThatExtendsFixturesAwareTestCase(): void
     {
-        $this->assertTrue(is_subclass_of($this, FixturesAwareTestCase::class));
+        self::assertTrue(is_subclass_of($this, FixturesAwareTestCase::class));
     }
 
     public function testThatHttpFixturesGetLoaded(): void
@@ -33,6 +33,6 @@ final class WebTestCaseTest extends WebTestCase
             RequestBuilder::aGetRequest()->withUri('/app/response')
         );
 
-        $this->assertNotEmpty($this->getHttpClientFixtures('http_client'));
+        self::assertNotEmpty($this->getHttpClientFixtures('http_client'));
     }
 }

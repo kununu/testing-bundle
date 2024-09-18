@@ -17,7 +17,7 @@ jobs:
     strategy:
       matrix:
         php-version:
-          - 8.1
+          - 8.3
         mysql-version:
           - 5.7
         elasticsearch-version:
@@ -25,9 +25,6 @@ jobs:
         dependencies:
           - lowest
           - highest
-        exclude:
-          - php-version: 8.1
-            dependencies: lowest
 
     services:
       mysql:
@@ -79,7 +76,7 @@ jobs:
           DATABASE_SERVER_VERSION: ${{ matrix.mysql-version }}
 
       - name: Run PHPUnit
-        run: vendor/bin/phpunit
+        run: vendor/bin/phpunit --log-junit tests/.results/tests-junit.xml --coverage-clover tests/.results/tests-clover.xml
         env:
           DEF_DATABASE_URL: mysql://root:root@127.0.0.1:${{ job.services.mysql.ports['3306'] }}/default_db
           PERSISTENCE_DATABASE_URL: mysql://root:root@127.0.0.1:${{ job.services.mysql.ports['3306'] }}/persistence_db
@@ -91,6 +88,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: ${{ github.job }}-${{ matrix.php-version }}-${{ matrix.dependencies }}-coverage
+          include-hidden-files: true
           path: tests/.results/
 
   sonarcloud:
@@ -104,7 +102,7 @@ jobs:
 
       - uses: actions/download-artifact@v4
         with:
-          name: build-8.1-highest-coverage
+          name: build-8.3-highest-coverage
           path: tests/.results/
 
       - name: Fix Code Coverage Paths
@@ -114,7 +112,7 @@ jobs:
           sed -i 's@'$GITHUB_WORKSPACE'@/github/workspace/@g' tests-junit.xml
 
       - name: SonarCloud Scan
-        uses: sonarsource/sonarcloud-github-action@master
+        uses: sonarsource/sonarcloud-github-action@v3.0.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}

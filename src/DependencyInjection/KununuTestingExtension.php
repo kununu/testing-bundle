@@ -10,7 +10,7 @@ use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 
 final class KununuTestingExtension extends Extension implements ExtensionConfigurationInterface
 {
-    public const ALIAS = 'kununu_testing';
+    public const string ALIAS = 'kununu_testing';
 
     private array $config = [];
 

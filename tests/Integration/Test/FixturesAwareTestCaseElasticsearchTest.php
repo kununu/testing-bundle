@@ -6,12 +6,15 @@ namespace Kununu\TestingBundle\Tests\Integration\Test;
 use Elasticsearch\Client;
 use Elasticsearch\Common\Exceptions\Missing404Exception;
 use Kununu\TestingBundle\Test\FixturesAwareTestCase;
+use Kununu\TestingBundle\Test\FixturesContainerGetterTrait;
 use Kununu\TestingBundle\Test\Options\Options;
 use Kununu\TestingBundle\Tests\App\Fixtures\Elasticsearch\ElasticsearchFixture1;
 use Kununu\TestingBundle\Tests\App\Fixtures\Elasticsearch\ElasticsearchFixture2;
 
 final class FixturesAwareTestCaseElasticsearchTest extends FixturesAwareTestCase
 {
+    use FixturesContainerGetterTrait;
+
     private Client $client;
 
     public function testLoadElasticSearchFixturesWithoutAppend(): void
@@ -42,7 +45,7 @@ final class FixturesAwareTestCaseElasticsearchTest extends FixturesAwareTestCase
 
         try {
             $purgedDocument = $this->client->get(['index' => 'my_index', 'id' => 'document_to_purge']);
-        } catch (Missing404Exception $missing404Exception) {
+        } catch (Missing404Exception) {
         }
 
         if (!empty($purgedDocument)) {
@@ -52,8 +55,8 @@ final class FixturesAwareTestCaseElasticsearchTest extends FixturesAwareTestCase
         $document1 = $this->client->get(['index' => 'my_index', 'id' => 'my_id_1']);
         $document2 = $this->client->get(['index' => 'my_index', 'id' => 'my_id_2']);
 
-        $this->assertEquals('value_1', $document1['_source']['field']);
-        $this->assertEquals('value_2', $document2['_source']['field']);
+        self::assertEquals('value_1', $document1['_source']['field']);
+        self::assertEquals('value_2', $document2['_source']['field']);
     }
 
     public function testLoadElasticSearchFixturesWithAppend(): void
@@ -80,8 +83,8 @@ final class FixturesAwareTestCaseElasticsearchTest extends FixturesAwareTestCase
         $document1 = $this->client->get(['index' => 'my_index', 'id' => 'my_id_1']);
         $document2 = $this->client->get(['index' => 'my_index', 'id' => 'my_id_2']);
 
-        $this->assertEquals('value_1', $document1['_source']['field']);
-        $this->assertEquals('value_2', $document2['_source']['field']);
+        self::assertEquals('value_1', $document1['_source']['field']);
+        self::assertEquals('value_2', $document2['_source']['field']);
     }
 
     public function testClearFixtures(): void
@@ -93,11 +96,12 @@ final class FixturesAwareTestCaseElasticsearchTest extends FixturesAwareTestCase
             ElasticsearchFixture2::class
         );
         $this->clearElasticsearchFixtures('my_index_alias');
-        $this->assertEmpty($this->getElasticsearchFixtures('my_index_alias'));
+
+        self::assertEmpty($this->getElasticsearchFixtures('my_index_alias'));
     }
 
     protected function setUp(): void
     {
-        $this->client = $this->getFixturesContainer()->get(Client::class);
+        $this->client = $this->getElasticsearchClient();
     }
 }

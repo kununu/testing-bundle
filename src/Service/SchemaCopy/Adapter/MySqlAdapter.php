@@ -5,7 +5,7 @@ namespace Kununu\TestingBundle\Service\SchemaCopy\Adapter;
 
 final class MySqlAdapter extends AbstractAdapter
 {
-    protected const TYPE = 'MySql';
+    protected const string TYPE = 'MySql';
 
     public function disableConstraints(): void
     {

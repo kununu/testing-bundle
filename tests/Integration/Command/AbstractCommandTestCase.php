@@ -4,12 +4,15 @@ declare(strict_types=1);
 namespace Kununu\TestingBundle\Tests\Integration\Command;
 
 use Kununu\TestingBundle\Test\FixturesAwareTestCase;
+use Kununu\TestingBundle\Test\FixturesContainerGetterTrait;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Exception\CommandNotFoundException;
 use Symfony\Component\Console\Tester\CommandTester;
 
 abstract class AbstractCommandTestCase extends FixturesAwareTestCase
 {
+    use FixturesContainerGetterTrait;
+
     protected Application $application;
     protected CommandTester $commandTester;
 
@@ -19,7 +22,7 @@ abstract class AbstractCommandTestCase extends FixturesAwareTestCase
 
         $command = $this->application->find($existingCommandAlias);
 
-        $this->assertInstanceOf(
+        self::assertInstanceOf(
             $this->getCommandClass(),
             $command,
             sprintf('Asserted that console command "%s" exists', $existingCommandAlias)
@@ -28,9 +31,9 @@ abstract class AbstractCommandTestCase extends FixturesAwareTestCase
         foreach ($this->getNonExistingCommandAliases() as $nonExistingCommandAlias) {
             try {
                 $this->application->find($nonExistingCommandAlias);
-                $this->fail(sprintf('Console command "%s" should not exist', $nonExistingCommandAlias));
-            } catch (CommandNotFoundException $exception) {
-                $this->assertTrue(
+                self::fail(sprintf('Console command "%s" should not exist', $nonExistingCommandAlias));
+            } catch (CommandNotFoundException) {
+                self::assertTrue(
                     true,
                     sprintf('Asserted that console command "%s" does not exist', $nonExistingCommandAlias)
                 );
@@ -41,6 +44,7 @@ abstract class AbstractCommandTestCase extends FixturesAwareTestCase
     protected function setUp(): void
     {
         $kernel = self::bootKernel();
+
         $this->application = new Application($kernel);
     }
 

@@ -3,16 +3,15 @@ declare(strict_types=1);
 
 namespace Kununu\TestingBundle\Tests\Integration\Command;
 
-use Doctrine\DBAL\Connection;
 use Kununu\TestingBundle\Command\CopyConnectionSchemaCommand;
 use Kununu\TestingBundle\Service\SchemaCopy\SchemaCopyAdapterFactoryInterface;
 use Kununu\TestingBundle\Service\SchemaCopy\SchemaCopyAdapterInterface;
 
 final class CopyConnectionSchemaCommandTest extends AbstractCommandTestCase
 {
-    private const COMMAND = 'kununu_testing:connections:schema:copy';
+    private const string COMMAND = 'kununu_testing:connections:schema:copy';
 
-    private const TABLES = [
+    private const array TABLES = [
         'doctrine_migration_versions',
         'table_1',
         'table_2',
@@ -20,7 +19,7 @@ final class CopyConnectionSchemaCommandTest extends AbstractCommandTestCase
         'table_to_exclude',
     ];
 
-    private const VIEWS = [
+    private const array VIEWS = [
         'my_view',
     ];
 
@@ -30,37 +29,37 @@ final class CopyConnectionSchemaCommandTest extends AbstractCommandTestCase
     {
         $this->executeCommand('monolithic', 'monolithic_test', '', false);
 
-        $this->assertEquals(0, $this->commandTester->getStatusCode());
-        $this->assertEquals(self::TABLES, $this->adapter->getTables());
-        $this->assertEquals(self::VIEWS, $this->adapter->getViews());
+        self::assertEquals(0, $this->commandTester->getStatusCode());
+        self::assertEquals(self::TABLES, $this->adapter->getTables());
+        self::assertEquals(self::VIEWS, $this->adapter->getViews());
     }
 
     public function testCommandValidInteractiveConfirmed(): void
     {
         $this->executeCommand('monolithic', 'monolithic_test');
 
-        $this->assertEquals(0, $this->commandTester->getStatusCode());
-        $this->assertEquals(self::TABLES, $this->adapter->getTables());
-        $this->assertEquals(self::VIEWS, $this->adapter->getViews());
+        self::assertEquals(0, $this->commandTester->getStatusCode());
+        self::assertEquals(self::TABLES, $this->adapter->getTables());
+        self::assertEquals(self::VIEWS, $this->adapter->getViews());
     }
 
     public function testCommandValidInteractiveNotConfirmed(): void
     {
         $this->executeCommand('monolithic', 'monolithic_test', 'no');
 
-        $this->assertEquals(1, $this->commandTester->getStatusCode());
-        $this->assertEmpty($this->adapter->getTables());
-        $this->assertEmpty($this->adapter->getViews());
+        self::assertEquals(1, $this->commandTester->getStatusCode());
+        self::assertEmpty($this->adapter->getTables());
+        self::assertEmpty($this->adapter->getViews());
     }
 
     public function testCommandInvalidNoArgs(): void
     {
         $this->executeCommand(null, null);
 
-        $this->assertEquals(2, $this->commandTester->getStatusCode());
-        $this->assertEmpty($this->adapter->getTables());
-        $this->assertEmpty($this->adapter->getViews());
-        $this->assertStringContainsString(
+        self::assertEquals(2, $this->commandTester->getStatusCode());
+        self::assertEmpty($this->adapter->getTables());
+        self::assertEmpty($this->adapter->getViews());
+        self::assertStringContainsString(
             '--from" argument can not be empty',
             $this->commandTester->getDisplay()
         );
@@ -70,10 +69,10 @@ final class CopyConnectionSchemaCommandTest extends AbstractCommandTestCase
     {
         $this->executeCommand('i_do_not_exist', null);
 
-        $this->assertEquals(2, $this->commandTester->getStatusCode());
-        $this->assertEmpty($this->adapter->getTables());
-        $this->assertEmpty($this->adapter->getViews());
-        $this->assertStringContainsString(
+        self::assertEquals(2, $this->commandTester->getStatusCode());
+        self::assertEmpty($this->adapter->getTables());
+        self::assertEmpty($this->adapter->getViews());
+        self::assertStringContainsString(
             'Connection wanted to "--from" argument: "i_do_not_exist" was not found!',
             $this->commandTester->getDisplay()
         );
@@ -83,10 +82,10 @@ final class CopyConnectionSchemaCommandTest extends AbstractCommandTestCase
     {
         $this->executeCommand('monolithic', 'i_do_not_exist');
 
-        $this->assertEquals(2, $this->commandTester->getStatusCode());
-        $this->assertEmpty($this->adapter->getTables());
-        $this->assertEmpty($this->adapter->getViews());
-        $this->assertStringContainsString(
+        self::assertEquals(2, $this->commandTester->getStatusCode());
+        self::assertEmpty($this->adapter->getTables());
+        self::assertEmpty($this->adapter->getViews());
+        self::assertStringContainsString(
             'Connection wanted to "--to" argument: "i_do_not_exist" was not found!',
             $this->commandTester->getDisplay()
         );
@@ -97,12 +96,11 @@ final class CopyConnectionSchemaCommandTest extends AbstractCommandTestCase
         parent::setUp();
 
         /** @var SchemaCopyAdapterFactoryInterface $adapterFactory */
-        $adapterFactory = $this->getFixturesContainer()->get('kununu_testing.schema_copy_adapter_factory');
+        $adapterFactory = $this->getServiceFromContainer('kununu_testing.schema_copy_adapter_factory');
 
-        /** @var Connection $connection */
-        $connection = $this->getFixturesContainer()->get('doctrine.dbal.monolithic_test_connection');
-
-        $this->adapter = $adapterFactory->createAdapter($connection);
+        $this->adapter = $adapterFactory->createAdapter(
+            $this->getConnection('doctrine.dbal.monolithic_test_connection')
+        );
     }
 
     protected function getCommandClass(): string
@@ -129,7 +127,7 @@ final class CopyConnectionSchemaCommandTest extends AbstractCommandTestCase
         ?string $from,
         ?string $to,
         string $confirmation = 'yes',
-        bool $interactive = true
+        bool $interactive = true,
     ): void {
         $args = [];
 

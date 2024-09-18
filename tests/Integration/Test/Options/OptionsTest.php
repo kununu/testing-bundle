@@ -13,8 +13,8 @@ final class OptionsTest extends TestCase
     #[DataProvider('optionsDataProvider')]
     public function testOptions(OptionsInterface $options, bool $expectedAppend, bool $expectedClear): void
     {
-        $this->assertEquals($expectedAppend, $options->append());
-        $this->assertEquals($expectedClear, $options->clear());
+        self::assertEquals($expectedAppend, $options->append());
+        self::assertEquals($expectedClear, $options->clear());
     }
 
     public static function optionsDataProvider(): array
@@ -25,27 +25,27 @@ final class OptionsTest extends TestCase
                 false,
                 true,
             ],
-            'with append'           => [
+            'with_append'           => [
                 Options::create()->withAppend(),
                 true,
                 true,
             ],
-            'without append'        => [
+            'without_append'        => [
                 Options::create()->withoutAppend(),
                 false,
                 true,
             ],
-            'with clear'            => [
+            'with_clear'            => [
                 Options::create()->withClear(),
                 false,
                 true,
             ],
-            'without clear'         => [
+            'without_clear'         => [
                 Options::create()->withoutClear(),
                 false,
                 false,
             ],
-            'with append and clear' => [
+            'with_append_and_clear' => [
                 Options::create()->withAppend()->withClear(),
                 true,
                 true,

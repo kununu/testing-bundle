@@ -15,7 +15,7 @@ final class ElasticsearchCompilerPassTest extends BaseCompilerPassTestCase
 {
     public function testCompile(): void
     {
-        $indexes = [
+        $indices = [
             'alias_1' => [
                 'index_name' => 'index1',
                 'service'    => 'elastic_search_service_1',
@@ -35,11 +35,11 @@ final class ElasticsearchCompilerPassTest extends BaseCompilerPassTestCase
             ],
         ];
 
-        $this->setParameter('kununu_testing.elastic_search', $indexes);
+        $this->setParameter('kununu_testing.elastic_search', $indices);
 
         $this->compile();
 
-        foreach ($indexes as $alias => $config) {
+        foreach ($indices as $alias => $config) {
             $purgerId = sprintf('kununu_testing.orchestrator.elastic_search.%s.purger', $alias);
             $executorId = sprintf('kununu_testing.orchestrator.elastic_search.%s.executor', $alias);
             $loaderId = sprintf('kununu_testing.orchestrator.elastic_search.%s.loader', $alias);

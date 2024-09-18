@@ -20,9 +20,9 @@
     }
   ],
   "require": {
-    "php": ">=8.1",
+    "php": ">=8.3",
     "symfony/framework-bundle": "^5.4|^6.4",
-    "kununu/data-fixtures": "^11.0",
+    "kununu/data-fixtures": "^12.0",
     "symfony/config": "^5.4|^6.4",
     "symfony/dependency-injection": "^5.4|^6.4",
     "symfony/http-kernel": "^5.4|^6.4"
@@ -36,8 +36,8 @@
     "doctrine/orm": "^3.0",
     "elasticsearch/elasticsearch": "^7.10",
     "kununu/scripts": ">=5.0",
-    "matthiasnoback/symfony-dependency-injection-test": "^5.1",
-    "phpunit/phpunit": "^10.5",
+    "matthiasnoback/symfony-dependency-injection-test": "^6.0",
+    "phpunit/phpunit": "^11.3",
     "psr/cache": "^1.0|^2.0",
     "symfony/browser-kit": "^6.4",
     "symfony/dotenv": "^6.4",
@@ -84,12 +84,12 @@
     "test": [
       "rm -rf tests/App/var/*",
       "tests/App/bin/setup_databases.sh test",
-      "phpunit --log-events-text phpunit.log --no-coverage --no-logging --no-progress --testsuite Full"
+      "phpunit --log-events-text phpunit.log --no-coverage --no-logging --no-progress --testsuite Unit,Integration"
     ],
     "test-coverage": [
       "rm -rf tests/App/var/*",
       "tests/App/bin/setup_databases.sh test",
-      "XDEBUG_MODE=coverage phpunit --log-events-text phpunit.log --no-progress --testsuite Full"
+      "XDEBUG_MODE=coverage phpunit --log-events-text phpunit.log --no-progress --testsuite Unit,Integration --log-junit tests/.results/tests-junit.xml --coverage-clover tests/.results/tests-clover.xml --coverage-html tests/.results/html"
     ]
   },
   "scripts-descriptions": {

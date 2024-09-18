@@ -15,14 +15,14 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 
 final class CopyConnectionSchemaCommand extends Command
 {
-    private const OPTION_FROM = 'from';
-    private const OPTION_FROM_SHORT = 'f';
-    private const OPTION_TO = 'to';
-    private const OPTION_TO_SHORT = 't';
+    private const string OPTION_FROM = 'from';
+    private const string OPTION_FROM_SHORT = 'f';
+    private const string OPTION_TO = 'to';
+    private const string OPTION_TO_SHORT = 't';
 
     public function __construct(
         private readonly SchemaCopyInterface $schemaCopy,
-        private readonly ManagerRegistry $registry
+        private readonly ManagerRegistry $registry,
     ) {
         parent::__construct('kununu_testing:connections:schema:copy');
     }
@@ -75,7 +75,7 @@ final class CopyConnectionSchemaCommand extends Command
         ?Connection $connection,
         string $arg,
         string $connectionName,
-        OutputInterface $output
+        OutputInterface $output,
     ): bool {
         $connectionName = trim($connectionName);
 
@@ -100,7 +100,7 @@ final class CopyConnectionSchemaCommand extends Command
         return true;
     }
 
-    private function getConnection(string $connectionName): Connection|null
+    private function getConnection(string $connectionName): ?Connection
     {
         /* @var Connection|null $connection */
         try {

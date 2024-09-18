@@ -5,12 +5,15 @@ namespace Kununu\TestingBundle\Tests\Integration\Test;
 
 use Doctrine\DBAL\Connection;
 use Kununu\TestingBundle\Test\FixturesAwareTestCase;
+use Kununu\TestingBundle\Test\FixturesContainerGetterTrait;
 use Kununu\TestingBundle\Test\Options\DbOptions;
 use Kununu\TestingBundle\Tests\App\Fixtures\Connection\ConnectionFixture1;
 use Kununu\TestingBundle\Tests\App\Fixtures\Connection\ConnectionSqlFixture1;
 
 final class FixturesAwareTestCaseConnectionsTest extends FixturesAwareTestCase
 {
+    use FixturesContainerGetterTrait;
+
     private Connection $defConnection;
     private Connection $monolithicConnection;
 
@@ -45,13 +48,13 @@ final class FixturesAwareTestCaseConnectionsTest extends FixturesAwareTestCase
             ConnectionSqlFixture1::class
         );
 
-        $this->assertEquals(4, (int) $this->defConnection->fetchOne('SELECT COUNT(*) FROM `table_1`'));
-        $this->assertEquals(4, (int) $this->defConnection->fetchOne('SELECT COUNT(*) FROM `table_2`'));
-        $this->assertEquals(1, (int) $this->defConnection->fetchOne('SELECT COUNT(*) FROM `table_to_exclude`'));
+        self::assertEquals(4, (int) $this->defConnection->fetchOne('SELECT COUNT(*) FROM `table_1`'));
+        self::assertEquals(4, (int) $this->defConnection->fetchOne('SELECT COUNT(*) FROM `table_2`'));
+        self::assertEquals(1, (int) $this->defConnection->fetchOne('SELECT COUNT(*) FROM `table_to_exclude`'));
 
-        $this->assertEquals(4, (int) $this->monolithicConnection->fetchOne('SELECT COUNT(*) FROM `table_1`'));
-        $this->assertEquals(4, (int) $this->monolithicConnection->fetchOne('SELECT COUNT(*) FROM `table_2`'));
-        $this->assertEquals(
+        self::assertEquals(4, (int) $this->monolithicConnection->fetchOne('SELECT COUNT(*) FROM `table_1`'));
+        self::assertEquals(4, (int) $this->monolithicConnection->fetchOne('SELECT COUNT(*) FROM `table_2`'));
+        self::assertEquals(
             1,
             (int) $this->monolithicConnection->fetchOne('SELECT COUNT(*) FROM `table_to_exclude`')
         );
@@ -75,13 +78,13 @@ final class FixturesAwareTestCaseConnectionsTest extends FixturesAwareTestCase
             ConnectionSqlFixture1::class
         );
 
-        $this->assertEquals(3, (int) $this->defConnection->fetchOne('SELECT COUNT(*) FROM `table_1`'));
-        $this->assertEquals(3, (int) $this->defConnection->fetchOne('SELECT COUNT(*) FROM `table_2`'));
-        $this->assertEquals(1, (int) $this->defConnection->fetchOne('SELECT COUNT(*) FROM `table_to_exclude`'));
+        self::assertEquals(3, (int) $this->defConnection->fetchOne('SELECT COUNT(*) FROM `table_1`'));
+        self::assertEquals(3, (int) $this->defConnection->fetchOne('SELECT COUNT(*) FROM `table_2`'));
+        self::assertEquals(1, (int) $this->defConnection->fetchOne('SELECT COUNT(*) FROM `table_to_exclude`'));
 
-        $this->assertEquals(3, (int) $this->monolithicConnection->fetchOne('SELECT COUNT(*) FROM table_1'));
-        $this->assertEquals(3, (int) $this->monolithicConnection->fetchOne('SELECT COUNT(*) FROM table_2'));
-        $this->assertEquals(
+        self::assertEquals(3, (int) $this->monolithicConnection->fetchOne('SELECT COUNT(*) FROM table_1'));
+        self::assertEquals(3, (int) $this->monolithicConnection->fetchOne('SELECT COUNT(*) FROM table_2'));
+        self::assertEquals(
             1,
             (int) $this->monolithicConnection->fetchOne('SELECT COUNT(*) FROM `table_to_exclude`')
         );
@@ -98,13 +101,13 @@ final class FixturesAwareTestCaseConnectionsTest extends FixturesAwareTestCase
         );
         $this->clearDbFixtures('def', $options);
 
-        $this->assertEmpty($this->getDbFixtures('def', $options));
+        self::assertEmpty($this->getDbFixtures('def', $options));
     }
 
     protected function setUp(): void
     {
-        $this->defConnection = $this->getFixturesContainer()->get('doctrine.dbal.def_connection');
-        $this->monolithicConnection = $this->getFixturesContainer()->get('doctrine.dbal.monolithic_connection');
+        $this->defConnection = $this->getConnection('doctrine.dbal.def_connection');
+        $this->monolithicConnection = $this->getConnection('doctrine.dbal.monolithic_connection');
 
         /** @var Connection $connection */
         foreach ([$this->defConnection, $this->monolithicConnection] as $connection) {

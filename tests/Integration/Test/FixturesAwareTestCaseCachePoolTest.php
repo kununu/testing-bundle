@@ -3,15 +3,18 @@ declare(strict_types=1);
 
 namespace Kununu\TestingBundle\Tests\Integration\Test;
 
+use Kununu\TestingBundle\Test\FixturesAwareTestCase;
+use Kununu\TestingBundle\Test\FixturesContainerGetterTrait;
+use Kununu\TestingBundle\Test\Options\Options;
 use Kununu\TestingBundle\Tests\App\Fixtures\CachePool\CachePoolFixture1;
 use Kununu\TestingBundle\Tests\App\Fixtures\CachePool\CachePoolFixture2;
-use Kununu\TestingBundle\Test\FixturesAwareTestCase;
-use Kununu\TestingBundle\Test\Options\Options;
 use Psr\Cache\CacheItemPoolInterface;
 
 final class FixturesAwareTestCaseCachePoolTest extends FixturesAwareTestCase
 {
-    private const EXTRA_DATA_FOR_INIT = 'some extra data for init';
+    use FixturesContainerGetterTrait;
+
+    private const string EXTRA_DATA_FOR_INIT = 'some extra data for init';
 
     private CacheItemPoolInterface $cachePool;
     private CacheItemPoolInterface $tagAwareCachePool;
@@ -41,10 +44,10 @@ final class FixturesAwareTestCaseCachePoolTest extends FixturesAwareTestCase
         $cachePool1Item2 = $this->cachePool->getItem('key_2');
         $cachePool1Item3 = $this->cachePool->getItem('key_3');
 
-        $this->assertNull($cachePool1ItemAfterPurge1->get());
-        $this->assertEquals('value_1', $cachePool1Item1->get());
-        $this->assertEquals('value_2', $cachePool1Item2->get());
-        $this->assertEquals('value_3', $cachePool1Item3->get());
+        self::assertNull($cachePool1ItemAfterPurge1->get());
+        self::assertEquals('value_1', $cachePool1Item1->get());
+        self::assertEquals('value_2', $cachePool1Item2->get());
+        self::assertEquals('value_3', $cachePool1Item3->get());
     }
 
     public function testLoadCachePoolFixturesWithAppend(): void
@@ -65,10 +68,10 @@ final class FixturesAwareTestCaseCachePoolTest extends FixturesAwareTestCase
         $cachePool1Item2 = $this->cachePool->getItem('key_2');
         $cachePool1Item3 = $this->cachePool->getItem('key_3');
 
-        $this->assertEquals('value_to_not_purge_1', $cachePool1ItemAfterToNotPurge1->get());
-        $this->assertEquals('value_1', $cachePool1Item1->get());
-        $this->assertEquals('value_2', $cachePool1Item2->get());
-        $this->assertEquals('value_3', $cachePool1Item3->get());
+        self::assertEquals('value_to_not_purge_1', $cachePool1ItemAfterToNotPurge1->get());
+        self::assertEquals('value_1', $cachePool1Item1->get());
+        self::assertEquals('value_2', $cachePool1Item2->get());
+        self::assertEquals('value_3', $cachePool1Item3->get());
     }
 
     public function testLoadTagAwareCachePoolFixturesWithoutAppend(): void
@@ -96,10 +99,10 @@ final class FixturesAwareTestCaseCachePoolTest extends FixturesAwareTestCase
         $cachePool1Item2 = $this->tagAwareCachePool->getItem('key_2');
         $cachePool1Item3 = $this->tagAwareCachePool->getItem('key_3');
 
-        $this->assertNull($cachePool1ItemAfterPurge1->get());
-        $this->assertEquals('value_1', $cachePool1Item1->get());
-        $this->assertEquals('value_2', $cachePool1Item2->get());
-        $this->assertEquals('value_3', $cachePool1Item3->get());
+        self::assertNull($cachePool1ItemAfterPurge1->get());
+        self::assertEquals('value_1', $cachePool1Item1->get());
+        self::assertEquals('value_2', $cachePool1Item2->get());
+        self::assertEquals('value_3', $cachePool1Item3->get());
     }
 
     public function testLoadTagAwareCachePoolFixturesWithAppend(): void
@@ -120,10 +123,10 @@ final class FixturesAwareTestCaseCachePoolTest extends FixturesAwareTestCase
         $cachePool1Item2 = $this->tagAwareCachePool->getItem('key_2');
         $cachePool1Item3 = $this->tagAwareCachePool->getItem('key_3');
 
-        $this->assertEquals('value_to_not_purge_1', $cachePool1ItemAfterToNotPurge1->get());
-        $this->assertEquals('value_1', $cachePool1Item1->get());
-        $this->assertEquals('value_2', $cachePool1Item2->get());
-        $this->assertEquals('value_3', $cachePool1Item3->get());
+        self::assertEquals('value_to_not_purge_1', $cachePool1ItemAfterToNotPurge1->get());
+        self::assertEquals('value_1', $cachePool1Item1->get());
+        self::assertEquals('value_2', $cachePool1Item2->get());
+        self::assertEquals('value_3', $cachePool1Item3->get());
     }
 
     public function testLoadTagAwarePoolCachePoolFixturesWithoutAppend(): void
@@ -151,10 +154,10 @@ final class FixturesAwareTestCaseCachePoolTest extends FixturesAwareTestCase
         $cachePool1Item2 = $this->tagAwarePoolCachePool->getItem('key_2');
         $cachePool1Item3 = $this->tagAwarePoolCachePool->getItem('key_3');
 
-        $this->assertNull($cachePool1ItemAfterPurge1->get());
-        $this->assertEquals('value_1', $cachePool1Item1->get());
-        $this->assertEquals('value_2', $cachePool1Item2->get());
-        $this->assertEquals('value_3', $cachePool1Item3->get());
+        self::assertNull($cachePool1ItemAfterPurge1->get());
+        self::assertEquals('value_1', $cachePool1Item1->get());
+        self::assertEquals('value_2', $cachePool1Item2->get());
+        self::assertEquals('value_3', $cachePool1Item3->get());
     }
 
     public function testLoadTagAwarePoolCachePoolFixturesWithAppend(): void
@@ -175,10 +178,10 @@ final class FixturesAwareTestCaseCachePoolTest extends FixturesAwareTestCase
         $cachePool1Item2 = $this->tagAwarePoolCachePool->getItem('key_2');
         $cachePool1Item3 = $this->tagAwarePoolCachePool->getItem('key_3');
 
-        $this->assertEquals('value_to_not_purge_1', $cachePool1ItemAfterToNotPurge1->get());
-        $this->assertEquals('value_1', $cachePool1Item1->get());
-        $this->assertEquals('value_2', $cachePool1Item2->get());
-        $this->assertEquals('value_3', $cachePool1Item3->get());
+        self::assertEquals('value_to_not_purge_1', $cachePool1ItemAfterToNotPurge1->get());
+        self::assertEquals('value_1', $cachePool1Item1->get());
+        self::assertEquals('value_2', $cachePool1Item2->get());
+        self::assertEquals('value_3', $cachePool1Item3->get());
     }
 
     public function testLoadChainCachePoolFixturesWithoutAppend(): void
@@ -206,10 +209,10 @@ final class FixturesAwareTestCaseCachePoolTest extends FixturesAwareTestCase
         $cachePool1Item2 = $this->chainCachePool->getItem('key_2');
         $cachePool1Item3 = $this->chainCachePool->getItem('key_3');
 
-        $this->assertNull($cachePool1ItemAfterPurge1->get());
-        $this->assertEquals('value_1', $cachePool1Item1->get());
-        $this->assertEquals('value_2', $cachePool1Item2->get());
-        $this->assertEquals('value_3', $cachePool1Item3->get());
+        self::assertNull($cachePool1ItemAfterPurge1->get());
+        self::assertEquals('value_1', $cachePool1Item1->get());
+        self::assertEquals('value_2', $cachePool1Item2->get());
+        self::assertEquals('value_3', $cachePool1Item3->get());
     }
 
     public function testLoadChainPoolCachePoolFixturesWithAppend(): void
@@ -230,10 +233,10 @@ final class FixturesAwareTestCaseCachePoolTest extends FixturesAwareTestCase
         $cachePool1Item2 = $this->chainCachePool->getItem('key_2');
         $cachePool1Item3 = $this->chainCachePool->getItem('key_3');
 
-        $this->assertEquals('value_to_not_purge_1', $cachePool1ItemAfterToNotPurge1->get());
-        $this->assertEquals('value_1', $cachePool1Item1->get());
-        $this->assertEquals('value_2', $cachePool1Item2->get());
-        $this->assertEquals('value_3', $cachePool1Item3->get());
+        self::assertEquals('value_to_not_purge_1', $cachePool1ItemAfterToNotPurge1->get());
+        self::assertEquals('value_1', $cachePool1Item1->get());
+        self::assertEquals('value_2', $cachePool1Item2->get());
+        self::assertEquals('value_3', $cachePool1Item3->get());
     }
 
     public function testClearFixtures(): void
@@ -245,14 +248,15 @@ final class FixturesAwareTestCaseCachePoolTest extends FixturesAwareTestCase
             CachePoolFixture2::class
         );
         $this->clearCachePoolFixtures('app.cache.fifth');
-        $this->assertEmpty($this->getCachePoolFixtures('app.cache.fifth'));
+
+        self::assertEmpty($this->getCachePoolFixtures('app.cache.fifth'));
     }
 
     protected function setUp(): void
     {
-        $this->cachePool = $this->getFixturesContainer()->get('app.cache.first');
-        $this->tagAwareCachePool = $this->getFixturesContainer()->get('app.cache.third');
-        $this->tagAwarePoolCachePool = $this->getFixturesContainer()->get('app.cache.fourth');
-        $this->chainCachePool = $this->getFixturesContainer()->get('app.cache.fifth');
+        $this->cachePool = $this->getCachePool('app.cache.first');
+        $this->tagAwareCachePool = $this->getCachePool('app.cache.third');
+        $this->tagAwarePoolCachePool = $this->getCachePool('app.cache.fourth');
+        $this->chainCachePool = $this->getCachePool('app.cache.fifth');
     }
 }

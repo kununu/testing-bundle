@@ -13,12 +13,12 @@ use Symfony\Component\DependencyInjection\Reference;
 
 final class HttpClientCompilerPassTest extends BaseCompilerPassTestCase
 {
-    private const HTTP_CLIENT_IDS = [
+    private const array HTTP_CLIENT_IDS = [
         'http_client_1',
         'http_client_2',
     ];
 
-    private const CONFIG = [
+    private const array CONFIG = [
         'http_client' => [
             'clients' => self::HTTP_CLIENT_IDS,
         ],
@@ -34,7 +34,7 @@ final class HttpClientCompilerPassTest extends BaseCompilerPassTestCase
                 string $executorId,
                 string $loaderId,
                 string $orchestratorId,
-                string $httpClientId
+                string $httpClientId,
             ): void {
                 $this->assertPurger($purgerId, HttpClientPurger::class, new Reference($httpClientId));
                 $this->assertExecutor(

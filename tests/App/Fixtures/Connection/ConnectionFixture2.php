@@ -6,7 +6,7 @@ namespace Kununu\TestingBundle\Tests\App\Fixtures\Connection;
 use Doctrine\DBAL\Connection;
 use Kununu\DataFixtures\Adapter\ConnectionFixtureInterface;
 
-final class ConnectionFixture2 implements ConnectionFixtureInterface
+final readonly class ConnectionFixture2 implements ConnectionFixtureInterface
 {
     public function load(Connection $connection): void
     {

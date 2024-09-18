@@ -15,11 +15,11 @@ final class DbOptionsTest extends TestCase
         DbOptionsInterface $options,
         bool $expectedAppend,
         bool $expectedClear,
-        bool $expectedTransactional
+        bool $expectedTransactional,
     ): void {
-        $this->assertEquals($expectedAppend, $options->append());
-        $this->assertEquals($expectedClear, $options->clear());
-        $this->assertEquals($expectedTransactional, $options->transactional());
+        self::assertEquals($expectedAppend, $options->append());
+        self::assertEquals($expectedClear, $options->clear());
+        self::assertEquals($expectedTransactional, $options->transactional());
     }
 
     public static function dbOptionsDataProvider(): array
@@ -31,25 +31,25 @@ final class DbOptionsTest extends TestCase
                 true,
                 true,
             ],
-            'create non transactional'              => [
+            'create_non_transactional'              => [
                 DbOptions::createNonTransactional(),
                 false,
                 true,
                 false,
             ],
-            'without transactional'                 => [
+            'without_transactional'                 => [
                 DbOptions::create()->withoutTransactional(),
                 false,
                 true,
                 false,
             ],
-            'with transactional'                    => [
+            'with_transactional'                    => [
                 DbOptions::create()->withTransactional(),
                 false,
                 true,
                 true,
             ],
-            'with parent options and transactional' => [
+            'with_parent_options_and_transactional' => [
                 DbOptions::create()->withAppend()->withoutClear()->withTransactional(),
                 true,
                 false,

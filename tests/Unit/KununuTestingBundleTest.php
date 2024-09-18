@@ -22,10 +22,10 @@ final class KununuTestingBundleTest extends TestCase
 
         $container = $this->createMock(ContainerBuilder::class);
         $container
-            ->expects($this->exactly(6))
+            ->expects(self::exactly(6))
             ->method('addCompilerPass')
             ->willReturnCallback(
-                function($subject) use ($container, &$executedCompilerPasses): MockObject|ContainerBuilder {
+                function($subject) use ($container, &$executedCompilerPasses): MockObject&ContainerBuilder {
                     $executedCompilerPasses[] = $subject::class;
 
                     return $container;
@@ -34,7 +34,7 @@ final class KununuTestingBundleTest extends TestCase
 
         (new KununuTestingBundle())->build($container);
 
-        $this->assertEquals(
+        self::assertEquals(
             [
                 CachePoolCompilerPass::class,
                 ConnectionCompilerPass::class,

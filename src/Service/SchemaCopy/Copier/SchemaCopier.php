@@ -8,9 +8,9 @@ use Kununu\TestingBundle\Service\SchemaCopy\Exception\IncompatibleAdaptersExcept
 use Kununu\TestingBundle\Service\SchemaCopy\SchemaCopyAdapterFactoryInterface;
 use Kununu\TestingBundle\Service\SchemaCopy\SchemaCopyInterface;
 
-final class SchemaCopier implements SchemaCopyInterface
+final readonly class SchemaCopier implements SchemaCopyInterface
 {
-    public function __construct(private readonly SchemaCopyAdapterFactoryInterface $adapterFactory)
+    public function __construct(private SchemaCopyAdapterFactoryInterface $adapterFactory)
     {
     }
 

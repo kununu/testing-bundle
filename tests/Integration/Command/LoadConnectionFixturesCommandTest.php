@@ -7,9 +7,9 @@ use Kununu\TestingBundle\Command\LoadConnectionFixturesCommand;
 
 final class LoadConnectionFixturesCommandTest extends AbstractLoadConnectionTestCase
 {
-    private const COMMAND_1 = 'kununu_testing:load_fixtures:connections:def';
-    private const COMMAND_2 = 'kununu_testing:load_fixtures:connections:persistence';
-    private const COMMAND_3 = 'kununu_testing:load_fixtures:connections:monolithic';
+    private const string COMMAND_1 = 'kununu_testing:load_fixtures:connections:def';
+    private const string COMMAND_2 = 'kununu_testing:load_fixtures:connections:persistence';
+    private const string COMMAND_3 = 'kununu_testing:load_fixtures:connections:monolithic';
 
     protected function getCommandClass(): string
     {

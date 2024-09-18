@@ -6,7 +6,7 @@ namespace Kununu\TestingBundle\Tests\App\Fixtures\Elasticsearch;
 use Elasticsearch\Client;
 use Kununu\DataFixtures\Adapter\ElasticsearchFixtureInterface;
 
-final class ElasticsearchFixture2 implements ElasticsearchFixtureInterface
+final readonly class ElasticsearchFixture2 implements ElasticsearchFixtureInterface
 {
     public function load(Client $elasticSearch, string $indexName, bool $throwOnFail = true): void
     {

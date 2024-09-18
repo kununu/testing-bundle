@@ -13,7 +13,7 @@ use Symfony\Component\DependencyInjection\Reference;
 
 final class HttpClientCompilerPass extends AbstractCompilerPass
 {
-    private const SERVICE_PREFIX = 'kununu_testing.orchestrator.http_client';
+    private const string SERVICE_PREFIX = 'kununu_testing.orchestrator.http_client';
 
     private array $config = [];
 
