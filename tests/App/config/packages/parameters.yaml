@@ -4,3 +4,4 @@ parameters:
   def_database_url: '%env(resolve:DEF_DATABASE_URL)%'
   persistence_database_url: '%env(resolve:PERSISTENCE_DATABASE_URL)%'
   monolithic_database_url: '%env(resolve:MONOLITHIC_DATABASE_URL)%'
+  dummy_param: 'i am a parameter'
