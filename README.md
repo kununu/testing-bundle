@@ -216,6 +216,8 @@ If you are interested in contributing read our [contributing guidelines](/CONTRI
 
 ## Tests
 
+### Host Machine
+
 This repository takes advantages of GitHub actions to run tests when a commit is performed to a branch.
 
 If you want to run the integration tests on your local machine you will need:
@@ -225,6 +227,24 @@ If you want to run the integration tests on your local machine you will need:
 
 In your local environment to get everything ready for you, run `./tests/setupLocalTests.sh` and follow the instructions.
 Then you can run the tests: `vendor/bin/phpunit`.
+
+### Docker
+
+You can also run the tests through a docker container on your local machine.
+
+_Note: this method currently may not work correctly that require MySQL and Elasticsearch support._
+
+First install the vendors:
+
+```shell
+docker run -it --rm --volume .:/app composer install
+```
+
+Then run the tests in the container with the desired version of PHP:
+
+```shell
+docker run -it --rm --workdir /app --volume .:/app php:8.3 php vendor/bin/phpunit tests
+ ```
 
 ------------------------------
 

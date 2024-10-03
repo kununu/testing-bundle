@@ -7,7 +7,9 @@ use Kununu\TestingBundle\Test\FixturesAwareTestCase;
 use Kununu\TestingBundle\Test\Options\Options;
 use Kununu\TestingBundle\Test\RequestBuilder;
 use Kununu\TestingBundle\Test\WebTestCase;
+use Kununu\TestingBundle\Tests\Integration\Test\DataFixtures\OtherWebTestCaseFixtures;
 use Kununu\TestingBundle\Tests\Integration\Test\DataFixtures\WebTestCaseFixtures;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 final class WebTestCaseTest extends WebTestCase
 {
@@ -25,14 +27,27 @@ final class WebTestCaseTest extends WebTestCase
         self::assertTrue(is_subclass_of($this, FixturesAwareTestCase::class));
     }
 
-    public function testThatHttpFixturesGetLoaded(): void
+    public static function dataProviderThatHttpFixturesGetLoaded(): array
     {
-        $this->loadHttpClientFixtures('http_client', Options::create(), WebTestCaseFixtures::class);
+        return [
+            'single_fixture' => [
+                [WebTestCaseFixtures::class],
+            ],
+            'multiple_fixture_names_all_loaded' => [
+                [WebTestCaseFixtures::class, OtherWebTestCaseFixtures::class],
+            ],
+        ];
+    }
+
+    #[DataProvider('dataProviderThatHttpFixturesGetLoaded')]
+    public function testThatHttpFixturesGetLoaded(array $fixtureClassNames): void
+    {
+        $this->loadHttpClientFixtures('http_client', Options::create(), ...$fixtureClassNames);
 
         $this->doRequest(
             RequestBuilder::aGetRequest()->withUri('/app/response')
         );
 
-        self::assertNotEmpty($this->getHttpClientFixtures('http_client'));
+        self::assertCount(count($fixtureClassNames), $this->getHttpClientFixtures('http_client'));
     }
 }
