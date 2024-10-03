@@ -232,7 +232,7 @@ Then you can run the tests: `vendor/bin/phpunit`.
 
 You can also run the tests through a docker container on your local machine.
 
-_Note: this method currently may not work correctly that require MySQL and Elasticsearch support._
+_Note: this method currently may not work correctly for tests that require MySQL / Elasticsearch support._
 
 First install the vendors:
 
