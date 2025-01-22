@@ -3,10 +3,10 @@ declare(strict_types=1);
 
 namespace Kununu\TestingBundle\Tests\Unit\DependencyInjection\Compiler;
 
-use Kununu\TestingBundle\DependencyInjection\Compiler\AbstractElasticCompilerPass;
+use Kununu\TestingBundle\DependencyInjection\Compiler\AbstractSearchEngineCompilerPass;
 use Symfony\Component\DependencyInjection\Reference;
 
-abstract class BaseElasticCompilerPassTestCase extends BaseLoadFixturesCommandCompilerPassTestCase
+abstract class BaseSearchEngineCompilerPassTestCase extends BaseLoadFixturesCommandCompilerPassTestCase
 {
     public function testCompile(): void
     {
@@ -84,7 +84,7 @@ abstract class BaseElasticCompilerPassTestCase extends BaseLoadFixturesCommandCo
         }
     }
 
-    abstract protected function getCompilerInstance(): AbstractElasticCompilerPass;
+    abstract protected function getCompilerInstance(): AbstractSearchEngineCompilerPass;
 
     private function getIndices(string $section): array
     {

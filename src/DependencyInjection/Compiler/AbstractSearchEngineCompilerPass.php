@@ -7,7 +7,7 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Reference;
 
-abstract class AbstractElasticCompilerPass extends AbstractLoadFixturesCommandCompilerPass
+abstract class AbstractSearchEngineCompilerPass extends AbstractLoadFixturesCommandCompilerPass
 {
     private const string PARAMETER = 'kununu_testing.%s';
 

@@ -58,10 +58,29 @@ final class KununuTestingExtensionTest extends AbstractExtensionTestCase
         );
     }
 
-    public function testThatWhenElasticsearchIsConfiguredThenParametersWithConfigsAreSet(): void
+    public function testThatWhenSearchEnginesAreConfiguredThenParametersWithConfigsAreSet(): void
     {
         $this->load([
             'elastic_search' => [
+                'alias_1' => [
+                    'index_name' => 'index_1',
+                    'service'    => 'service_1',
+                ],
+                'alias_2' => [
+                    'load_command_fixtures_classes_namespace' => [],
+                    'index_name'                              => 'index_2',
+                    'service'                                 => 'service_1',
+                ],
+                'alias_3' => [
+                    'load_command_fixtures_classes_namespace' => [
+                        'App/DataFixtures/Fixture1',
+                        'App/DataFixtures/Fixture2',
+                    ],
+                    'index_name' => 'index_1',
+                    'service'    => 'service_2',
+                ],
+            ],
+            'open_search' => [
                 'alias_1' => [
                     'index_name' => 'index_1',
                     'service'    => 'service_1',
@@ -84,6 +103,30 @@ final class KununuTestingExtensionTest extends AbstractExtensionTestCase
 
         $this->assertContainerBuilderHasParameter(
             'kununu_testing.elastic_search',
+            [
+                'alias_1' => [
+                    'load_command_fixtures_classes_namespace' => [],
+                    'index_name'                              => 'index_1',
+                    'service'                                 => 'service_1',
+                ],
+                'alias_2' => [
+                    'load_command_fixtures_classes_namespace' => [],
+                    'index_name'                              => 'index_2',
+                    'service'                                 => 'service_1',
+                ],
+                'alias_3' => [
+                    'load_command_fixtures_classes_namespace' => [
+                        'App/DataFixtures/Fixture1',
+                        'App/DataFixtures/Fixture2',
+                    ],
+                    'index_name' => 'index_1',
+                    'service'    => 'service_2',
+                ],
+            ]
+        );
+
+        $this->assertContainerBuilderHasParameter(
+            'kununu_testing.open_search',
             [
                 'alias_1' => [
                     'load_command_fixtures_classes_namespace' => [],

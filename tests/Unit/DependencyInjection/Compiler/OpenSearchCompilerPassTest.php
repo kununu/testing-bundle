@@ -7,12 +7,12 @@ use Kununu\DataFixtures\Executor\OpenSearchExecutor;
 use Kununu\DataFixtures\Loader\OpenSearchFixturesLoader;
 use Kununu\DataFixtures\Purger\OpenSearchPurger;
 use Kununu\TestingBundle\Command\LoadOpenSearchFixturesCommand;
-use Kununu\TestingBundle\DependencyInjection\Compiler\AbstractElasticCompilerPass;
+use Kununu\TestingBundle\DependencyInjection\Compiler\AbstractSearchEngineCompilerPass;
 use Kununu\TestingBundle\DependencyInjection\Compiler\OpenSearchCompilerPass;
 
-final class OpenSearchCompilerPassTest extends BaseElasticCompilerPassTestCase
+final class OpenSearchCompilerPassTest extends BaseSearchEngineCompilerPassTestCase
 {
-    protected function getCompilerInstance(): AbstractElasticCompilerPass
+    protected function getCompilerInstance(): AbstractSearchEngineCompilerPass
     {
         return new OpenSearchCompilerPass();
     }

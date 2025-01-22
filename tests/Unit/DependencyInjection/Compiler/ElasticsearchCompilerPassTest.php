@@ -7,12 +7,12 @@ use Kununu\DataFixtures\Executor\ElasticsearchExecutor;
 use Kununu\DataFixtures\Loader\ElasticsearchFixturesLoader;
 use Kununu\DataFixtures\Purger\ElasticsearchPurger;
 use Kununu\TestingBundle\Command\LoadElasticsearchFixturesCommand;
-use Kununu\TestingBundle\DependencyInjection\Compiler\AbstractElasticCompilerPass;
+use Kununu\TestingBundle\DependencyInjection\Compiler\AbstractSearchEngineCompilerPass;
 use Kununu\TestingBundle\DependencyInjection\Compiler\ElasticsearchCompilerPass;
 
-final class ElasticsearchCompilerPassTest extends BaseElasticCompilerPassTestCase
+final class ElasticsearchCompilerPassTest extends BaseSearchEngineCompilerPassTestCase
 {
-    protected function getCompilerInstance(): AbstractElasticCompilerPass
+    protected function getCompilerInstance(): AbstractSearchEngineCompilerPass
     {
         return new ElasticsearchCompilerPass();
     }

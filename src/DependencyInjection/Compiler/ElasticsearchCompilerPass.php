@@ -8,7 +8,7 @@ use Kununu\DataFixtures\Loader\ElasticsearchFixturesLoader;
 use Kununu\DataFixtures\Purger\ElasticsearchPurger;
 use Kununu\TestingBundle\Command\LoadElasticsearchFixturesCommand;
 
-final class ElasticsearchCompilerPass extends AbstractElasticCompilerPass
+final class ElasticsearchCompilerPass extends AbstractSearchEngineCompilerPass
 {
     protected function getSectionName(): string
     {

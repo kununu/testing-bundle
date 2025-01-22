@@ -8,7 +8,7 @@ use Kununu\DataFixtures\Loader\OpenSearchFixturesLoader;
 use Kununu\DataFixtures\Purger\OpenSearchPurger;
 use Kununu\TestingBundle\Command\LoadOpenSearchFixturesCommand;
 
-final class OpenSearchCompilerPass extends AbstractElasticCompilerPass
+final class OpenSearchCompilerPass extends AbstractSearchEngineCompilerPass
 {
     protected function getSectionName(): string
     {
