@@ -47,7 +47,7 @@ final class LoadOpenSearchFixturesCommandTest extends AbstractFixturesCommandTes
 
     protected function preRunCommand(): void
     {
-        $this->loadElasticsearchFixtures('my_index_alias', Options::create(), OpenSearchFixture1::class);
+        $this->loadOpenSearchFixtures('my_index_alias', Options::create(), OpenSearchFixture1::class);
 
         self::assertEquals(1, $this->countDocumentsInIndex());
     }
