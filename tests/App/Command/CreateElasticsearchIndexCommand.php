@@ -4,16 +4,11 @@ declare(strict_types=1);
 namespace Kununu\TestingBundle\Tests\App\Command;
 
 use Elasticsearch\Client;
-use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-#[AsCommand(
-    name: 'app:elasticsearch:create-index',
-    description: 'Creates a new Elasticsearch index'
-)]
 final class CreateElasticsearchIndexCommand extends Command
 {
     public function __construct(private readonly Client $client)
@@ -24,6 +19,8 @@ final class CreateElasticsearchIndexCommand extends Command
     protected function configure(): void
     {
         $this
+            ->setName('app:elasticsearch:create-index')
+            ->setDescription('Creates a new Elasticsearch index')
             ->addArgument('index_name', InputArgument::OPTIONAL, 'The name of the index to create', 'my_index');
     }
 
