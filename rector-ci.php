@@ -21,6 +21,8 @@ return RectorConfig::configure()
     ])
     ->withSkip([
         __DIR__ . '/rector-ci.php',
+        __DIR__ . '/tests/App/config/bundles.php',
         AddOverrideAttributeToOverriddenMethodsRector::class,
     ])
+    ->withSkipPath(__DIR__ . '/tests/App/var/*')
     ->withImportNames();

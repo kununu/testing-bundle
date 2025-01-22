@@ -27,4 +27,8 @@ echo "Creating Elasticsearch index..."
 php console app:elasticsearch:create-index ${command_env}
 echo "Elasticsearch index created!"
 echo
+echo "Creating OpenSearch index..."
+php console app:opensearch:create-index ${command_env}
+echo "OpenSearch index created!"
+echo
 echo "Databases setup complete!"

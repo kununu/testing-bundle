@@ -14,13 +14,14 @@ abstract class AbstractTestCase extends WebTestCase
 
     final protected function getFixturesContainer(): ContainerInterface
     {
-        if (!static::$kernel || !static::getContainer()) {
+        if (!static::$booted) {
             $this->getKernelBrowser();
         }
 
         return static::getContainer();
     }
 
+    // @phpstan-ignore return.unusedType
     final protected function getServiceFromContainer(string $service): ?object
     {
         return $this->getFixturesContainer()->get($service);

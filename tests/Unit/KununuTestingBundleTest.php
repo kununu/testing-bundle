@@ -9,6 +9,7 @@ use Kununu\TestingBundle\DependencyInjection\Compiler\CopyConnectionSchemaComman
 use Kununu\TestingBundle\DependencyInjection\Compiler\ElasticsearchCompilerPass;
 use Kununu\TestingBundle\DependencyInjection\Compiler\HttpClientCompilerPass;
 use Kununu\TestingBundle\DependencyInjection\Compiler\NonTransactionalConnectionCompilerPass;
+use Kununu\TestingBundle\DependencyInjection\Compiler\OpenSearchCompilerPass;
 use Kununu\TestingBundle\KununuTestingBundle;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -22,7 +23,7 @@ final class KununuTestingBundleTest extends TestCase
 
         $container = $this->createMock(ContainerBuilder::class);
         $container
-            ->expects(self::exactly(6))
+            ->expects(self::exactly(7))
             ->method('addCompilerPass')
             ->willReturnCallback(
                 function($subject) use ($container, &$executedCompilerPasses): MockObject&ContainerBuilder {
@@ -40,6 +41,7 @@ final class KununuTestingBundleTest extends TestCase
                 ConnectionCompilerPass::class,
                 NonTransactionalConnectionCompilerPass::class,
                 ElasticsearchCompilerPass::class,
+                OpenSearchCompilerPass::class,
                 HttpClientCompilerPass::class,
                 CopyConnectionSchemaCommandCompilerPass::class,
             ],

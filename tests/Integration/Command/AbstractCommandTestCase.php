@@ -31,13 +31,12 @@ abstract class AbstractCommandTestCase extends FixturesAwareTestCase
         foreach ($this->getNonExistingCommandAliases() as $nonExistingCommandAlias) {
             try {
                 $this->application->find($nonExistingCommandAlias);
-                self::fail(sprintf('Console command "%s" should not exist', $nonExistingCommandAlias));
+                $found = true;
             } catch (CommandNotFoundException) {
-                self::assertTrue(
-                    true,
-                    sprintf('Asserted that console command "%s" does not exist', $nonExistingCommandAlias)
-                );
+                $found = false;
             }
+
+            self::assertFalse($found, sprintf('Console command "%s" should not exist', $nonExistingCommandAlias));
         }
     }
 

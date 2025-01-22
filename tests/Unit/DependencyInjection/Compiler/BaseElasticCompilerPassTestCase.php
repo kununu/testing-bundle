@@ -61,23 +61,23 @@ abstract class BaseElasticCompilerPassTestCase extends BaseLoadFixturesCommandCo
         $this->compile();
 
         foreach ($this->container->getServiceIds() as $serviceId) {
-            $this->assertDoesNotMatchRegularExpression(
+            self::assertDoesNotMatchRegularExpression(
                 sprintf('/^kununu_testing\.orchestrator\.%s\.\w+$/m', $section),
                 $serviceId
             );
-            $this->assertDoesNotMatchRegularExpression(
+            self::assertDoesNotMatchRegularExpression(
                 sprintf('/^kununu_testing\.orchestrator\.%s\.\w+\.purger$/m', $section),
                 $serviceId
             );
-            $this->assertDoesNotMatchRegularExpression(
+            self::assertDoesNotMatchRegularExpression(
                 sprintf('/^kununu_testing\.orchestrator\.%s\.\w+\.executor/m', $section),
                 $serviceId
             );
-            $this->assertDoesNotMatchRegularExpression(
+            self::assertDoesNotMatchRegularExpression(
                 sprintf('/^kununu_testing\.orchestrator\.%s\.\w+\.loader/m', $section),
                 $serviceId
             );
-            $this->assertDoesNotMatchRegularExpression(
+            self::assertDoesNotMatchRegularExpression(
                 sprintf('/^kununu_testing\.load_fixtures\.%s\.\w+\.command/m', $section),
                 $serviceId
             );

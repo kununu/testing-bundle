@@ -13,6 +13,7 @@ abstract class FixturesAwareTestCase extends AbstractTestCase
     private const string KEY_NON_TRANSACTIONAL_CONNECTIONS = 'non_transactional_connections';
     private const string KEY_CACHE_POOLS = 'cache_pools';
     private const string KEY_ELASTICSEARCH = 'elastic_search';
+    private const string KEY_OPEN_SEARCH = 'open_search';
     private const string KEY_HTTP_CLIENT = 'http_client';
 
     final protected function loadDbFixtures(
@@ -45,6 +46,16 @@ abstract class FixturesAwareTestCase extends AbstractTestCase
     ): void {
         $this
             ->getOrchestrator(self::KEY_ELASTICSEARCH, $alias)
+            ->execute($classNames, $options->append(), $options->clear());
+    }
+
+    final protected function loadOpenSearchFixtures(
+        string $alias,
+        OptionsInterface $options,
+        string ...$classNames,
+    ): void {
+        $this
+            ->getOrchestrator(self::KEY_OPEN_SEARCH, $alias)
             ->execute($classNames, $options->append(), $options->clear());
     }
 
@@ -95,6 +106,16 @@ abstract class FixturesAwareTestCase extends AbstractTestCase
     ): void {
         $this
             ->getOrchestrator(self::KEY_ELASTICSEARCH, $alias)
+            ->registerInitializableFixture($className, ...$args);
+    }
+
+    final protected function registerInitializableFixtureForOpenSearch(
+        string $alias,
+        string $className,
+        mixed ...$args,
+    ): void {
+        $this
+            ->getOrchestrator(self::KEY_OPEN_SEARCH, $alias)
             ->registerInitializableFixture($className, ...$args);
     }
 
@@ -152,6 +173,18 @@ abstract class FixturesAwareTestCase extends AbstractTestCase
     final protected function getElasticsearchFixtures(string $alias): array
     {
         return $this->getOrchestrator(self::KEY_ELASTICSEARCH, $alias)->getFixtures();
+    }
+
+    final protected function clearOpenSearchFixtures(string $alias): self
+    {
+        $this->getOrchestrator(self::KEY_OPEN_SEARCH, $alias)->clearFixtures();
+
+        return $this;
+    }
+
+    final protected function getOpenSearchFixtures(string $alias): array
+    {
+        return $this->getOrchestrator(self::KEY_OPEN_SEARCH, $alias)->getFixtures();
     }
 
     final protected function clearHttpClientFixtures(string $httpClientServiceId): self

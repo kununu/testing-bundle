@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace Kununu\TestingBundle\Tests\App\Command;
+namespace App\Command;
 
-use Elasticsearch\Client;
+use OpenSearch\Client;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -11,10 +11,10 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 #[AsCommand(
-    name: 'app:elasticsearch:create-index',
-    description: 'Creates a new Elasticsearch index'
+    name: 'app:opensearch:create-index',
+    description: 'Creates a new OpenSearch index'
 )]
-final class CreateElasticsearchIndexCommand extends Command
+final class CreateOpenSearchIndexCommand extends Command
 {
     public function __construct(private readonly Client $client)
     {

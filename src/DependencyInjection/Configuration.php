@@ -24,7 +24,8 @@ final class Configuration implements ConfigurationInterface
                 $rootNode,
                 'non_transactional_connections'
             )
-            ->addElasticsearchSection($rootNode)
+            ->addSearchEngineSection($rootNode, 'elastic_search')
+            ->addSearchEngineSection($rootNode, 'open_search')
             ->addCacheSection($rootNode)
             ->addHttpClientSection($rootNode);
 
@@ -58,11 +59,11 @@ final class Configuration implements ConfigurationInterface
         return $this;
     }
 
-    private function addElasticsearchSection(ArrayNodeDefinition $node): self
+    private function addSearchEngineSection(ArrayNodeDefinition $node, string $name): self
     {
         $node
             ->children()
-                ->arrayNode('elastic_search')
+                ->arrayNode($name)
                     ->requiresAtLeastOneElement()
                     ->useAttributeAsKey('name')
                     ->arrayPrototype()

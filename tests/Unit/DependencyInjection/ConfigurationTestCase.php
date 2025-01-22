@@ -24,7 +24,7 @@ abstract class ConfigurationTestCase extends TestCase
     public function testInvalidConfigurationForNode(?array $values): void
     {
         if (null === $values) {
-            self::assertTrue(true);
+            self::markTestSkipped('No configuration values. Skipping...');
         } else {
             $this->assertConfigurationIsInvalid($values, sprintf('kununu_testing.%s', $this->getNodeName()));
         }

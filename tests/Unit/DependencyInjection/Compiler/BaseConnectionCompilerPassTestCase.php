@@ -113,27 +113,27 @@ abstract class BaseConnectionCompilerPassTestCase extends BaseLoadFixturesComman
         $this->compile();
 
         foreach ($this->container->getServiceIds() as $serviceId) {
-            $this->assertDoesNotMatchRegularExpression(
+            self::assertDoesNotMatchRegularExpression(
                 '/^kununu_testing\.orchestrator\.%s\.\w+$/m',
                 $this->sectionName,
                 $serviceId
             );
-            $this->assertDoesNotMatchRegularExpression(
+            self::assertDoesNotMatchRegularExpression(
                 '/^kununu_testing\.orchestrator\.%s\.\w+\.purger$/m',
                 $this->sectionName,
                 $serviceId
             );
-            $this->assertDoesNotMatchRegularExpression(
+            self::assertDoesNotMatchRegularExpression(
                 '/^kununu_testing\.orchestrator\.%s\.\w+\.executor/m',
                 $this->sectionName,
                 $serviceId
             );
-            $this->assertDoesNotMatchRegularExpression(
+            self::assertDoesNotMatchRegularExpression(
                 '/^kununu_testing\.orchestrator\.%s\.\w+\.loader/m',
                 $this->sectionName,
                 $serviceId
             );
-            $this->assertDoesNotMatchRegularExpression(
+            self::assertDoesNotMatchRegularExpression(
                 '/^kununu_testing\.load_fixtures\.%s\.\w+\.command/m',
                 $this->sectionName,
                 $serviceId
