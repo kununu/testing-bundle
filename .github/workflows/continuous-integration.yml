@@ -13,7 +13,7 @@ env:
 jobs:
   build:
     name: PHPUnit
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     strategy:
       matrix:
         php-version:
@@ -21,7 +21,9 @@ jobs:
         mysql-version:
           - 5.7
         elasticsearch-version:
-          - 6.8.15
+          - 7.9.3
+        opensearch-version:
+          - 2.18.0
         dependencies:
           - highest
 
@@ -48,7 +50,36 @@ jobs:
         ports:
           - 9200:9200
 
+      opensearch:
+        image: opensearchproject/opensearch:${{ matrix.opensearch-version }}
+        env:
+          bootstrap.memory_lock: true
+          cluster.routing.allocation.disk.threshold_enabled: false
+          discovery.type: single-node
+          http.port: 9201
+          DISABLE_INSTALL_DEMO_CONFIG: true
+          DISABLE_SECURITY_PLUGIN: true
+          OPENSEARCH_JAVA_OPTS: -Xms1g -Xmx1g
+        options: >-
+          --health-cmd "curl http://localhost:9201/_cluster/health"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 10
+        ports:
+          - 9201:9201
+          - 9600:9600
+
     steps:
+      - name: Update
+        run: sudo apt update && sudo apt upgrade -y
+
+      - name: Runs OpenSearch
+        uses: esmarkowski/opensearch-github-action@v1.0.0
+        with:
+          version: ${{ matrix.opensearch-version }}
+          security-disabled: true
+          port: 9201
+
       - name: Checkout
         uses: actions/checkout@v4
 

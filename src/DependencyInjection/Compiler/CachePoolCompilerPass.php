@@ -7,17 +7,17 @@ use Kununu\DataFixtures\Executor\CachePoolExecutor;
 use Kununu\DataFixtures\Loader\CachePoolFixturesLoader;
 use Kununu\DataFixtures\Purger\CachePoolPurger;
 use Kununu\TestingBundle\Command\LoadCacheFixturesCommand;
-use Kununu\TestingBundle\Service\Orchestrator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Reference;
 
-final class CachePoolCompilerPass extends AbstractCompilerPass
+final class CachePoolCompilerPass extends AbstractLoadFixturesCommandCompilerPass
 {
-    use LoadFixturesCommandsTrait;
-
-    private const string SERVICE_PREFIX = 'kununu_testing.orchestrator.cache_pools';
+    private const string CONFIG_KEY = 'cache';
+    private const string CONFIG_ENABLE = 'enable';
+    private const string CONFIG_POOLS = 'pools';
     private const string CACHE_POOL_TAG = 'cache.pool';
+    private const string NAME_KEY = 'name';
 
     private array $config = [];
 
@@ -32,15 +32,40 @@ final class CachePoolCompilerPass extends AbstractCompilerPass
         }
     }
 
+    protected function getSectionName(): string
+    {
+        return 'cache_pools';
+    }
+
+    protected function getCommandClass(): string
+    {
+        return LoadCacheFixturesCommand::class;
+    }
+
+    protected function getPurgerClass(): string
+    {
+        return CachePoolPurger::class;
+    }
+
+    protected function getExecutorClass(): string
+    {
+        return CachePoolExecutor::class;
+    }
+
+    protected function getLoaderClass(): string
+    {
+        return CachePoolFixturesLoader::class;
+    }
+
     private function canBuildOrchestrators(ContainerBuilder $containerBuilder): bool
     {
         if (null === ($configuration = $this->getExtensionConfiguration($containerBuilder))) {
             return false;
         }
 
-        $this->config = $configuration['cache'] ?? [];
+        $this->config = $configuration[self::CONFIG_KEY] ?? [];
 
-        return (bool) ($this->config['enable'] ?? true);
+        return (bool) ($this->config[self::CONFIG_ENABLE] ?? true);
     }
 
     private function getOrchestratorsIds(ContainerBuilder $containerBuilder, array $cachePoolServices): array
@@ -50,7 +75,9 @@ final class CachePoolCompilerPass extends AbstractCompilerPass
             $definition = $containerBuilder->getDefinition($id);
 
             if (!$definition->isAbstract()) {
-                // Cache Pools can be decorated. For example, when using the tags option, the cache pool adapter is decorated.
+                // Cache Pools can be decorated.
+                // For example, when using the tags option, the cache pool adapter is decorated.
+                //
                 // In this case the attributes of this tag contain the original name of the cache pool
                 // So we need to rely on those names and give aliases using this names to the $id
                 $attributes = $definition->getTag(self::CACHE_POOL_TAG);
@@ -58,7 +85,7 @@ final class CachePoolCompilerPass extends AbstractCompilerPass
                 $isDecorated = false;
 
                 foreach ($attributes as $attribute) {
-                    if (isset($attribute['name']) && !empty($name = $attribute['name'])) {
+                    if (isset($attribute[self::NAME_KEY]) && !empty($name = $attribute[self::NAME_KEY])) {
                         $ids[] = $name;
                         $isDecorated = true;
                     }
@@ -75,63 +102,53 @@ final class CachePoolCompilerPass extends AbstractCompilerPass
 
     private function buildContainerDefinitions(ContainerBuilder $containerBuilder, string $id): void
     {
-        $orchestratorId = $this->buildCachePoolOrchestrator($containerBuilder, $id);
+        $orchestratorId = $this->buildOrchestrator($containerBuilder, $id);
 
-        if (!isset($this->config['pools'][$id])) {
+        // Only build load fixture commands for configured cache pools
+        if (!isset($this->config[self::CONFIG_POOLS][$id])) {
             return;
         }
 
         $this->buildLoadFixturesCommand(
-            $containerBuilder,
-            'cache_pools',
-            $orchestratorId,
-            LoadCacheFixturesCommand::class,
-            $id,
-            $this->config['pools'][$id]['load_command_fixtures_classes_namespace'] ?? []
+            container: $containerBuilder,
+            fixtureType: $this->sectionName,
+            orchestratorId: $orchestratorId,
+            commandClassName: $this->commandClass,
+            name: $id,
+            namespace: $this->config[self::CONFIG_POOLS][$id][self::LOAD_COMMAND_CLASSES_NAMESPACE_CONFIG] ?? []
         );
     }
 
-    private function buildCachePoolOrchestrator(ContainerBuilder $containerBuilder, string $id): string
+    private function buildOrchestrator(ContainerBuilder $containerBuilder, string $id): string
     {
-        // Purger Definition for the CachePool with provided $id
-        $purgerId = sprintf('%s.%s.purger', self::SERVICE_PREFIX, $id);
-        $purgerDefinition = new Definition(
-            CachePoolPurger::class,
-            [
-                $cachePool = new Reference($id),
-            ]
-        );
-        $containerBuilder->setDefinition($purgerId, $purgerDefinition);
-
-        // Executor Definition for the CachePool with provided $id
-        $executorId = sprintf('%s.%s.executor', self::SERVICE_PREFIX, $id);
-        $executorDefinition = new Definition(
-            CachePoolExecutor::class,
-            [
-                $cachePool,
-                new Reference($purgerId),
-            ]
-        );
-        $containerBuilder->setDefinition($executorId, $executorDefinition);
-
-        // Loader Definition for the CachePool with provided $id
-        $loaderId = sprintf('%s.%s.loader', self::SERVICE_PREFIX, $id);
-        $loaderDefinition = new Definition(CachePoolFixturesLoader::class);
-        $containerBuilder->setDefinition($loaderId, $loaderDefinition);
-
-        // Orchestrator Definition for the CachePool with provided $id
-        $orchestratorDefinition = new Definition(
-            Orchestrator::class,
-            [
-                new Reference($executorId),
-                new Reference($loaderId),
-            ]
-        );
-        $orchestratorDefinition->setPublic(true);
-
-        $containerBuilder->setDefinition(
-            $orchestratorId = sprintf('%s.%s', self::SERVICE_PREFIX, $id),
-            $orchestratorDefinition
+        $this->buildGenericOrchestrator(
+            container: $containerBuilder,
+            baseId: $id,
+            // Loader Definition for the CachePool with provided id
+            loaderId: sprintf('%s.%s.loader', $this->orchestratorServicePrefix, $id),
+            // Orchestrator Definition for the CachePool with provided id
+            orchestratorId: $orchestratorId = sprintf('%s.%s', $this->orchestratorServicePrefix, $id),
+            // Purger Definition for the CachePool with provided id
+            purgerDefinitionBuilder: fn(ContainerBuilder $container, string $baseId): array => [
+                sprintf('%s.%s.purger', $this->orchestratorServicePrefix, $id),
+                new Definition(
+                    $this->purgerClass,
+                    [
+                        new Reference($baseId),
+                    ]
+                ),
+            ],
+            // Executor Definition for the CachePool with provided id
+            executorDefinitionBuilder: fn(ContainerBuilder $container, string $baseId, string $purgerId): array => [
+                sprintf('%s.%s.executor', $this->orchestratorServicePrefix, $id),
+                new Definition(
+                    $this->executorClass,
+                    [
+                        new Reference($baseId),
+                        new Reference($purgerId),
+                    ]
+                ),
+            ],
         );
 
         return $orchestratorId;

@@ -5,10 +5,9 @@ namespace Kununu\TestingBundle\Tests\Unit\DependencyInjection\Compiler;
 
 use Kununu\DataFixtures\Loader\ConnectionFixturesLoader;
 use Kununu\TestingBundle\DependencyInjection\Compiler\AbstractConnectionCompilerPass;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
 
-abstract class BaseConnectionCompilerPassTestCase extends BaseCompilerPassTestCase
+abstract class BaseConnectionCompilerPassTestCase extends BaseLoadFixturesCommandCompilerPassTestCase
 {
     public function testCompileWithConfigurations(): void
     {
@@ -32,23 +31,22 @@ abstract class BaseConnectionCompilerPassTestCase extends BaseCompilerPassTestCa
 
         $this->setParameter('doctrine.connections', $connections);
 
-        $sectionName = $this->getSectionName();
         $this->setParameter(
-            sprintf('kununu_testing.%s.default', $sectionName),
+            sprintf('kununu_testing.%s.default', $this->sectionName),
             [
                 'load_command_fixtures_classes_namespace' => $loadCommandFixturesClassesNamespace['default'],
                 'excluded_tables'                         => $excludedTables['default'],
             ]
         );
         $this->setParameter(
-            sprintf('kununu_testing.%s.persistence', $sectionName),
+            sprintf('kununu_testing.%s.persistence', $this->sectionName),
             [
                 'load_command_fixtures_classes_namespace' => $loadCommandFixturesClassesNamespace['persistence'],
                 'excluded_tables'                         => $excludedTables['persistence'],
             ]
         );
         $this->setParameter(
-            sprintf('kununu_testing.%s.monolithic', $sectionName),
+            sprintf('kununu_testing.%s.monolithic', $this->sectionName),
             [
                 'load_command_fixtures_classes_namespace' => $loadCommandFixturesClassesNamespace['monolithic'],
                 'excluded_tables'                         => $excludedTables['monolithic'],
@@ -57,23 +55,28 @@ abstract class BaseConnectionCompilerPassTestCase extends BaseCompilerPassTestCa
         $this->compile();
 
         foreach ($connections as $connName => $connId) {
-            $purgerId = sprintf('kununu_testing.orchestrator.%s.%s.purger', $sectionName, $connName);
-            $executorId = sprintf('kununu_testing.orchestrator.%s.%s.executor', $sectionName, $connName);
-            $loaderId = sprintf('kununu_testing.orchestrator.%s.%s.loader', $sectionName, $connName);
-            $orchestratorId = sprintf('kununu_testing.orchestrator.%s.%s', $sectionName, $connName);
-            $consoleCommandId = sprintf('kununu_testing.load_fixtures.%s.%s.command', $sectionName, $connName);
-            $consoleCommandName = sprintf('kununu_testing:load_fixtures:%s:%s', $sectionName, $connName);
+            $purgerId = sprintf('kununu_testing.orchestrator.%s.%s.purger', $this->sectionName, $connName);
+            $executorId = sprintf('kununu_testing.orchestrator.%s.%s.executor', $this->sectionName, $connName);
+            $loaderId = sprintf('kununu_testing.orchestrator.%s.%s.loader', $this->sectionName, $connName);
+            $orchestratorId = sprintf('kununu_testing.orchestrator.%s.%s', $this->sectionName, $connName);
+            $consoleCommandId = sprintf('kununu_testing.load_fixtures.%s.%s.command', $this->sectionName, $connName);
+            $consoleCommandName = sprintf('kununu_testing:load_fixtures:%s:%s', $this->sectionName, $connName);
 
             $this->assertPurger($purgerId, $this->getPurgerClass(), new Reference($connId), $excludedTables[$connName]);
-            $this->assertExecutor($executorId, $this->getExecutorClass(), new Reference($connId), new Reference($purgerId));
-            $this->assertLoader($loaderId, ConnectionFixturesLoader::class);
+            $this->assertExecutor(
+                $executorId,
+                $this->executorClass,
+                new Reference($connId),
+                new Reference($purgerId)
+            );
+            $this->assertLoader($loaderId, $this->loaderClass);
             $this->assertOrchestrator($orchestratorId, $executorId, $loaderId);
 
             if (in_array($connName, ['default', 'monolithic'])) {
                 $this->assertFixturesCommand(
                     $consoleCommandId,
                     $consoleCommandName,
-                    $this->getLoadFixturesCommandClass(),
+                    $this->commandClass,
                     $connName,
                     $orchestratorId,
                     $loadCommandFixturesClassesNamespace[$connName]
@@ -95,10 +98,13 @@ abstract class BaseConnectionCompilerPassTestCase extends BaseCompilerPassTestCa
 
         $this->compile();
 
-        $sectionName = $this->getSectionName();
         foreach ($connections as $connName => $connId) {
-            $this->assertContainerBuilderNotHasService(sprintf('kununu_testing.orchestrator.%s.%s', $sectionName, $connName));
-            $this->assertContainerBuilderNotHasService(sprintf('kununu_testing.load_fixtures.%s.%s.command', $sectionName, $connName));
+            $this->assertContainerBuilderNotHasService(
+                sprintf('kununu_testing.orchestrator.%s.%s', $this->sectionName, $connName)
+            );
+            $this->assertContainerBuilderNotHasService(
+                sprintf('kununu_testing.load_fixtures.%s.%s.command', $this->sectionName, $connName)
+            );
         }
     }
 
@@ -106,28 +112,39 @@ abstract class BaseConnectionCompilerPassTestCase extends BaseCompilerPassTestCa
     {
         $this->compile();
 
-        $sectionName = $this->getSectionName();
         foreach ($this->container->getServiceIds() as $serviceId) {
-            $this->assertDoesNotMatchRegularExpression('/^kununu_testing\.orchestrator\.%s\.\w+$/m', $sectionName, $serviceId);
-            $this->assertDoesNotMatchRegularExpression('/^kununu_testing\.orchestrator\.%s\.\w+\.purger$/m', $sectionName, $serviceId);
-            $this->assertDoesNotMatchRegularExpression('/^kununu_testing\.orchestrator\.%s\.\w+\.executor/m', $sectionName, $serviceId);
-            $this->assertDoesNotMatchRegularExpression('/^kununu_testing\.orchestrator\.%s\.\w+\.loader/m', $sectionName, $serviceId);
-            $this->assertDoesNotMatchRegularExpression('/^kununu_testing\.load_fixtures\.%s\.\w+\.command/m', $sectionName, $serviceId);
+            $this->assertDoesNotMatchRegularExpression(
+                '/^kununu_testing\.orchestrator\.%s\.\w+$/m',
+                $this->sectionName,
+                $serviceId
+            );
+            $this->assertDoesNotMatchRegularExpression(
+                '/^kununu_testing\.orchestrator\.%s\.\w+\.purger$/m',
+                $this->sectionName,
+                $serviceId
+            );
+            $this->assertDoesNotMatchRegularExpression(
+                '/^kununu_testing\.orchestrator\.%s\.\w+\.executor/m',
+                $this->sectionName,
+                $serviceId
+            );
+            $this->assertDoesNotMatchRegularExpression(
+                '/^kununu_testing\.orchestrator\.%s\.\w+\.loader/m',
+                $this->sectionName,
+                $serviceId
+            );
+            $this->assertDoesNotMatchRegularExpression(
+                '/^kununu_testing\.load_fixtures\.%s\.\w+\.command/m',
+                $this->sectionName,
+                $serviceId
+            );
         }
     }
 
     abstract protected function getCompilerInstance(): AbstractConnectionCompilerPass;
 
-    abstract protected function getSectionName(): string;
-
-    abstract protected function getPurgerClass(): string;
-
-    abstract protected function getExecutorClass(): string;
-
-    abstract protected function getLoadFixturesCommandClass(): string;
-
-    protected function registerCompilerPass(ContainerBuilder $container): void
+    protected function getLoaderClass(): string
     {
-        $container->addCompilerPass($this->getCompilerInstance());
+        return ConnectionFixturesLoader::class;
     }
 }

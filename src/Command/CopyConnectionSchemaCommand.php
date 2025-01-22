@@ -7,12 +7,17 @@ use Doctrine\DBAL\Connection;
 use Doctrine\Persistence\ManagerRegistry;
 use InvalidArgumentException;
 use Kununu\TestingBundle\Service\SchemaCopy\SchemaCopyInterface;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
+#[AsCommand(
+    name: 'kununu_testing:connections:schema:copy',
+    description: 'Copy a schema from one connection to another'
+)]
 final class CopyConnectionSchemaCommand extends Command
 {
     private const string OPTION_FROM = 'from';
@@ -24,13 +29,12 @@ final class CopyConnectionSchemaCommand extends Command
         private readonly SchemaCopyInterface $schemaCopy,
         private readonly ManagerRegistry $registry,
     ) {
-        parent::__construct('kununu_testing:connections:schema:copy');
+        parent::__construct();
     }
 
     protected function configure(): void
     {
         $this
-            ->setDescription('Copy a schema from one connection to another')
             ->addOption(
                 self::OPTION_FROM,
                 self::OPTION_FROM_SHORT,
@@ -53,7 +57,7 @@ final class CopyConnectionSchemaCommand extends Command
         if (!$this->checkConnection($source = $this->getConnection($from), self::OPTION_FROM, $from, $output)
             || !$this->checkConnection($destination = $this->getConnection($to), self::OPTION_TO, $to, $output)
         ) {
-            return 2;
+            return Command::INVALID;
         }
 
         $confirmation = (new SymfonyStyle($input, $output))
@@ -65,10 +69,10 @@ final class CopyConnectionSchemaCommand extends Command
         if ($confirmation) {
             $this->schemaCopy->copy($source, $destination);
 
-            return 0;
+            return Command::SUCCESS;
         }
 
-        return 1;
+        return Command::FAILURE;
     }
 
     private function checkConnection(

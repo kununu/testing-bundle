@@ -14,8 +14,16 @@ final class Configuration implements ConfigurationInterface
         $treeBuilder = new TreeBuilder('kununu_testing');
 
         $this
-            ->addConnectionsSection($rootNode = $treeBuilder->getRootNode()->fixXmlConfig('connection'), 'connections')
-            ->addConnectionsSection($rootNode, 'non_transactional_connections')
+            ->addConnectionsSection(
+                $rootNode = $treeBuilder
+                    ->getRootNode()
+                    ->fixXmlConfig('connection'),
+                'connections'
+            )
+            ->addConnectionsSection(
+                $rootNode,
+                'non_transactional_connections'
+            )
             ->addElasticsearchSection($rootNode)
             ->addCacheSection($rootNode)
             ->addHttpClientSection($rootNode);
