@@ -1,12 +1,11 @@
 <?php
 declare(strict_types=1);
 
-namespace Integration\Command;
+namespace Kununu\TestingBundle\Tests\Integration\Command;
 
 use Kununu\TestingBundle\Command\LoadOpenSearchFixturesCommand;
 use Kununu\TestingBundle\Test\Options\Options;
 use Kununu\TestingBundle\Tests\App\Fixtures\OpenSearch\OpenSearchFixture1;
-use Kununu\TestingBundle\Tests\Integration\Command\AbstractFixturesCommandTestCase;
 use OpenSearch\Client;
 
 final class LoadOpenSearchFixturesCommandTest extends AbstractFixturesCommandTestCase

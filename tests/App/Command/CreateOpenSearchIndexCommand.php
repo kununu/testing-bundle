@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Command;
+namespace Kununu\TestingBundle\Tests\App\Command;
 
 use OpenSearch\Client;
 use Symfony\Component\Console\Attribute\AsCommand;
