@@ -22,7 +22,7 @@
   "require": {
     "php": ">=8.3",
     "symfony/framework-bundle": "^6.4",
-    "kununu/data-fixtures": "dev-opensearch2 as 12.0",
+    "kununu/data-fixtures": "^13.0",
     "symfony/config": "^6.4",
     "symfony/dependency-injection": "^6.4",
     "symfony/http-kernel": "^6.4"
