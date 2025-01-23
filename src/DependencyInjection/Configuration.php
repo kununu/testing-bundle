@@ -14,9 +14,18 @@ final class Configuration implements ConfigurationInterface
         $treeBuilder = new TreeBuilder('kununu_testing');
 
         $this
-            ->addConnectionsSection($rootNode = $treeBuilder->getRootNode()->fixXmlConfig('connection'), 'connections')
-            ->addConnectionsSection($rootNode, 'non_transactional_connections')
-            ->addElasticsearchSection($rootNode)
+            ->addConnectionsSection(
+                $rootNode = $treeBuilder
+                    ->getRootNode()
+                    ->fixXmlConfig('connection'),
+                'connections'
+            )
+            ->addConnectionsSection(
+                $rootNode,
+                'non_transactional_connections'
+            )
+            ->addSearchEngineSection($rootNode, 'elastic_search')
+            ->addSearchEngineSection($rootNode, 'open_search')
             ->addCacheSection($rootNode)
             ->addHttpClientSection($rootNode);
 
@@ -50,11 +59,11 @@ final class Configuration implements ConfigurationInterface
         return $this;
     }
 
-    private function addElasticsearchSection(ArrayNodeDefinition $node): self
+    private function addSearchEngineSection(ArrayNodeDefinition $node, string $name): self
     {
         $node
             ->children()
-                ->arrayNode('elastic_search')
+                ->arrayNode($name)
                     ->requiresAtLeastOneElement()
                     ->useAttributeAsKey('name')
                     ->arrayPrototype()

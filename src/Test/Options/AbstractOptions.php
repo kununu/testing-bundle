@@ -12,7 +12,7 @@ abstract class AbstractOptions
 
     private array $options = [];
 
-    protected function __construct()
+    final protected function __construct()
     {
         $defaultValues = static::OPTIONS;
         foreach (class_parents($this) as $parentClass) {

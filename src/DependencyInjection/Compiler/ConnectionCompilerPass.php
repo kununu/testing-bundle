@@ -14,17 +14,17 @@ final class ConnectionCompilerPass extends AbstractConnectionCompilerPass
         return 'connections';
     }
 
-    protected function getConnectionPurgerClass(): string
+    protected function getPurgerClass(): string
     {
         return ConnectionPurger::class;
     }
 
-    protected function getConnectionExecutorClass(): string
+    protected function getExecutorClass(): string
     {
         return ConnectionExecutor::class;
     }
 
-    protected function getLoadFixturesCommandClass(): string
+    protected function getCommandClass(): string
     {
         return LoadConnectionFixturesCommand::class;
     }

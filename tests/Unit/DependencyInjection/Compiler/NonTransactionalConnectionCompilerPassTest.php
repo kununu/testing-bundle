@@ -21,17 +21,17 @@ final class NonTransactionalConnectionCompilerPassTest extends BaseConnectionCom
         return 'non_transactional_connections';
     }
 
-    protected function getPurgerClass(): string
-    {
-        return NonTransactionalConnectionPurger::class;
-    }
-
     protected function getExecutorClass(): string
     {
         return NonTransactionalConnectionExecutor::class;
     }
 
-    protected function getLoadFixturesCommandClass(): string
+    protected function getPurgerClass(): string
+    {
+        return NonTransactionalConnectionPurger::class;
+    }
+
+    protected function getCommandClass(): string
     {
         return LoadNonTransactionalConnectionFixturesCommand::class;
     }

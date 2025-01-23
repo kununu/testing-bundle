@@ -5,6 +5,7 @@ namespace Kununu\TestingBundle\Test;
 
 use Doctrine\DBAL\Connection;
 use Elasticsearch\Client;
+use OpenSearch\Client as OpenSearchClient;
 use Psr\Cache\CacheItemPoolInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
@@ -30,6 +31,14 @@ trait FixturesContainerGetterTrait
     {
         $client = $this->getServiceFromContainer($clientId);
         assert($client instanceof Client);
+
+        return $client;
+    }
+
+    protected function getOpenSearchClient(string $clientId = OpenSearchClient::class): OpenSearchClient
+    {
+        $client = $this->getServiceFromContainer($clientId);
+        assert($client instanceof OpenSearchClient);
 
         return $client;
     }

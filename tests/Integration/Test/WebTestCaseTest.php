@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace Kununu\TestingBundle\Tests\Integration\Test;
 
-use Kununu\TestingBundle\Test\FixturesAwareTestCase;
 use Kununu\TestingBundle\Test\Options\Options;
 use Kununu\TestingBundle\Test\RequestBuilder;
 use Kununu\TestingBundle\Test\WebTestCase;
@@ -18,11 +17,6 @@ final class WebTestCaseTest extends WebTestCase
         );
 
         self::assertEquals('{"key":"value"}', $response->getContent());
-    }
-
-    public function testThatExtendsFixturesAwareTestCase(): void
-    {
-        self::assertTrue(is_subclass_of($this, FixturesAwareTestCase::class));
     }
 
     public function testThatHttpFixturesGetLoaded(): void

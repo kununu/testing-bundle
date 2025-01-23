@@ -21,17 +21,17 @@ final class ConnectionCompilerPassTest extends BaseConnectionCompilerPassTestCas
         return 'connections';
     }
 
-    protected function getPurgerClass(): string
-    {
-        return ConnectionPurger::class;
-    }
-
     protected function getExecutorClass(): string
     {
         return ConnectionExecutor::class;
     }
 
-    protected function getLoadFixturesCommandClass(): string
+    protected function getPurgerClass(): string
+    {
+        return ConnectionPurger::class;
+    }
+
+    protected function getCommandClass(): string
     {
         return LoadConnectionFixturesCommand::class;
     }

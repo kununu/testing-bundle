@@ -30,7 +30,7 @@ abstract class WebTestCase extends FixturesAwareTestCase
 
         // Since there is no content, then there is also no content-type header.
         if (Response::HTTP_NO_CONTENT !== $response->getStatusCode()) {
-            $this->assertTrue(
+            self::assertTrue(
                 $response->headers->contains(
                     'Content-type',
                     'application/json'

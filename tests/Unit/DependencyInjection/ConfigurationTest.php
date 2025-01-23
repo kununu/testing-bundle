@@ -21,12 +21,13 @@ final class ConfigurationTest extends ConfigurationTestCase
                     'http_client'                   => [
                         'clients' => [],
                     ],
+                    'open_search'                   => [],
                 ],
             ],
         ];
     }
 
-    protected function getNodeName(): ?string
+    protected function getNodeName(): null
     {
         return null;
     }

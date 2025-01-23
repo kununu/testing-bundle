@@ -7,11 +7,17 @@ services:
     resource: '../Command/*'
 
   Kununu\TestingBundle\Tests\App\Elasticsearch\ClientFactory: ~
+  Kununu\TestingBundle\Tests\App\OpenSearch\ClientFactory: ~
 
   Elasticsearch\Client:
     factory: [ '@Kununu\TestingBundle\Tests\App\Elasticsearch\ClientFactory', 'getInstance' ]
     arguments:
       - [ '%elasticsearch_url%' ]
+
+  OpenSearch\Client:
+    factory: [ '@Kununu\TestingBundle\Tests\App\OpenSearch\ClientFactory', 'getInstance' ]
+    arguments:
+      - [ '%opensearch_url%' ]
 
   http_client:
     class: Kununu\DataFixtures\Tools\HttpClient

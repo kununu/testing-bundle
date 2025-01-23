@@ -13,10 +13,10 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Reference;
 
-final class CachePoolCompilerPassTest extends BaseCompilerPassTestCase
+final class CachePoolCompilerPassTest extends BaseLoadFixturesCommandCompilerPassTestCase
 {
     private const array CACHE_POOL_IDS = [
-        'cache_pool.service_1'           => [
+        'cache_pool.service_1' => [
             'creates_command' => true,
         ],
         'cache_pool.service_2'           => [],
@@ -53,7 +53,12 @@ final class CachePoolCompilerPassTest extends BaseCompilerPassTestCase
                 ?string $consoleCommandName,
             ): void {
                 $this->assertPurger($purgerId, CachePoolPurger::class, new Reference($cachePoolId));
-                $this->assertExecutor($executorId, CachePoolExecutor::class, new Reference($cachePoolId), new Reference($purgerId));
+                $this->assertExecutor(
+                    $executorId,
+                    CachePoolExecutor::class,
+                    new Reference($cachePoolId),
+                    new Reference($purgerId)
+                );
                 $this->assertLoader($loaderId, CachePoolFixturesLoader::class);
                 $this->assertOrchestrator($orchestratorId, $executorId, $loaderId);
 
@@ -86,8 +91,8 @@ final class CachePoolCompilerPassTest extends BaseCompilerPassTestCase
         );
     }
 
-    public function testThatCreatesOrchestratorWhenNoKununuTestingExtensionForEachServiceTaggedAsCachePoolIsNotCalled(): void
-    {
+    public function testThatCreatesOrchestratorWhenNoKununuTestingExtensionForEachServiceTaggedAsCachePoolIsNotCalled(
+    ): void {
         $this->container->registerExtension($this->getMockKununuTestingExtension());
 
         $this->doAssertionsOnCachePoolsServices(
@@ -114,9 +119,40 @@ final class CachePoolCompilerPassTest extends BaseCompilerPassTestCase
         );
     }
 
+    protected function getCompilerInstance(): CachePoolCompilerPass
+    {
+        return new CachePoolCompilerPass();
+    }
+
+    protected function getSectionName(): string
+    {
+        return 'cache_pools';
+    }
+
+    protected function getExecutorClass(): string
+    {
+        return CachePoolExecutor::class;
+    }
+
+    protected function getLoaderClass(): string
+    {
+        return CachePoolFixturesLoader::class;
+    }
+
+    protected function getPurgerClass(): string
+    {
+        return CachePoolPurger::class;
+    }
+
+    protected function getCommandClass(): string
+    {
+        return LoadCacheFixturesCommand::class;
+    }
+
     protected function registerCompilerPass(ContainerBuilder $container): void
     {
-        $container->addCompilerPass(new CachePoolCompilerPass());
+        parent::registerCompilerPass($container);
+
         if ($this->name() !== 'testThatCreatesOrchestratorWhenContainerDoesNotHaveKununuTestingExtension') {
             $container->registerExtension(new KununuTestingExtension());
         }
@@ -145,10 +181,22 @@ final class CachePoolCompilerPassTest extends BaseCompilerPassTestCase
             $executorId = sprintf('kununu_testing.orchestrator.cache_pools.%s.executor', $cachePoolId);
             $loaderId = sprintf('kununu_testing.orchestrator.cache_pools.%s.loader', $cachePoolId);
             $orchestratorId = sprintf('kununu_testing.orchestrator.cache_pools.%s', $cachePoolId);
-            $consoleCommandId = $createsCommand ? sprintf('kununu_testing.load_fixtures.cache_pools.%s.command', $cachePoolId) : null;
-            $consoleCommandName = $createsCommand ? sprintf('kununu_testing:load_fixtures:cache_pools:%s', $cachePoolId) : null;
+            $consoleCommandId = $createsCommand
+                ? sprintf('kununu_testing.load_fixtures.cache_pools.%s.command', $cachePoolId)
+                : null;
+            $consoleCommandName = $createsCommand
+                ? sprintf('kununu_testing:load_fixtures:cache_pools:%s', $cachePoolId)
+                : null;
 
-            $asserter($purgerId, $executorId, $loaderId, $orchestratorId, $cachePoolId, $consoleCommandId, $consoleCommandName);
+            $asserter(
+                $purgerId,
+                $executorId,
+                $loaderId,
+                $orchestratorId,
+                $cachePoolId,
+                $consoleCommandId,
+                $consoleCommandName
+            );
         }
     }
 }
