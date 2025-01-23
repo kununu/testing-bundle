@@ -3,10 +3,10 @@ declare(strict_types=1);
 
 namespace Kununu\TestingBundle\Test;
 
-use _PHPStan_a54cdb067\Symfony\Component\Process\Exception\RuntimeException;
 use Kununu\TestingBundle\Service\Orchestrator;
 use Kununu\TestingBundle\Test\Options\DbOptionsInterface;
 use Kununu\TestingBundle\Test\Options\OptionsInterface;
+use RuntimeException;
 
 /***********************************************************************************************************************
  * @formatter:off
