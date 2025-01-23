@@ -6,35 +6,7 @@ namespace Kununu\TestingBundle\Test;
 use Kununu\TestingBundle\Service\Orchestrator;
 use Kununu\TestingBundle\Test\Options\DbOptionsInterface;
 use Kununu\TestingBundle\Test\Options\OptionsInterface;
-use RuntimeException;
 
-/***********************************************************************************************************************
- * @formatter:off
- ***********************************************************************************************************************
- * @method $this clearCachePoolFixtures(string $cachePoolServiceId)
- * @method $this clearElasticsearchFixtures(string $alias)
- * @method $this clearOpenSearchFixtures(string $alias)
- * @method $this clearHttpClientFixtures(string $httpClientServiceId)
- ***********************************************************************************************************************
- * @method array getCachePoolFixtures(string $cachePoolServiceId)
- * @method array getElasticsearchFixtures(string $alias)
- * @method array getOpenSearchFixtures(string $alias)
- * @method array getHttpClientFixtures(string $alias)
- ***********************************************************************************************************************
- * @method void loadCachePoolFixtures(string $cachePoolServiceId, OptionsInterface $options, string ...$classNames)
- * @method void loadElasticsearchFixtures(string $alias, OptionsInterface $options, string ...$classNames)
- * @method void loadOpenSearchFixtures(string $alias, OptionsInterface $options, string ...$classNames)
- * @method void loadHttpClientFixtures(string $httpClientServiceId, OptionsInterface $options, string ...$classNames)
- ***********************************************************************************************************************
- * @method void registerInitializableFixtureForDb(string $connectionName, string $className, mixed ...$args)
- * @method void registerInitializableFixtureForNonTransactionalDb(string $connectionName, string $className, mixed ...$args)
- * @method void registerInitializableFixtureForCachePool(string $cachePoolServiceId, string $className, mixed ...$args)
- * @method void registerInitializableFixtureForElasticsearch(string $alias, string $className, mixed ...$args)
- * @method void registerInitializableFixtureForOpenSearch(string $alias, string $className, mixed ...$args)
- * @method void registerInitializableFixtureForHttpClient(string $httpClientServiceId, string $className, mixed ...$args)
- ***********************************************************************************************************************
- * @formatter:on
- **********************************************************************************************************************/
 abstract class FixturesAwareTestCase extends AbstractTestCase
 {
     private const string KEY_CONNECTIONS = 'connections';
@@ -44,59 +16,68 @@ abstract class FixturesAwareTestCase extends AbstractTestCase
     private const string KEY_OPEN_SEARCH = 'open_search';
     private const string KEY_HTTP_CLIENT = 'http_client';
 
-    private const array CLEAR_FIXTURES_METHODS = [
-        'clearCachePoolFixtures'     => self::KEY_CACHE_POOLS,
-        'clearElasticsearchFixtures' => self::KEY_ELASTICSEARCH,
-        'clearOpenSearchFixtures'    => self::KEY_OPEN_SEARCH,
-        'clearHttpClientFixtures'    => self::KEY_HTTP_CLIENT,
-    ];
-
-    private const array GET_FIXTURES_METHODS = [
-        'getCachePoolFixtures'     => self::KEY_CACHE_POOLS,
-        'getElasticsearchFixtures' => self::KEY_ELASTICSEARCH,
-        'getOpenSearchFixtures'    => self::KEY_OPEN_SEARCH,
-        'getHttpClientFixtures'    => self::KEY_HTTP_CLIENT,
-    ];
-
-    private const array LOAD_FIXTURES_METHODS = [
-        'loadCachePoolFixtures'     => self::KEY_CACHE_POOLS,
-        'loadElasticsearchFixtures' => self::KEY_ELASTICSEARCH,
-        'loadOpenSearchFixtures'    => self::KEY_OPEN_SEARCH,
-        'loadHttpClientFixtures'    => self::KEY_HTTP_CLIENT,
-    ];
-
-    private const array REGISTER_INITIALIZABLE_FIXTURE_METHODS = [
-        'registerInitializableFixtureForDb'                 => self::KEY_CONNECTIONS,
-        'registerInitializableFixtureForNonTransactionalDb' => self::KEY_NON_TRANSACTIONAL_CONNECTIONS,
-        'registerInitializableFixtureForCachePool'          => self::KEY_CACHE_POOLS,
-        'registerInitializableFixtureForElasticsearch'      => self::KEY_ELASTICSEARCH,
-        'registerInitializableFixtureForOpenSearch'         => self::KEY_OPEN_SEARCH,
-        'registerInitializableFixtureForHttpClient'         => self::KEY_HTTP_CLIENT,
-    ];
-
-    public function __call(string $method, array $args): array|self|static|null
+    final protected function clearCachePoolFixtures(string $cachePoolServiceId): static
     {
-        if (array_key_exists($method, self::CLEAR_FIXTURES_METHODS)) {
-            return $this->clearFixtures(self::CLEAR_FIXTURES_METHODS[$method], ...$args);
-        }
+        return $this->clearFixtures(self::KEY_CACHE_POOLS, $cachePoolServiceId);
+    }
 
-        if (array_key_exists($method, self::GET_FIXTURES_METHODS)) {
-            return $this->getFixtures(self::GET_FIXTURES_METHODS[$method], ...$args);
-        }
+    final protected function clearDbFixtures(string $connectionName, DbOptionsInterface $options): static
+    {
+        return $this->clearFixtures(
+            $options->transactional() ? self::KEY_CONNECTIONS : self::KEY_NON_TRANSACTIONAL_CONNECTIONS,
+            $connectionName
+        );
+    }
 
-        if (array_key_exists($method, self::LOAD_FIXTURES_METHODS)) {
-            $this->loadFixtures(self::LOAD_FIXTURES_METHODS[$method], ...$args);
+    final protected function clearElasticsearchFixtures(string $alias): static
+    {
+        return $this->clearFixtures(self::KEY_ELASTICSEARCH, $alias);
+    }
 
-            return null;
-        }
+    final protected function clearHttpClientFixtures(string $httpClientServiceId): static
+    {
+        return $this->clearFixtures(self::KEY_HTTP_CLIENT, $httpClientServiceId);
+    }
 
-        if (array_key_exists($method, self::REGISTER_INITIALIZABLE_FIXTURE_METHODS)) {
-            $this->registerInitializableFixture(self::REGISTER_INITIALIZABLE_FIXTURE_METHODS[$method], ...$args);
+    final protected function clearOpenSearchFixtures(string $alias): static
+    {
+        return $this->clearFixtures(self::KEY_OPEN_SEARCH, $alias);
+    }
 
-            return null;
-        }
+    final protected function getCachePoolFixtures(string $cachePoolServiceId): array
+    {
+        return $this->getFixtures(self::KEY_CACHE_POOLS, $cachePoolServiceId);
+    }
 
-        throw new RuntimeException(sprintf('Unknown method "%s"!', $method));
+    final protected function getDbFixtures(string $connectionName, DbOptionsInterface $options): array
+    {
+        return $this->getFixtures(
+            $options->transactional() ? self::KEY_CONNECTIONS : self::KEY_NON_TRANSACTIONAL_CONNECTIONS,
+            $connectionName
+        );
+    }
+
+    final protected function getElasticsearchFixtures(string $alias): array
+    {
+        return $this->getFixtures(self::KEY_ELASTICSEARCH, $alias);
+    }
+
+    final protected function getHttpClientFixtures(string $httpClientServiceId): array
+    {
+        return $this->getFixtures(self::KEY_HTTP_CLIENT, $httpClientServiceId);
+    }
+
+    final protected function getOpenSearchFixtures(string $alias): array
+    {
+        return $this->getFixtures(self::KEY_ELASTICSEARCH, $alias);
+    }
+
+    final protected function loadCachePoolFixtures(
+        string $cachePoolServiceId,
+        OptionsInterface $options,
+        string ...$classNames,
+    ): void {
+        $this->loadFixtures(self::KEY_CACHE_POOLS, $cachePoolServiceId, $options, ...$classNames);
     }
 
     final protected function loadDbFixtures(
@@ -112,20 +93,81 @@ abstract class FixturesAwareTestCase extends AbstractTestCase
         );
     }
 
-    final protected function clearDbFixtures(string $connectionName, DbOptionsInterface $options): self
-    {
-        return $this->clearFixtures(
-            $options->transactional() ? self::KEY_CONNECTIONS : self::KEY_NON_TRANSACTIONAL_CONNECTIONS,
-            $connectionName
+    final protected function loadElasticsearchFixtures(
+        string $alias,
+        OptionsInterface $options,
+        string ...$classNames,
+    ): void {
+        $this->loadFixtures(self::KEY_ELASTICSEARCH, $alias, $options, ...$classNames);
+    }
+
+    final protected function loadHttpClientFixtures(
+        string $httpClientServiceId,
+        OptionsInterface $options,
+        string ...$classNames,
+    ): void {
+        $this->loadFixtures(self::KEY_HTTP_CLIENT, $httpClientServiceId, $options, ...$classNames);
+    }
+
+    final protected function loadOpenSearchFixtures(
+        string $alias,
+        OptionsInterface $options,
+        string ...$classNames,
+    ): void {
+        $this->loadFixtures(self::KEY_OPEN_SEARCH, $alias, $options, ...$classNames);
+    }
+
+    final protected function registerInitializableFixtureForCachePool(
+        string $cachePoolServiceId,
+        string $className,
+        mixed ...$args,
+    ): void {
+        $this->registerInitializableFixture(self::KEY_CACHE_POOLS, $cachePoolServiceId, $className, ...$args);
+    }
+
+    final protected function registerInitializableFixtureForDb(
+        string $connectionName,
+        string $className,
+        mixed ...$args,
+    ): void {
+        $this->registerInitializableFixture(self::KEY_CONNECTIONS, $connectionName, $className, ...$args);
+    }
+
+    final protected function registerInitializableFixtureForElasticsearch(
+        string $alias,
+        string $className,
+        mixed ...$args,
+    ): void {
+        $this->registerInitializableFixture(self::KEY_ELASTICSEARCH, $alias, $className, ...$args);
+    }
+
+    final protected function registerInitializableFixtureForHttpClient(
+        string $httpClientServiceId,
+        string $className,
+        mixed ...$args,
+    ): void {
+        $this->registerInitializableFixture(self::KEY_HTTP_CLIENT, $httpClientServiceId, $className, ...$args);
+    }
+
+    final protected function registerInitializableFixtureForNonTransactionalDb(
+        string $connectionName,
+        string $className,
+        mixed ...$args,
+    ): void {
+        $this->registerInitializableFixture(
+            self::KEY_NON_TRANSACTIONAL_CONNECTIONS,
+            $connectionName,
+            $className,
+            ...$args
         );
     }
 
-    final protected function getDbFixtures(string $connectionName, DbOptionsInterface $options): array
-    {
-        return $this->getFixtures(
-            $options->transactional() ? self::KEY_CONNECTIONS : self::KEY_NON_TRANSACTIONAL_CONNECTIONS,
-            $connectionName
-        );
+    final protected function registerInitializableFixtureForOpenSearch(
+        string $alias,
+        string $className,
+        mixed ...$args,
+    ): void {
+        $this->registerInitializableFixture(self::KEY_OPEN_SEARCH, $alias, $className, ...$args);
     }
 
     private function clearFixtures(string $type, string $key): static
