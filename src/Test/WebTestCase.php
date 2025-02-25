@@ -20,8 +20,8 @@ abstract class WebTestCase extends FixturesAwareTestCase
 
         $client = $this->getKernelBrowser();
 
-        foreach ($httpClientFixtures ?? [] as $fixtureClass => $fixture) {
-            $this->loadHttpClientFixtures($httpClientName, $options ?? Options::create(), $fixtureClass);
+        if (null !== $httpClientFixtures) {
+            $this->loadHttpClientFixtures($httpClientName, $options ?? Options::create(), ...$httpClientFixtures);
         }
 
         $client->request(...$builder->build());
@@ -44,6 +44,13 @@ abstract class WebTestCase extends FixturesAwareTestCase
     /** @codeCoverageIgnore */
     private function getPreviousHttpClientFixtures(string $httpClientName): ?array
     {
-        return interface_exists(HttpClientInterface::class) ? $this->getHttpClientFixtures($httpClientName) : null;
+        return interface_exists(HttpClientInterface::class)
+            ? array_values(
+                array_map(
+                    static fn(object $clientFixture): string => $clientFixture::class,
+                    $this->getHttpClientFixtures($httpClientName)
+                )
+            )
+            : null;
     }
 }

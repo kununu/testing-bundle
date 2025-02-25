@@ -6,7 +6,9 @@ namespace Kununu\TestingBundle\Tests\Integration\Test;
 use Kununu\TestingBundle\Test\Options\Options;
 use Kununu\TestingBundle\Test\RequestBuilder;
 use Kununu\TestingBundle\Test\WebTestCase;
+use Kununu\TestingBundle\Tests\Integration\Test\DataFixtures\OtherWebTestCaseFixtures;
 use Kununu\TestingBundle\Tests\Integration\Test\DataFixtures\WebTestCaseFixtures;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 final class WebTestCaseTest extends WebTestCase
 {
@@ -19,14 +21,27 @@ final class WebTestCaseTest extends WebTestCase
         self::assertEquals('{"key":"value"}', $response->getContent());
     }
 
-    public function testThatHttpFixturesGetLoaded(): void
+    #[DataProvider('thatHttpFixturesGetLoadedDataProvider')]
+    public function testThatHttpFixturesGetLoaded(array $fixtureClassNames): void
     {
-        $this->loadHttpClientFixtures('http_client', Options::create(), WebTestCaseFixtures::class);
+        $this->loadHttpClientFixtures('http_client', Options::create(), ...$fixtureClassNames);
 
         $this->doRequest(
             RequestBuilder::aGetRequest()->withUri('/app/response')
         );
 
-        self::assertNotEmpty($this->getHttpClientFixtures('http_client'));
+        self::assertCount(count($fixtureClassNames), $this->getHttpClientFixtures('http_client'));
+    }
+
+    public static function thatHttpFixturesGetLoadedDataProvider(): array
+    {
+        return [
+            'single_fixture' => [
+                [WebTestCaseFixtures::class],
+            ],
+            'multiple_fixtures' => [
+                [WebTestCaseFixtures::class, OtherWebTestCaseFixtures::class],
+            ],
+        ];
     }
 }
