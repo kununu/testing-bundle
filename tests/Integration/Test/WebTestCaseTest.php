@@ -21,19 +21,7 @@ final class WebTestCaseTest extends WebTestCase
         self::assertEquals('{"key":"value"}', $response->getContent());
     }
 
-    public static function dataProviderThatHttpFixturesGetLoaded(): array
-    {
-        return [
-            'single_fixture' => [
-                [WebTestCaseFixtures::class],
-            ],
-            'multiple_fixtures' => [
-                [WebTestCaseFixtures::class, OtherWebTestCaseFixtures::class],
-            ],
-        ];
-    }
-
-    #[DataProvider('dataProviderThatHttpFixturesGetLoaded')]
+    #[DataProvider('thatHttpFixturesGetLoadedDataProvider')]
     public function testThatHttpFixturesGetLoaded(array $fixtureClassNames): void
     {
         $this->loadHttpClientFixtures('http_client', Options::create(), ...$fixtureClassNames);
@@ -43,5 +31,17 @@ final class WebTestCaseTest extends WebTestCase
         );
 
         self::assertCount(count($fixtureClassNames), $this->getHttpClientFixtures('http_client'));
+    }
+
+    public static function thatHttpFixturesGetLoadedDataProvider(): array
+    {
+        return [
+            'single_fixture' => [
+                [WebTestCaseFixtures::class],
+            ],
+            'multiple_fixtures' => [
+                [WebTestCaseFixtures::class, OtherWebTestCaseFixtures::class],
+            ],
+        ];
     }
 }
