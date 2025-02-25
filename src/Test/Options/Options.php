@@ -4,10 +4,10 @@ declare(strict_types=1);
 namespace Kununu\TestingBundle\Test\Options;
 
 /**
- * @method self withAppend
- * @method self withoutAppend
- * @method self withClear
- * @method self withoutClear
+ * @method self withAppend()
+ * @method self withoutAppend()
+ * @method self withClear()
+ * @method self withoutClear()
  */
 class Options extends AbstractOptions implements OptionsInterface
 {

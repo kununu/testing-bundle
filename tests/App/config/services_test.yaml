@@ -2,3 +2,7 @@ services:
   '@Elasticsearch\Client':
     public: true
     synthetic: true
+
+  '@OpenSearch\Client':
+    public: true
+    synthetic: true

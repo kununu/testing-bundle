@@ -52,7 +52,7 @@ abstract class LoadFixturesCommand extends Command
                 !$input->isInteractive()
             )
         ) {
-            return 0;
+            return Command::SUCCESS;
         }
 
         $this->orchestrator->execute($this->fixturesClassNames, $append);
@@ -65,6 +65,6 @@ abstract class LoadFixturesCommand extends Command
             )
         );
 
-        return 0;
+        return Command::SUCCESS;
     }
 }

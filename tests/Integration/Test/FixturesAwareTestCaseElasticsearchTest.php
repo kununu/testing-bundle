@@ -17,7 +17,7 @@ final class FixturesAwareTestCaseElasticsearchTest extends FixturesAwareTestCase
 
     private Client $client;
 
-    public function testLoadElasticSearchFixturesWithoutAppend(): void
+    public function testLoadElasticsearchFixturesWithoutAppend(): void
     {
         $this->client->index(
             [
@@ -59,7 +59,7 @@ final class FixturesAwareTestCaseElasticsearchTest extends FixturesAwareTestCase
         self::assertEquals('value_2', $document2['_source']['field']);
     }
 
-    public function testLoadElasticSearchFixturesWithAppend(): void
+    public function testLoadElasticsearchFixturesWithAppend(): void
     {
         $this->client->index(
             [

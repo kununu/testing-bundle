@@ -26,6 +26,15 @@ kununu_testing:
     my_index_alias_2:
       service: 'Elasticsearch\Client'
       index_name: 'my_index_2'
+  open_search:
+    my_index_alias:
+      load_command_fixtures_classes_namespace:
+        - 'Kununu\TestingBundle\Tests\App\Fixtures\OpenSearch\OpenSearchFixture2'
+      service: 'OpenSearch\Client'
+      index_name: 'my_index'
+    my_index_alias_2:
+      service: 'OpenSearch\Client'
+      index_name: 'my_index_2'
   cache:
     pools:
       app.cache.first:

@@ -7,6 +7,7 @@ use Kununu\TestingBundle\DependencyInjection\Configuration;
 use Matthias\SymfonyConfigTest\PhpUnit\ConfigurationTestCaseTrait;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
+use Throwable;
 
 abstract class ConfigurationTestCase extends TestCase
 {
@@ -23,11 +24,18 @@ abstract class ConfigurationTestCase extends TestCase
     #[DataProvider('invalidProcessedConfigurationDataProvider')]
     public function testInvalidConfigurationForNode(?array $values): void
     {
-        if (null === $values) {
-            self::assertTrue(true);
-        } else {
-            $this->assertConfigurationIsInvalid($values, sprintf('kununu_testing.%s', $this->getNodeName()));
+        $message = '';
+        try {
+            $invalid = true;
+            if (null !== $values) {
+                $this->assertConfigurationIsInvalid($values, sprintf('kununu_testing.%s', $this->getNodeName()));
+            }
+        } catch (Throwable $t) {
+            $invalid = false;
+            $message = $t->getMessage();
         }
+
+        self::assertTrue($invalid, $message);
     }
 
     public static function invalidProcessedConfigurationDataProvider(): ?array

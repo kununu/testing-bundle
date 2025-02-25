@@ -4,36 +4,26 @@ declare(strict_types=1);
 namespace Kununu\TestingBundle\DependencyInjection\Compiler;
 
 use Kununu\DataFixtures\Loader\ConnectionFixturesLoader;
-use Kununu\TestingBundle\Service\Orchestrator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Reference;
 
-abstract class AbstractConnectionCompilerPass extends AbstractCompilerPass
+abstract class AbstractConnectionCompilerPass extends AbstractLoadFixturesCommandCompilerPass
 {
-    use LoadFixturesCommandsTrait;
-
+    private const string DOCTRINE_CONNECTIONS_PARAM = 'doctrine.connections';
     private const string EXCLUDED_TABLES_CONFIG = 'excluded_tables';
-    private const string LOAD_COMMAND_FIXTURES_CLASSES_NAMESPACE_CONFIG = 'load_command_fixtures_classes_namespace';
-    private const string ORCHESTRATOR_SERVICE_PREFIX = 'kununu_testing.orchestrator.%s';
-
-    private readonly string $orchestratorServicePrefix;
-
-    public function __construct()
-    {
-        $this->orchestratorServicePrefix = sprintf(self::ORCHESTRATOR_SERVICE_PREFIX, $this->getSectionName());
-    }
+    private const string CONNECTION_CONFIG_PARAM = 'kununu_testing.%s.%s';
 
     public function process(ContainerBuilder $container): void
     {
-        if (!$container->hasParameter('doctrine.connections')) {
+        if (!$container->hasParameter(self::DOCTRINE_CONNECTIONS_PARAM)) {
             return;
         }
 
-        $connections = $container->getParameter('doctrine.connections');
+        $connections = $container->getParameter(self::DOCTRINE_CONNECTIONS_PARAM);
 
         foreach ($connections as $connName => $connId) {
-            $connConfigsParameterName = sprintf('kununu_testing.%s.%s', $this->getSectionName(), $connName);
+            $connConfigsParameterName = sprintf(self::CONNECTION_CONFIG_PARAM, $this->sectionName, $connName);
 
             // Connection is not configured for usage with this bundle
             if (!$container->hasParameter($connConfigsParameterName)) {
@@ -49,78 +39,62 @@ abstract class AbstractConnectionCompilerPass extends AbstractCompilerPass
         }
     }
 
+    protected function getLoaderClass(): string
+    {
+        return ConnectionFixturesLoader::class;
+    }
+
     private function buildContainerDefinitions(
         ContainerBuilder $container,
         string $connId,
         string $connName,
         array $connConfig,
     ): void {
-        $orchestratorId = $this->buildConnectionOrchestrator($container, $connId, $connName, $connConfig);
-
         $this->buildLoadFixturesCommand(
-            $container,
-            $this->getSectionName(),
-            $orchestratorId,
-            $this->getLoadFixturesCommandClass(),
-            $connName,
-            $connConfig[self::LOAD_COMMAND_FIXTURES_CLASSES_NAMESPACE_CONFIG] ?? []
+            container: $container,
+            fixtureType: $this->sectionName,
+            orchestratorId: $this->buildOrchestrator($container, $connId, $connName, $connConfig),
+            commandClassName: $this->getCommandClass(),
+            name: $connName,
+            namespace: $connConfig[self::LOAD_COMMAND_CLASSES_NAMESPACE_CONFIG] ?? []
         );
     }
 
-    abstract protected function getSectionName(): string;
-
-    abstract protected function getConnectionPurgerClass(): string;
-
-    abstract protected function getConnectionExecutorClass(): string;
-
-    abstract protected function getLoadFixturesCommandClass(): string;
-
-    private function buildConnectionOrchestrator(
+    private function buildOrchestrator(
         ContainerBuilder $container,
         string $id,
         string $connName,
         array $connConfig,
     ): string {
-        // Purger Definition for the Connection with provided $id
-        $purgerId = sprintf('%s.%s.purger', $this->orchestratorServicePrefix, $connName);
-        $purgerDefinition = new Definition(
-            $this->getConnectionPurgerClass(),
-            [
-                $connection = new Reference($id),
-                $connConfig[self::EXCLUDED_TABLES_CONFIG] ?? [],
-            ]
-        );
-        $container->setDefinition($purgerId, $purgerDefinition);
-
-        // Executor Definition for the Connection with provided $id
-        $executorId = sprintf('%s.%s.executor', $this->orchestratorServicePrefix, $connName);
-        $executorDefinition = new Definition(
-            $this->getConnectionExecutorClass(),
-            [
-                $connection,
-                new Reference($purgerId),
-            ]
-        );
-        $container->setDefinition($executorId, $executorDefinition);
-
-        // Loader Definition for the Connection with provided $id
-        $loaderId = sprintf('%s.%s.loader', $this->orchestratorServicePrefix, $connName);
-        $loaderDefinition = new Definition(ConnectionFixturesLoader::class);
-        $container->setDefinition($loaderId, $loaderDefinition);
-
-        // Orchestrator definition for the Connection with provided $id
-        $orchestratorDefinition = new Definition(
-            Orchestrator::class,
-            [
-                new Reference($executorId),
-                new Reference($loaderId),
-            ]
-        );
-        $orchestratorDefinition->setPublic(true);
-
-        $container->setDefinition(
-            $orchestratorId = sprintf('%s.%s', $this->orchestratorServicePrefix, $connName),
-            $orchestratorDefinition
+        $this->buildGenericOrchestrator(
+            container: $container,
+            baseId: $id,
+            // Loader Definition will be for the Connection with provided name
+            loaderId: sprintf('%s.%s.loader', $this->orchestratorServicePrefix, $connName),
+            // Orchestrator definition will be for the Connection with provided name
+            orchestratorId: $orchestratorId = sprintf('%s.%s', $this->orchestratorServicePrefix, $connName),
+            // Purger Definition for the Connection with provided id
+            purgerDefinitionBuilder: fn(ContainerBuilder $container, string $baseId): array => [
+                sprintf('%s.%s.purger', $this->orchestratorServicePrefix, $connName),
+                new Definition(
+                    $this->getPurgerClass(),
+                    [
+                        new Reference($baseId),
+                        $connConfig[self::EXCLUDED_TABLES_CONFIG] ?? [],
+                    ]
+                ),
+            ],
+            // Executor Definition for the Connection with provided $id
+            executorDefinitionBuilder: fn(ContainerBuilder $container, string $baseId, string $purgerId): array => [
+                sprintf('%s.%s.executor', $this->orchestratorServicePrefix, $connName),
+                new Definition(
+                    $this->getExecutorClass(),
+                    [
+                        new Reference($baseId),
+                        new Reference($purgerId),
+                    ]
+                ),
+            ],
         );
 
         return $orchestratorId;

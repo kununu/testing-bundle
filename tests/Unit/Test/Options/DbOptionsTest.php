@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Kununu\TestingBundle\Tests\Integration\Test\Options;
+namespace Kununu\TestingBundle\Tests\Unit\Test\Options;
 
 use Kununu\TestingBundle\Test\Options\DbOptions;
 use Kununu\TestingBundle\Test\Options\DbOptionsInterface;

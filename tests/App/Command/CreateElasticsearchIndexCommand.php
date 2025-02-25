@@ -32,6 +32,6 @@ final class CreateElasticsearchIndexCommand extends Command
                 ->create(['index' => $input->getArgument('index_name')]);
         }
 
-        return defined(sprintf('%s::SUCCESS', Command::class)) ? Command::SUCCESS : 0;
+        return Command::SUCCESS;
     }
 }

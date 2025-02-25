@@ -11,17 +11,51 @@ env:
   fail-fast: true
 
 jobs:
+  checks:
+    name: Code Checks
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.3
+          coverage: none
+
+      - name: Install Composer Dependencies
+        uses: ramsey/composer-install@v3
+        with:
+          dependency-versions: "highest"
+          composer-options: "--prefer-stable --optimize-autoloader --no-progress --no-interaction"
+
+      - name: Run PHP CS Fixer
+        run: vendor/bin/php-cs-fixer check --using-cache=no --config vendor/kununu/scripts/src/PHP/CodeStandards/Scripts/php_cs src/ tests/
+
+      - name: Run Rector
+        run: vendor/bin/rector process --ansi --dry-run --config rector-ci.php src/ tests/
+
+      - name: Run PHPStan
+        run: vendor/bin/phpstan analyse --ansi
+
   build:
+    needs: checks
     name: PHPUnit
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     strategy:
       matrix:
         php-version:
           - 8.3
         mysql-version:
-          - 5.7
+          - 8.0
         elasticsearch-version:
-          - 6.8.15
+          - 7.9.3
+        opensearch-version:
+          - 2.18.0
         dependencies:
           - highest
 
@@ -48,6 +82,25 @@ jobs:
         ports:
           - 9200:9200
 
+      opensearch:
+        image: opensearchproject/opensearch:${{ matrix.opensearch-version }}
+        env:
+          bootstrap.memory_lock: true
+          cluster.routing.allocation.disk.threshold_enabled: false
+          discovery.type: single-node
+          http.port: 9201
+          DISABLE_INSTALL_DEMO_CONFIG: true
+          DISABLE_SECURITY_PLUGIN: true
+          OPENSEARCH_JAVA_OPTS: -Xms512m -Xmx512m
+        options: >-
+          --health-cmd "curl http://localhost:9201/_cluster/health"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 10
+        ports:
+          - 9201:9201
+          - 9600:9600
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -72,15 +125,17 @@ jobs:
           PERSISTENCE_DATABASE_URL: mysql://root:root@127.0.0.1:${{ job.services.mysql.ports['3306'] }}/persistence_db
           MONOLITHIC_DATABASE_URL: mysql://root:root@127.0.0.1:${{ job.services.mysql.ports['3306'] }}/monolithic_db
           ELASTICSEARCH_URL: http://localhost:9200
+          OPENSEARCH_URL: http://localhost:9201
           DATABASE_SERVER_VERSION: ${{ matrix.mysql-version }}
 
       - name: Run PHPUnit
-        run: vendor/bin/phpunit --log-junit tests/.results/tests-junit.xml --coverage-clover tests/.results/tests-clover.xml
+        run: vendor/bin/phpunit --colors=always --testdox --log-junit tests/.results/tests-junit.xml --coverage-clover tests/.results/tests-clover.xml
         env:
           DEF_DATABASE_URL: mysql://root:root@127.0.0.1:${{ job.services.mysql.ports['3306'] }}/default_db
           PERSISTENCE_DATABASE_URL: mysql://root:root@127.0.0.1:${{ job.services.mysql.ports['3306'] }}/persistence_db
           MONOLITHIC_DATABASE_URL: mysql://root:root@127.0.0.1:${{ job.services.mysql.ports['3306'] }}/monolithic_db
           ELASTICSEARCH_URL: http://localhost:9200
+          OPENSEARCH_URL: http://localhost:9201
           DATABASE_SERVER_VERSION: ${{ matrix.mysql-version }}
 
       - name: Upload coverage files
@@ -111,7 +166,7 @@ jobs:
           sed -i 's@'$GITHUB_WORKSPACE'@/github/workspace/@g' tests-junit.xml
 
       - name: SonarCloud Scan
-        uses: sonarsource/sonarcloud-github-action@v3.0.0
+        uses: SonarSource/sonarqube-scan-action@v4.2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}

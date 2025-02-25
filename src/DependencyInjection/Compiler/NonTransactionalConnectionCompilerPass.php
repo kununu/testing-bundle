@@ -14,17 +14,17 @@ final class NonTransactionalConnectionCompilerPass extends AbstractConnectionCom
         return 'non_transactional_connections';
     }
 
-    protected function getConnectionPurgerClass(): string
+    protected function getPurgerClass(): string
     {
         return NonTransactionalConnectionPurger::class;
     }
 
-    protected function getConnectionExecutorClass(): string
+    protected function getExecutorClass(): string
     {
         return NonTransactionalConnectionExecutor::class;
     }
 
-    protected function getLoadFixturesCommandClass(): string
+    protected function getCommandClass(): string
     {
         return LoadNonTransactionalConnectionFixturesCommand::class;
     }

@@ -41,7 +41,7 @@ final class HttpClientConfigurationTest extends ConfigurationTestCase
         ];
     }
 
-    protected function getNodeName(): ?string
+    protected function getNodeName(): string
     {
         return 'http_client';
     }

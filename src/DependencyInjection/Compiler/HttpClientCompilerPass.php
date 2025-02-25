@@ -6,13 +6,14 @@ namespace Kununu\TestingBundle\DependencyInjection\Compiler;
 use Kununu\DataFixtures\Executor\HttpClientExecutor;
 use Kununu\DataFixtures\Loader\HttpClientFixturesLoader;
 use Kununu\DataFixtures\Purger\HttpClientPurger;
-use Kununu\TestingBundle\Service\Orchestrator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Reference;
 
 final class HttpClientCompilerPass extends AbstractCompilerPass
 {
+    private const string CONFIG_KEY = 'http_client';
+    private const string CONFIG_CLIENTS = 'clients';
     private const string SERVICE_PREFIX = 'kununu_testing.orchestrator.http_client';
 
     private array $config = [];
@@ -23,8 +24,8 @@ final class HttpClientCompilerPass extends AbstractCompilerPass
             return;
         }
 
-        foreach ($this->config['clients'] as $client) {
-            $this->buildHttpClientOrchestrator($container, $client);
+        foreach ($this->config[self::CONFIG_CLIENTS] as $client) {
+            $this->buildOrchestrator($container, $client);
         }
     }
 
@@ -34,45 +35,42 @@ final class HttpClientCompilerPass extends AbstractCompilerPass
             return false;
         }
 
-        $this->config = $configuration['http_client'] ?? [];
+        $this->config = $configuration[self::CONFIG_KEY] ?? [];
 
-        return count($this->config['clients'] ?? []) > 0;
+        return count($this->config[self::CONFIG_CLIENTS] ?? []) > 0;
     }
 
-    private function buildHttpClientOrchestrator(ContainerBuilder $container, string $id): void
+    private function buildOrchestrator(ContainerBuilder $container, string $id): void
     {
-        // Purger Definition for HttpClient with provided $id
-        $purgerId = sprintf('%s.%s.purger', self::SERVICE_PREFIX, $id);
-        $purgerDefinition = new Definition(
-            HttpClientPurger::class,
-            [
-                $httpClient = new Reference($id),
-            ]
+        $this->registerOrchestrator(
+            container: $container,
+            baseId: $id,
+            // Loader definition for HttpClient with provided id
+            loaderId: sprintf('%s.%s.loader', self::SERVICE_PREFIX, $id),
+            // Orchestrator definition for HttpClient with provided id
+            orchestratorId: sprintf('%s.%s', self::SERVICE_PREFIX, $id),
+            // Purger Definition for HttpClient with provided id
+            purgerDefinitionBuilder: fn(ContainerBuilder $container, string $baseId): array => [
+                sprintf('%s.%s.purger', self::SERVICE_PREFIX, $baseId),
+                new Definition(
+                    HttpClientPurger::class,
+                    [
+                        new Reference($id),
+                    ]
+                ),
+            ],
+            // Executor Definition for HttpClient with provided id
+            executorDefinitionBuilder: fn(ContainerBuilder $container, string $baseId, string $purgerId): array => [
+                sprintf('%s.%s.executor', self::SERVICE_PREFIX, $baseId),
+                new Definition(
+                    HttpClientExecutor::class,
+                    [
+                        new Reference($id),
+                        new Reference($purgerId),
+                    ]
+                ),
+            ],
+            loaderClass: HttpClientFixturesLoader::class
         );
-        $container->setDefinition($purgerId, $purgerDefinition);
-
-        // Executor Definition for HttpClient with provided $id
-        $executorId = sprintf('%s.%s.executor', self::SERVICE_PREFIX, $id);
-        $executorDefinition = new Definition(HttpClientExecutor::class, [$httpClient, new Reference($purgerId)]);
-        $container->setDefinition($executorId, $executorDefinition);
-
-        // Loader definition for HttpClient with provided $id
-        $loaderId = sprintf('%s.%s.loader', self::SERVICE_PREFIX, $id);
-        $loaderDefinition = new Definition(HttpClientFixturesLoader::class);
-        $container->setDefinition($loaderId, $loaderDefinition);
-
-        // Orchestrator definition for HttpClient with provided $id
-        $orchestratorDefinition = new Definition(
-            Orchestrator::class,
-            [
-                new Reference($executorId),
-                new Reference($loaderId),
-            ]
-        );
-        $orchestratorDefinition->setPublic(true);
-
-        $orchestratorId = sprintf('%s.%s', self::SERVICE_PREFIX, $id);
-
-        $container->setDefinition($orchestratorId, $orchestratorDefinition);
     }
 }

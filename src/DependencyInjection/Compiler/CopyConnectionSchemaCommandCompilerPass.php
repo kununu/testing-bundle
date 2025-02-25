@@ -4,12 +4,11 @@ declare(strict_types=1);
 namespace Kununu\TestingBundle\DependencyInjection\Compiler;
 
 use Kununu\TestingBundle\Command\CopyConnectionSchemaCommand;
-use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Reference;
 
-final class CopyConnectionSchemaCommandCompilerPass implements CompilerPassInterface
+final class CopyConnectionSchemaCommandCompilerPass extends AbstractCompilerPass
 {
     public function process(ContainerBuilder $container): void
     {

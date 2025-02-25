@@ -57,7 +57,7 @@ final class OrchestratorTest extends TestCase
         ];
     }
 
-    protected function getNamedFixtureMock(string $name): MockObject&FixtureInterface
+    private function getNamedFixtureMock(string $name): MockObject&FixtureInterface
     {
         return $this
             ->getMockBuilder(FixtureInterface::class)

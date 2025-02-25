@@ -33,7 +33,7 @@ final class WebTestCaseTest extends WebTestCase
             'single_fixture' => [
                 [WebTestCaseFixtures::class],
             ],
-            'multiple_fixtures_' => [
+            'multiple_fixtures' => [
                 [WebTestCaseFixtures::class, OtherWebTestCaseFixtures::class],
             ],
         ];

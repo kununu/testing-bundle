@@ -12,6 +12,16 @@ final class KununuTestingExtension extends Extension implements ExtensionConfigu
 {
     public const string ALIAS = 'kununu_testing';
 
+    private const array CONNECTIONS = [
+        'connections',
+        'non_transactional_connections',
+    ];
+
+    private const array SEARCH_ENGINES = [
+        'elastic_search',
+        'open_search',
+    ];
+
     private array $config = [];
 
     public function load(array $configs, ContainerBuilder $container): void
@@ -19,7 +29,7 @@ final class KununuTestingExtension extends Extension implements ExtensionConfigu
         $this->config = $this->processConfiguration(new Configuration(), $configs);
         (new YamlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config')))->load('services.yaml');
 
-        foreach (['connections', 'non_transactional_connections'] as $section) {
+        foreach (self::CONNECTIONS as $section) {
             if (!empty($this->config[$section])) {
                 foreach ($this->config[$section] as $connId => $connectionConfigs) {
                     $container->setParameter(
@@ -29,9 +39,10 @@ final class KununuTestingExtension extends Extension implements ExtensionConfigu
                 }
             }
         }
-
-        if (!empty($this->config['elastic_search'])) {
-            $container->setParameter('kununu_testing.elastic_search', $this->config['elastic_search']);
+        foreach (self::SEARCH_ENGINES as $section) {
+            if (!empty($this->config[$section])) {
+                $container->setParameter(sprintf('kununu_testing.%s', $section), $this->config[$section]);
+            }
         }
     }
 

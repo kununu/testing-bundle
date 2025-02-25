@@ -53,7 +53,7 @@ final class CopyConnectionSchemaCommand extends Command
         if (!$this->checkConnection($source = $this->getConnection($from), self::OPTION_FROM, $from, $output)
             || !$this->checkConnection($destination = $this->getConnection($to), self::OPTION_TO, $to, $output)
         ) {
-            return 2;
+            return Command::INVALID;
         }
 
         $confirmation = (new SymfonyStyle($input, $output))
@@ -65,10 +65,10 @@ final class CopyConnectionSchemaCommand extends Command
         if ($confirmation) {
             $this->schemaCopy->copy($source, $destination);
 
-            return 0;
+            return Command::SUCCESS;
         }
 
-        return 1;
+        return Command::FAILURE;
     }
 
     private function checkConnection(
@@ -102,7 +102,7 @@ final class CopyConnectionSchemaCommand extends Command
 
     private function getConnection(string $connectionName): ?Connection
     {
-        /* @var Connection|null $connection */
+        /* @var ?Connection $connection */
         try {
             $connection = $this->registry->getConnection($connectionName);
         } catch (InvalidArgumentException) {

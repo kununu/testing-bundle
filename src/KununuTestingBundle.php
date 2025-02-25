@@ -9,6 +9,7 @@ use Kununu\TestingBundle\DependencyInjection\Compiler\CopyConnectionSchemaComman
 use Kununu\TestingBundle\DependencyInjection\Compiler\ElasticsearchCompilerPass;
 use Kununu\TestingBundle\DependencyInjection\Compiler\HttpClientCompilerPass;
 use Kununu\TestingBundle\DependencyInjection\Compiler\NonTransactionalConnectionCompilerPass;
+use Kununu\TestingBundle\DependencyInjection\Compiler\OpenSearchCompilerPass;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
@@ -20,6 +21,7 @@ final class KununuTestingBundle extends Bundle
         $container->addCompilerPass(new ConnectionCompilerPass());
         $container->addCompilerPass(new NonTransactionalConnectionCompilerPass());
         $container->addCompilerPass(new ElasticsearchCompilerPass());
+        $container->addCompilerPass(new OpenSearchCompilerPass());
         $container->addCompilerPass(new HttpClientCompilerPass());
         $container->addCompilerPass(new CopyConnectionSchemaCommandCompilerPass());
     }

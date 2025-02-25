@@ -1,7 +1,10 @@
 # kununu testing-bundle
 
-This bundle integrates with [kununu/data-fixtures](https://github.com/kununu/data-fixtures) package allowing you to load fixtures in your tests. 
-It also provides some utilities that makes testing easier, like a `RequestBuilder` that turns testing controllers more expressive. If you want to see an example of what this bundle can do for you click [here](#Example).
+This bundle integrates with [kununu/data-fixtures](https://github.com/kununu/data-fixtures) package allowing you to load fixtures in your tests.
+
+It also provides some utilities that makes testing easier, like a `RequestBuilder` that turns testing controllers more expressive. 
+
+If you want to see an example of what this bundle can do for you click [here](#Example).
 
 ------------------------------------
 
@@ -21,6 +24,7 @@ Enable the bundle at `config/bundles.php` for any environment.
 
 ```php
 <?php
+declare(strict_types=1);
 
 return [
     ...
@@ -61,10 +65,11 @@ imports:
 This bundle integrates with [kununu/data-fixtures](https://github.com/kununu/data-fixtures) allowing you to load fixtures in your tests.
 Currently, this bundle supports the following types of fixtures:
 
-- [Doctrine DBAL Connection Fixtures](/docs/FixturesTypes/doctrine-dbal-connection-fixtures.md)
-- [Cache Pool Fixtures](/docs/FixturesTypes/cache-pool-fixtures.md)
-- [Elasticsearch Fixtures](/docs/FixturesTypes/elasticsearch.md)
-- [Symfony Http Client Fixtures](/docs/FixturesTypes/symfony-http-client.md)
+- [Doctrine DBAL Connection Fixtures](./docs/FixturesTypes/doctrine-dbal-connection-fixtures.md)
+- [Cache Pool Fixtures](./docs/FixturesTypes/cache-pool-fixtures.md)
+- [Elasticsearch Fixtures](./docs/FixturesTypes/elasticsearch.md)
+- [OpenSearch Fixtures](./docs/FixturesTypes/opensearch.md)
+- [Symfony Http Client Fixtures](./docs/FixturesTypes/symfony-http-client.md)
 
 --------------------
 
@@ -76,7 +81,7 @@ This bundle also has a way of copying a database schema from one database to ano
 
 See more:
 
-- [Schema Copier](/docs/SchemaCopier/schema-copier.md)
+- [Schema Copier](./docs/SchemaCopier/schema-copier.md)
 
 ------------------------------
 
@@ -120,8 +125,8 @@ public function withRawContent(string $content): self;
 // Sets an HTTP_AUTHORIZATION header with the value of "Bearer $token"
 public function withAuthorization(string $token): self;
 
-// Sets an header. 
-// In converts any header name to uppercase and prepends "HTTP_" if the header name does not contains it
+// Sets a header. 
+// In converts any header name to uppercase and prepends "HTTP_" if the header name does not contain it
 public function withHeader(string $headerName, string $headerValue): self;
 
 // Sets a server parameter (HTTP headers are referenced with an HTTP_ prefix as PHP does)
@@ -130,7 +135,9 @@ public function withServerParameter(string $parameterName, string $parameterValu
 
 #### WebTestCase
 
-This bundle exposes the [WebTestCase](https://github.com/kununu/testing-bundle/blob/master/src/Test/WebTestCase.php) that you can extend which exposes a method that helps you testing your controllers without having to care about create the kernel. This class also allows you load fixtures in your tests.
+This bundle exposes the [WebTestCase](https://github.com/kununu/testing-bundle/blob/master/src/Test/WebTestCase.php) that you can extend which exposes a method that helps you to test your controllers without having to care about creating the kernel. 
+
+This class also allows you load fixtures in your tests.
 
 ```php
 final protected function doRequest(RequestBuilder $builder): Symfony\Component\HttpFoundation\Response
@@ -160,19 +167,21 @@ Using concepts provided by this bundle, like *Loading Fixtures*, the *RequestBui
 
 ```php
 <?php
+declare(strict_types=1);
 
 namespace App\Tests\Integration\Controller;
 
 use App\Tests\Integration\Controller\DataFixtures\MySQL\CreateCompanyDataFixtures;
+use Kununu\TestingBundle\Test\Options\DbOptions;
 use Kununu\TestingBundle\Test\RequestBuilder;
 use Kununu\TestingBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
 
-class CompaniesControllerTest extends WebTestCase
+final class CompaniesControllerTest extends WebTestCase
 {
     public function testCreateCompany(): void
     {
-        $this->loadDbFixtures('your_doctrine_connection_name', [CreateCompanyDataFixtures::class]);
+        $this->loadDbFixtures('your_doctrine_connection_name', DbOptions::create(), CreateCompanyDataFixtures::class);
 
         $data = [
             'name'        => 'kununu GmbH',
@@ -190,17 +199,17 @@ class CompaniesControllerTest extends WebTestCase
                 ->withServerParameter('REMOTE_ADDR', '127.0.0.1')
         );
 
-        $this->assertNotNull($response->getContent());
-        $this->assertEquals(Response::HTTP_CREATED, $response->getStatusCode());
+        self::assertNotNull($response->getContent());
+        self::assertEquals(Response::HTTP_CREATED, $response->getStatusCode());
 
         $json = $response->getContent();
-        $this->assertJson($json);
+        self::assertJson($json);
 
         $company = json_decode($json, true);
 
-        $this->assertSame($data['name'], $company['name']);
-        $this->assertSame($data['location']['city'], $company['location']['city']);
-        $this->assertSame($data['location']['country_code'], $company['location']['country_code']);
+        self::assertSame($data['name'], $company['name']);
+        self::assertSame($data['location']['city'], $company['location']['city']);
+        self::assertSame($data['location']['country_code'], $company['location']['country_code']);
     }
 }
 ```
@@ -209,10 +218,9 @@ class CompaniesControllerTest extends WebTestCase
 
 ## Contribute
 
-If you are interested in contributing read our [contributing guidelines](/CONTRIBUTING.md).
+If you are interested in contributing read our [contributing guidelines](CONTRIBUTING.md).
 
 ------------------------------
-
 
 ## Tests
 
@@ -224,6 +232,7 @@ If you want to run the integration tests on your local machine you will need:
 - *pdo_mysql* extension
 - MySQL server
 - Elasticsearch cluster
+- OpenSearch cluster
 
 In your local environment to get everything ready for you, run `./tests/setupLocalTests.sh` and follow the instructions.
 Then you can run the tests: `vendor/bin/phpunit`.
