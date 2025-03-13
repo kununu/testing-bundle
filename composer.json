@@ -70,7 +70,8 @@
   "config": {
     "sort-packages": true,
     "allow-plugins": {
-      "kununu/scripts": true
+      "kununu/scripts": true,
+      "php-http/discovery": true
     }
   },
   "scripts": {
