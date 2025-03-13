@@ -107,6 +107,9 @@ public static function aPutRequest(): self;
 // Creates and returns a Builder that you can use to do a PATCH request
 public static function aPatchRequest(): self;
 
+// Set The Request files
+public function withFiles(array $files): self;
+
 // Set The Request parameters
 public function withParameters(array $parameters): self;
 
