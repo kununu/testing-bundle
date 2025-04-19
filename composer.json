@@ -34,7 +34,7 @@
     "doctrine/doctrine-bundle": "^2.7",
     "doctrine/doctrine-migrations-bundle": "^3.3",
     "doctrine/orm": "^3.0",
-    "elasticsearch/elasticsearch": "^7.10",
+    "elasticsearch/elasticsearch": "^9.0",
     "kununu/scripts": ">=5.1",
     "matthiasnoback/symfony-dependency-injection-test": "^6.0",
     "opensearch-project/opensearch-php": "^2.0",
