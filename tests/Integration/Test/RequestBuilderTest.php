@@ -80,6 +80,20 @@ final class RequestBuilderTest extends TestCase
         self::assertNull($content);
     }
 
+    public function testBuildHeadRequest(): void
+    {
+        $request = RequestBuilder::aHeadRequest();
+
+        [$method, $uri, $parameters, $files, $server, $content] = $request->build();
+
+        self::assertEquals('HEAD', $method);
+        self::assertNull($uri);
+        self::assertEmpty($parameters);
+        self::assertEmpty($files);
+        self::assertEmpty($server);
+        self::assertNull($content);
+    }
+
     public function testBuildDeleteRequest(): void
     {
         $request = RequestBuilder::aDeleteRequest();
