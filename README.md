@@ -116,6 +116,9 @@ public function withFiles(array $files): self;
 // Set The Request parameters
 public function withParameters(array $parameters): self;
 
+// Set The Request query string parameters
+public function withQueryParameters(array $queryParameters): self;
+
 // Change The request method
 public function withMethod(string $method): self;
 

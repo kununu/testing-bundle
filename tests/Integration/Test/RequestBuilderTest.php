@@ -24,6 +24,22 @@ final class RequestBuilderTest extends TestCase
         self::assertNull($content);
     }
 
+    public function testBuildGetRequestWithQueryParameters(): void
+    {
+        $request = RequestBuilder::aGetRequest()
+            ->withUri('/a/uri/path')
+            ->withQueryParameters(['parameter1' => 'one', 'parameter_2' => 2]);
+
+        [$method, $uri, $parameters, $files, $server, $content] = $request->build();
+
+        self::assertEquals('GET', $method);
+        self::assertEquals('/a/uri/path?parameter1=one&parameter_2=2', $uri);
+        self::assertEmpty($parameters);
+        self::assertEmpty($files);
+        self::assertEmpty($server);
+        self::assertNull($content);
+    }
+
     public function testBuildPostRequest(): void
     {
         $request = RequestBuilder::aPostRequest();
@@ -47,6 +63,22 @@ final class RequestBuilderTest extends TestCase
         self::assertEquals('POST', $method);
         self::assertNull($uri);
         self::assertEquals(['parameters'], $parameters);
+        self::assertEmpty($files);
+        self::assertEmpty($server);
+        self::assertNull($content);
+    }
+
+    public function testBuildPostRequestWithQueryParameters(): void
+    {
+        $request = RequestBuilder::aPostRequest()
+            ->withUri('/a/uri/path')
+            ->withQueryParameters(['parameter1' => 'one', 'parameter_2' => 2]);
+
+        [$method, $uri, $parameters, $files, $server, $content] = $request->build();
+
+        self::assertEquals('POST', $method);
+        self::assertEquals('/a/uri/path?parameter1=one&parameter_2=2', $uri);
+        self::assertEmpty($parameters);
         self::assertEmpty($files);
         self::assertEmpty($server);
         self::assertNull($content);
@@ -102,6 +134,22 @@ final class RequestBuilderTest extends TestCase
 
         self::assertEquals('DELETE', $method);
         self::assertNull($uri);
+        self::assertEmpty($parameters);
+        self::assertEmpty($files);
+        self::assertEmpty($server);
+        self::assertNull($content);
+    }
+
+    public function testBuildDeleteRequestWithQueryParameters(): void
+    {
+        $request = RequestBuilder::aDeleteRequest()
+            ->withUri('/a/uri/path/')
+            ->withQueryParameters(['param1' => 'value1', 'param_2' => 2]);
+
+        [$method, $uri, $parameters, $files, $server, $content] = $request->build();
+
+        self::assertEquals('DELETE', $method);
+        self::assertEquals('/a/uri/path/?param1=value1&param_2=2', $uri);
         self::assertEmpty($parameters);
         self::assertEmpty($files);
         self::assertEmpty($server);
