@@ -6,7 +6,7 @@ namespace Kununu\TestingBundle\Tests\Integration\Test;
 use Kununu\TestingBundle\Test\Options\Options;
 use Kununu\TestingBundle\Test\RequestBuilder;
 use Kununu\TestingBundle\Test\WebTestCase;
-use Kununu\TestingBundle\Tests\Integration\Test\DataFixtures\WebTestCaseFixtures;
+use Kununu\TestingBundle\Tests\Integration\Test\DataFixtures\WebTestCaseFixture;
 
 final class WebTestCaseTest extends WebTestCase
 {
@@ -21,7 +21,7 @@ final class WebTestCaseTest extends WebTestCase
 
     public function testThatHttpFixturesGetLoaded(): void
     {
-        $this->loadHttpClientFixtures('http_client', Options::create(), WebTestCaseFixtures::class);
+        $this->loadHttpClientFixtures('http_client', Options::create(), WebTestCaseFixture::class);
 
         $this->doRequest(
             RequestBuilder::aGetRequest()->withUri('/app/response')

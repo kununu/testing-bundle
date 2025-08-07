@@ -23,7 +23,7 @@ final class KununuTestingBundleTest extends TestCase
 
         $container = $this->createMock(ContainerBuilder::class);
         $container
-            ->expects(self::exactly(7))
+            ->expects($this->exactly(7))
             ->method('addCompilerPass')
             ->willReturnCallback(
                 function($subject) use ($container, &$executedCompilerPasses): MockObject&ContainerBuilder {
