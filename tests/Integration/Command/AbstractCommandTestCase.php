@@ -6,6 +6,7 @@ namespace Kununu\TestingBundle\Tests\Integration\Command;
 use Kununu\TestingBundle\Test\FixturesAwareTestCase;
 use Kununu\TestingBundle\Test\FixturesContainerGetterTrait;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
+use Symfony\Component\Console\Command\LazyCommand;
 use Symfony\Component\Console\Exception\CommandNotFoundException;
 use Symfony\Component\Console\Tester\CommandTester;
 
@@ -21,6 +22,10 @@ abstract class AbstractCommandTestCase extends FixturesAwareTestCase
         $existingCommandAlias = $this->getExistingCommandAlias();
 
         $command = $this->application->find($existingCommandAlias);
+
+        if ($command instanceof LazyCommand) {
+            $command = $command->getCommand();
+        }
 
         self::assertInstanceOf(
             $this->getCommandClass(),

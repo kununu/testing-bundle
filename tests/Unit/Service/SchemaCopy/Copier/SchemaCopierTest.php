@@ -24,7 +24,7 @@ final class SchemaCopierTest extends SchemaCopyTestCase
     public function testCopy(): void
     {
         $this->factory
-            ->expects(self::exactly(2))
+            ->expects($this->exactly(2))
             ->method('createAdapter')
             ->willReturnCallback(
                 fn(Connection $connection): SchemaCopyAdapterInterface => match ($connection) {
@@ -94,7 +94,7 @@ final class SchemaCopierTest extends SchemaCopyTestCase
     public function testCopyWithIncompatibleAdapters(): void
     {
         $this->factory
-            ->expects(self::exactly(2))
+            ->expects($this->exactly(2))
             ->method('createAdapter')
             ->willReturnCallback(
                 fn(Connection $connection): SchemaCopyAdapterInterface => match ($connection) {

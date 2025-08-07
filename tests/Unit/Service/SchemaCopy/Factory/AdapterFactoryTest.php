@@ -18,7 +18,7 @@ final class AdapterFactoryTest extends TestCase
     {
         $connection = $this->createMock(Connection::class);
         $connection
-            ->expects(self::any())
+            ->expects($this->any())
             ->method('getDatabasePlatform')
             ->willReturn($this->createMock($platformClass));
 

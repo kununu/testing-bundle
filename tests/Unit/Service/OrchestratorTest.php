@@ -22,7 +22,7 @@ final class OrchestratorTest extends TestCase
 
         $loader = $this->createMock(LoaderInterface::class);
         $loader
-            ->expects(self::exactly(2))
+            ->expects($this->exactly(2))
             ->method('loadFromClassName')
             ->with(
                 $this->callback(fn(string $class): bool => match ($class) {
@@ -31,16 +31,16 @@ final class OrchestratorTest extends TestCase
                 })
             );
         $loader
-            ->expects(self::once())
+            ->expects($this->once())
             ->method('getFixtures')
             ->willReturn([$fixture1, $fixture2]);
         $loader
-            ->expects(self::once())
+            ->expects($this->once())
             ->method('clearFixtures');
 
         $executor = $this->createMock(ExecutorInterface::class);
         $executor
-            ->expects(self::once())
+            ->expects($this->once())
             ->method('execute')
             ->with([$fixture1, $fixture2], $append);
 

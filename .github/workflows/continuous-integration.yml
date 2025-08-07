@@ -3,7 +3,7 @@ name: Continuous Integration
 on:
   push:
     branches:
-      - master
+      - main
   pull_request:
     types: [ opened, synchronize, reopened ]
 
@@ -26,12 +26,23 @@ jobs:
         with:
           php-version: 8.3
           coverage: none
+          extensions: filter
+          tools: composer-dependency-analyser, composer-normalize, composer-require-checker
 
       - name: Install Composer Dependencies
         uses: ramsey/composer-install@v3
         with:
           dependency-versions: "highest"
           composer-options: "--prefer-stable --optimize-autoloader --no-progress --no-interaction"
+
+      - name: Run Composer Dependency Analyser
+        run: composer-dependency-analyser
+
+      - name: Run Composer Require Checker
+        run: composer-require-checker
+
+      - name: Run Composer Normalize
+        run: composer-normalize --dry-run --indent-size 2 --indent-style space --no-check-lock --no-update-lock
 
       - name: Run PHP CS Fixer
         run: vendor/bin/php-cs-fixer check --using-cache=no --config vendor/kununu/scripts/src/PHP/CodeStandards/Scripts/php_cs src/ tests/
@@ -50,6 +61,7 @@ jobs:
       matrix:
         php-version:
           - 8.3
+          - 8.4
         mysql-version:
           - 8.0
         elasticsearch-version:
@@ -104,19 +116,21 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php-version }}
           coverage: pcov
-          extensions: ${{ matrix.extensions }}
+          extensions: filter
 
       - name: Install Composer Dependencies
         uses: ramsey/composer-install@v3
         with:
           dependency-versions: ${{ matrix.dependencies }}
-          composer-options: "--prefer-stable"
+          composer-options: "--prefer-stable --optimize-autoloader --no-progress --no-interaction"
 
       - name: Setup databases
         run: ./tests/App/bin/setup_databases.sh
@@ -129,7 +143,6 @@ jobs:
           DATABASE_SERVER_VERSION: ${{ matrix.mysql-version }}
 
       - name: Run PHPUnit
-        run: vendor/bin/phpunit --colors=always --testdox --log-junit tests/.results/tests-junit.xml --coverage-clover tests/.results/tests-clover.xml
         env:
           DEF_DATABASE_URL: mysql://root:root@127.0.0.1:${{ job.services.mysql.ports['3306'] }}/default_db
           PERSISTENCE_DATABASE_URL: mysql://root:root@127.0.0.1:${{ job.services.mysql.ports['3306'] }}/persistence_db
@@ -137,6 +150,10 @@ jobs:
           ELASTICSEARCH_URL: http://localhost:9200
           OPENSEARCH_URL: http://localhost:9201
           DATABASE_SERVER_VERSION: ${{ matrix.mysql-version }}
+        run: |
+          vendor/bin/phpunit --colors=always --testdox \
+            --log-junit tests/.results/tests-junit.xml \
+            --coverage-clover tests/.results/tests-clover.xml
 
       - name: Upload coverage files
         uses: actions/upload-artifact@v4
@@ -151,7 +168,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          # Disabling shallow clone is recommended for improving relevancy of reporting
           fetch-depth: 0
 
       - uses: actions/download-artifact@v4
@@ -166,7 +182,7 @@ jobs:
           sed -i 's@'$GITHUB_WORKSPACE'@/github/workspace/@g' tests-junit.xml
 
       - name: SonarCloud Scan
-        uses: SonarSource/sonarqube-scan-action@v4.2
+        uses: SonarSource/sonarqube-scan-action@v5.3.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
