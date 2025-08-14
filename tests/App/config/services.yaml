@@ -22,3 +22,10 @@ services:
   http_client:
     class: Kununu\DataFixtures\Tools\HttpClient
     public: true
+
+  Symfony\Contracts\HttpClient\HttpClientInterface: '@http_client'
+
+  Kununu\TestingBundle\Tests\App\Controller\AppController:
+    public: true
+    arguments:
+      $client: '@http_client'
