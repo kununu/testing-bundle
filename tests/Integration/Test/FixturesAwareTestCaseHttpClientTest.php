@@ -53,8 +53,7 @@ final class FixturesAwareTestCaseHttpClientTest extends FixturesAwareTestCase
     "age": 39,
     "newsletter": true
 }
-JSON
-            ,
+JSON,
             $response->getContent()
         );
     }
@@ -88,8 +87,7 @@ JSON
     "age": 39,
     "newsletter": true
 }
-JSON
-            ,
+JSON,
             $response->getContent()
         );
     }
