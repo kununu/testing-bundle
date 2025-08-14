@@ -18,13 +18,6 @@ final class RequestBuilder
     {
     }
 
-    private function getUriWithQueryStringParameters(): ?string
-    {
-        return empty($this->queryParameters)
-            ? $this->uri
-            : sprintf('%s?%s', $this->uri, http_build_query($this->queryParameters));
-    }
-
     public static function aGetRequest(): self
     {
         return new self(Request::METHOD_GET);
@@ -130,5 +123,12 @@ final class RequestBuilder
         $this->server[$parameterName] = $parameterValue;
 
         return $this;
+    }
+
+    private function getUriWithQueryStringParameters(): ?string
+    {
+        return empty($this->queryParameters)
+            ? $this->uri
+            : sprintf('%s?%s', $this->uri, http_build_query($this->queryParameters));
     }
 }
