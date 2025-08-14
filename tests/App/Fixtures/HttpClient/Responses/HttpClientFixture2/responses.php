@@ -14,7 +14,6 @@ return [
     "age": 39,
     "newsletter": true
 }
-JSON
-        ,
+JSON,
     ],
 ];
