@@ -9,6 +9,7 @@ final class RequestBuilder
 {
     private ?string $uri = null;
     private array $parameters = [];
+    private array $queryParameters = [];
     private array $files = [];
     private array $server = [];
     private ?string $content = null;
@@ -49,7 +50,7 @@ final class RequestBuilder
 
     public function build(): array
     {
-        return [$this->method, $this->uri, $this->parameters, $this->files, $this->server, $this->content];
+        return [$this->method, $this->getUriWithQueryStringParameters(), $this->parameters, $this->files, $this->server, $this->content];
     }
 
     public function withFiles(array $files): self
@@ -62,6 +63,13 @@ final class RequestBuilder
     public function withParameters(array $parameters): self
     {
         $this->parameters = $parameters;
+
+        return $this;
+    }
+
+    public function withQueryParameters(array $queryParameters): self
+    {
+        $this->queryParameters = $queryParameters;
 
         return $this;
     }
@@ -115,5 +123,12 @@ final class RequestBuilder
         $this->server[$parameterName] = $parameterValue;
 
         return $this;
+    }
+
+    private function getUriWithQueryStringParameters(): ?string
+    {
+        return empty($this->queryParameters)
+            ? $this->uri
+            : sprintf('%s?%s', $this->uri, http_build_query($this->queryParameters));
     }
 }
