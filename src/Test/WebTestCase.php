@@ -48,7 +48,9 @@ abstract class WebTestCase extends FixturesAwareTestCase
                 Options::create()->withAppend()->withoutClear(),
                 ...$fixtures
             ),
+            // @codeCoverageIgnoreStart
             default             => null,
+            // @codeCoverageIgnoreEnd
         };
     }
 }
