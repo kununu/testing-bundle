@@ -100,12 +100,12 @@ abstract class BaseCompilerPassTestCase extends AbstractCompilerPassTestCase
         $mock = $this->createMock(ExtensionInterface::class);
 
         $mock
-            ->expects(self::any())
+            ->expects($this->any())
             ->method('getAlias')
             ->willReturn($alias);
 
         $mock
-            ->expects(self::any())
+            ->expects($this->any())
             ->method('getNamespace')
             ->willReturn(false);
 

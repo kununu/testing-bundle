@@ -1,0 +1,20 @@
+{
+  "symbol-whitelist": [
+    "Doctrine\\DBAL\\Connection",
+    "Doctrine\\DBAL\\Platforms\\AbstractPlatform",
+    "Doctrine\\DBAL\\Platforms\\MySQLPlatform",
+    "Doctrine\\Persistence\\ManagerRegistry",
+    "Elasticsearch\\Client",
+    "OpenSearch\\Client",
+    "Psr\\Cache\\CacheItemPoolInterface",
+    "Symfony\\Component\\Console\\Attribute\\AsCommand",
+    "Symfony\\Component\\Console\\Command\\Command",
+    "Symfony\\Component\\Console\\Input\\InputInterface",
+    "Symfony\\Component\\Console\\Input\\InputOption",
+    "Symfony\\Component\\Console\\Output\\OutputInterface",
+    "Symfony\\Component\\Console\\Style\\SymfonyStyle",
+    "Symfony\\Component\\HttpFoundation\\Request",
+    "Symfony\\Component\\HttpFoundation\\Response",
+    "Symfony\\Contracts\\HttpClient\\HttpClientInterface"
+  ]
+}

@@ -1,9 +1,8 @@
 {
   "name": "kununu/testing-bundle",
   "description": "Testing made easy by providing helper classes and fixtures loading",
-  "type": "symfony-bundle",
   "license": "MIT",
-  "minimum-stability": "stable",
+  "type": "symfony-bundle",
   "keywords": [
     "tests",
     "symfony",
@@ -21,10 +20,11 @@
   ],
   "require": {
     "php": ">=8.3",
-    "symfony/framework-bundle": "^6.4",
+    "ext-filter": "*",
     "kununu/data-fixtures": "^13.0",
     "symfony/config": "^6.4",
     "symfony/dependency-injection": "^6.4",
+    "symfony/framework-bundle": "^6.4",
     "symfony/http-kernel": "^6.4"
   },
   "require-dev": {
@@ -35,14 +35,16 @@
     "doctrine/doctrine-migrations-bundle": "^3.3",
     "doctrine/orm": "^3.0",
     "elasticsearch/elasticsearch": "^7.10",
-    "kununu/scripts": ">=5.1",
-    "matthiasnoback/symfony-dependency-injection-test": "^6.0",
+    "kununu/scripts": ">=6.1",
+    "matthiasnoback/symfony-dependency-injection-test": "^6.1",
+    "nyholm/psr7": "^1.8",
     "opensearch-project/opensearch-php": "^2.0",
     "phpstan/phpstan": "^2.1",
     "phpstan/phpstan-phpunit": "^2.0",
-    "phpunit/phpunit": "^11.5",
-    "rector/rector": "^2.0",
+    "phpunit/phpunit": "^12.3",
     "psr/cache": "^2.0",
+    "rector/rector": "^2.0",
+    "shipmonk/composer-dependency-analyser": "^1.8",
     "symfony/browser-kit": "^6.4",
     "symfony/dotenv": "^6.4",
     "symfony/http-client": "^6.4",
@@ -51,12 +53,13 @@
   "suggest": {
     "ext-pdo_mysql": "To run Integration Tests.",
     "doctrine/doctrine-bundle": "To run Integration Tests.",
-    "opensearch-project/opensearch-php": "To run Integration Tests.",
     "elasticsearch/elasticsearch": "To run Integration Tests.",
+    "opensearch-project/opensearch-php": "To run Integration Tests.",
     "psr/cache": "To run Integration Tests.",
     "symfony/http-client": "To run Integration Tests.",
     "symfony/http-foundation": "To run Integration Tests."
   },
+  "minimum-stability": "stable",
   "autoload": {
     "psr-4": {
       "Kununu\\TestingBundle\\": "src/"
@@ -68,14 +71,17 @@
     }
   },
   "config": {
-    "sort-packages": true,
     "allow-plugins": {
-      "kununu/scripts": true
-    }
+      "kununu/scripts": true,
+      "php-http/discovery": true
+    },
+    "sort-packages": true
   },
   "scripts": {
-    "unit": "phpunit --log-events-text phpunit.log --no-coverage --no-logging --no-progress --testsuite Unit",
-    "unit-coverage": "XDEBUG_MODE=coverage phpunit --log-events-text phpunit.log --no-progress --testsuite Unit --log-junit tests/.results/unit-junit.xml --coverage-clover tests/.results/coverage-unit.xml --coverage-html tests/.results/Unit",
+    "cs": [
+      "rm -rf tests/App/var/*",
+      "composer kununu:cs-fixer-code src/ tests/"
+    ],
     "integration": [
       "rm -rf tests/App/var/*",
       "tests/App/bin/setup_databases.sh test",
@@ -86,6 +92,8 @@
       "tests/App/bin/setup_databases.sh test",
       "XDEBUG_MODE=coverage phpunit --log-events-text phpunit.log --no-progress --testsuite Integration --log-junit tests/.results/integration-junit.xml --coverage-clover tests/.results/coverage-integration.xml --coverage-html tests/.results/Integration"
     ],
+    "phpstan": "phpstan",
+    "rector": "rector process --dry-run --config rector-ci.php src/ tests/",
     "test": [
       "rm -rf tests/App/var/*",
       "tests/App/bin/setup_databases.sh test",
@@ -96,17 +104,18 @@
       "tests/App/bin/setup_databases.sh test",
       "XDEBUG_MODE=coverage phpunit --log-events-text phpunit.log --no-progress --testsuite Unit,Integration --log-junit tests/.results/tests-junit.xml --coverage-clover tests/.results/tests-clover.xml --coverage-html tests/.results/html"
     ],
-    "phpstan": "phpstan",
-    "rector": "rector process --dry-run --config rector-ci.php src/ tests/"
+    "unit": "phpunit --log-events-text phpunit.log --no-coverage --no-logging --no-progress --testsuite Unit",
+    "unit-coverage": "XDEBUG_MODE=coverage phpunit --log-events-text phpunit.log --no-progress --testsuite Unit --log-junit tests/.results/unit-junit.xml --coverage-clover tests/.results/coverage-unit.xml --coverage-html tests/.results/Unit"
   },
   "scripts-descriptions": {
-    "unit": "Run all unit tests",
-    "unit-coverage": "Run all unit tests with coverage report",
+    "cs": "Run PHP CS Fixer with kununu code standards",
     "integration": "Run all integration tests",
     "integration-coverage": "Run all integration tests with coverage report",
+    "phpstan": "Run PHPStan",
+    "rector": "Run Rector in dry-run mode with CI rules",
     "test": "Run all tests",
     "test-coverage": "Run all tests with coverage report",
-    "rector": "Run Rector in dry-run mode with CI rules",
-    "phpstan": "Run PHPStan"
+    "unit": "Run all unit tests",
+    "unit-coverage": "Run all unit tests with coverage report"
   }
 }

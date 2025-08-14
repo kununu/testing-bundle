@@ -19,7 +19,7 @@ abstract class SchemaCopyTestCase extends TestCase
     {
         $adapter = $this->createMock(SchemaCopyAdapterInterface::class);
         $adapter
-            ->expects(self::exactly($expectedCalls))
+            ->expects($this->exactly($expectedCalls))
             ->method('type')
             ->willReturn($type);
 
@@ -30,7 +30,7 @@ abstract class SchemaCopyTestCase extends TestCase
     {
         $connection = $this->createMock(Connection::class);
         $connection
-            ->expects(self::any())
+            ->expects($this->any())
             ->method('getDatabasePlatform')
             ->willReturn($this->createMock(MySQL80Platform::class));
 
@@ -42,7 +42,7 @@ abstract class SchemaCopyTestCase extends TestCase
         $map = array_combine($statements, $results);
 
         $connection
-            ->expects(self::exactly(count($statements)))
+            ->expects($this->exactly(count($statements)))
             ->method('executeQuery')
             ->willReturnCallback(fn(string $statement): Result => match (true) {
                 isset($map[$statement]) => $map[$statement],
@@ -55,7 +55,7 @@ abstract class SchemaCopyTestCase extends TestCase
         $map = array_combine($statements, array_fill(0, count($statements), 0));
 
         $connection
-            ->expects(self::exactly(count($statements)))
+            ->expects($this->exactly(count($statements)))
             ->method('executeStatement')
             ->willReturnCallback(fn(string $statement): int => match (true) {
                 isset($map[$statement]) => $map[$statement],
@@ -67,7 +67,7 @@ abstract class SchemaCopyTestCase extends TestCase
     {
         $result = $this->createMock(Result::class);
         $result
-            ->expects(self::once())
+            ->expects($this->once())
             ->method($method)
             ->withAnyParameters()
             ->willReturn($return);

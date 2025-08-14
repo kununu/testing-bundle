@@ -9,7 +9,7 @@ use Symfony\Component\DependencyInjection\Reference;
 
 abstract class AbstractLoadFixturesCommandCompilerPass extends AbstractCompilerPass
 {
-    protected final const string LOAD_COMMAND_CLASSES_NAMESPACE_CONFIG = 'load_command_fixtures_classes_namespace';
+    final protected const string LOAD_COMMAND_CLASSES_NAMESPACE_CONFIG = 'load_command_fixtures_classes_namespace';
 
     private const string ORCHESTRATOR_SERVICE_PREFIX = 'kununu_testing.orchestrator.%s';
 

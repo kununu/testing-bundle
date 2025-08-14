@@ -50,9 +50,21 @@ final class RequestBuilder
         return new self(Request::METHOD_PATCH);
     }
 
+    public static function aHeadRequest(): self
+    {
+        return new self(Request::METHOD_HEAD);
+    }
+
     public function build(): array
     {
         return [$this->method, $this->getUriWithQueryStringParameters(), $this->parameters, $this->files, $this->server, $this->content];
+    }
+
+    public function withFiles(array $files): self
+    {
+        $this->files = $files;
+
+        return $this;
     }
 
     public function withParameters(array $parameters): self

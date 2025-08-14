@@ -6,6 +6,7 @@ namespace Kununu\TestingBundle\Tests\Integration\Test;
 use Kununu\TestingBundle\Test\RequestBuilder;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 final class RequestBuilderTest extends TestCase
 {
@@ -111,6 +112,20 @@ final class RequestBuilderTest extends TestCase
         self::assertNull($content);
     }
 
+    public function testBuildHeadRequest(): void
+    {
+        $request = RequestBuilder::aHeadRequest();
+
+        [$method, $uri, $parameters, $files, $server, $content] = $request->build();
+
+        self::assertEquals('HEAD', $method);
+        self::assertNull($uri);
+        self::assertEmpty($parameters);
+        self::assertEmpty($files);
+        self::assertEmpty($server);
+        self::assertNull($content);
+    }
+
     public function testBuildDeleteRequest(): void
     {
         $request = RequestBuilder::aDeleteRequest();
@@ -157,6 +172,15 @@ final class RequestBuilderTest extends TestCase
         [, $uri] = $request->build();
 
         self::assertEquals('/v1/uri', $uri);
+    }
+
+    public function testBuildRequestWithFiles(): void
+    {
+        $request = RequestBuilder::aGetRequest()->withFiles([self::createMock(UploadedFile::class)]);
+
+        [, , , $files] = $request->build();
+
+        self::assertEquals([self::createMock(UploadedFile::class)], $files);
     }
 
     public function testBuildRequestWithContent(): void
