@@ -229,3 +229,7 @@ kununu_testing:
       excluded_tables: # List of tables to exclude from being purged
         - table_to_exclude_from_purge
 ```
+
+---
+
+[Back to Index](../../README.md)

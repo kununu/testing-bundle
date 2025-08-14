@@ -11,13 +11,13 @@ abstract class WebTestCase extends FixturesAwareTestCase
 {
     final protected function doRequest(RequestBuilder $builder, string $httpClientName = 'http_client'): Response
     {
-        $previousHttpClientFixtures = $this->getPreviousHttpClientFixtures($httpClientName);
+        $previousHttpFixtures = $this->getHttpClientFixturesClasses($httpClientName);
 
         $this->shutdown();
 
         $client = $this->getKernelBrowser();
 
-        $this->restorePreviousHttpClientFixtures($httpClientName, $previousHttpClientFixtures);
+        $this->restoreHttpClientFixtures($httpClientName, $previousHttpFixtures);
 
         $client->request(...$builder->build());
 
@@ -32,19 +32,23 @@ abstract class WebTestCase extends FixturesAwareTestCase
     }
 
     /** @codeCoverageIgnore */
-    private function getPreviousHttpClientFixtures(string $httpClientName): ?array
+    private function getHttpClientFixturesClasses(string $clientId): ?array
     {
-        return interface_exists(HttpClientInterface::class) ? $this->getHttpClientFixtures($httpClientName) : null;
+        return match (interface_exists(HttpClientInterface::class)) {
+            false => null,
+            true  => array_filter(array_values(array_map(get_class(...), $this->getHttpClientFixtures($clientId)))),
+        };
     }
 
-    private function restorePreviousHttpClientFixtures(string $httpClientName, ?array $httpClientFixtures): void
+    private function restoreHttpClientFixtures(string $clientId, ?array $fixtures): void
     {
-        foreach ($httpClientFixtures ?? [] as $fixtureClass => $fixture) {
-            $this->loadHttpClientFixtures(
-                $httpClientName,
-                Options::create()->withoutClear()->withAppend(),
-                $fixtureClass
-            );
-        }
+        match (true) {
+            is_array($fixtures) => $this->loadHttpClientFixtures(
+                $clientId,
+                Options::create()->withAppend()->withoutClear(),
+                ...$fixtures
+            ),
+            default             => null,
+        };
     }
 }

@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Kununu\TestingBundle\Tests\Integration\Test;
+namespace Kununu\TestingBundle\Tests\Unit\Test;
 
 use Kununu\TestingBundle\Test\RequestBuilder;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -150,6 +150,62 @@ final class RequestBuilderTest extends TestCase
 
         self::assertEquals('DELETE', $method);
         self::assertEquals('/a/uri/path/?param1=value1&param_2=2', $uri);
+        self::assertEmpty($parameters);
+        self::assertEmpty($files);
+        self::assertEmpty($server);
+        self::assertNull($content);
+    }
+
+    public function testBuildConnectRequest(): void
+    {
+        $request = RequestBuilder::aConnectRequest();
+
+        [$method, $uri, $parameters, $files, $server, $content] = $request->build();
+
+        self::assertEquals('CONNECT', $method);
+        self::assertNull($uri);
+        self::assertEmpty($parameters);
+        self::assertEmpty($files);
+        self::assertEmpty($server);
+        self::assertNull($content);
+    }
+
+    public function testBuildOptionsRequest(): void
+    {
+        $request = RequestBuilder::aOptionsRequest();
+
+        [$method, $uri, $parameters, $files, $server, $content] = $request->build();
+
+        self::assertEquals('OPTIONS', $method);
+        self::assertNull($uri);
+        self::assertEmpty($parameters);
+        self::assertEmpty($files);
+        self::assertEmpty($server);
+        self::assertNull($content);
+    }
+
+    public function testBuildPurgeRequest(): void
+    {
+        $request = RequestBuilder::aPurgeRequest();
+
+        [$method, $uri, $parameters, $files, $server, $content] = $request->build();
+
+        self::assertEquals('PURGE', $method);
+        self::assertNull($uri);
+        self::assertEmpty($parameters);
+        self::assertEmpty($files);
+        self::assertEmpty($server);
+        self::assertNull($content);
+    }
+
+    public function testBuildTraceRequest(): void
+    {
+        $request = RequestBuilder::aTraceRequest();
+
+        [$method, $uri, $parameters, $files, $server, $content] = $request->build();
+
+        self::assertEquals('TRACE', $method);
+        self::assertNull($uri);
         self::assertEmpty($parameters);
         self::assertEmpty($files);
         self::assertEmpty($server);

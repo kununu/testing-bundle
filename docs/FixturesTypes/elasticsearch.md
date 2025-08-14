@@ -147,3 +147,7 @@ kununu_testing:
       service: 'Kununu\TestingBundle\Tests\App\Elasticsearch' # Service Id of an instance of Elasticsearch\Client 
       index_name: 'my_index_name' # name of your index
 ```
+
+---
+
+[Back to Index](../../README.md)
