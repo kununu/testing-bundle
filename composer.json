@@ -21,6 +21,7 @@
   "require": {
     "php": ">=8.3",
     "ext-filter": "*",
+    "kununu/collections": "^6.4",
     "kununu/data-fixtures": "^13.0",
     "symfony/config": "^6.4",
     "symfony/dependency-injection": "^6.4",
@@ -31,7 +32,7 @@
     "ext-json": "*",
     "ext-pdo": "*",
     "doctrine/dbal": "^3.8",
-    "doctrine/doctrine-bundle": "^2.7",
+    "doctrine/doctrine-bundle": "~2.15.0",
     "doctrine/doctrine-migrations-bundle": "^3.3",
     "doctrine/orm": "^3.0",
     "elasticsearch/elasticsearch": "^7.10",

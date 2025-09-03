@@ -147,3 +147,7 @@ kununu_testing:
       service: 'Kununu\TestingBundle\Tests\App\OpenSearch' # Service Id of an instance of OpenSearch\Client 
       index_name: 'my_index_name' # name of your index
 ```
+
+---
+
+[Back to Index](../../README.md)

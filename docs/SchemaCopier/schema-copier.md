@@ -25,3 +25,7 @@ php bin/console kununu_testing:connections:schema:copy --from SOURCE --to DESTIN
 Be aware that this command will **DESTROY** all tables and views (including data) on your *DESTINATION* database schema!
 
 Please take caution when using it.
+
+---
+
+[Back to Index](../../README.md)

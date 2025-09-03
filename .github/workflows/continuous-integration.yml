@@ -76,7 +76,7 @@ jobs:
         image: mysql:${{ matrix.mysql-version }}
         env:
           MYSQL_ALLOW_EMPTY_PASSWORD: false
-          MYSQL_ROOT_PASSWORD: root
+          MYSQL_ROOT_PASSWORD: ${{ secrets.CI_DATABASE_PASSWORD }}
           MYSQL_DATABASE: root
         ports:
           - 3306/tcp
@@ -132,28 +132,21 @@ jobs:
           dependency-versions: ${{ matrix.dependencies }}
           composer-options: "--prefer-stable --optimize-autoloader --no-progress --no-interaction"
 
-      - name: Get secrets
-        id: get-secrets
-        env:
-          CI_DATABASE_PASSWORD: ${{ secrets.CI_DATABASE_PASSWORD }}
-        run: |
-          echo "db_password=${CI_DATABASE_PASSWORD}" >> "$GITHUB_OUTPUT"
-
       - name: Setup storage
         run: ./tests/App/bin/setup_databases.sh
         env:
-          DEF_DATABASE_URL: mysql://root:${{ steps.get-secrets.outputs.db_password }}@127.0.0.1:${{ job.services.mysql.ports['3306'] }}/default_db
-          PERSISTENCE_DATABASE_URL: mysql://root:${{ steps.get-secrets.outputs.db_password }}@127.0.0.1:${{ job.services.mysql.ports['3306'] }}/persistence_db
-          MONOLITHIC_DATABASE_URL: mysql://root:${{ steps.get-secrets.outputs.db_password }}@127.0.0.1:${{ job.services.mysql.ports['3306'] }}/monolithic_db
+          DEF_DATABASE_URL: mysql://root:${{ secrets.CI_DATABASE_PASSWORD }}@127.0.0.1:${{ job.services.mysql.ports['3306'] }}/default_db
+          PERSISTENCE_DATABASE_URL: mysql://root:${{ secrets.CI_DATABASE_PASSWORD }}@127.0.0.1:${{ job.services.mysql.ports['3306'] }}/persistence_db
+          MONOLITHIC_DATABASE_URL: mysql://root:${{ secrets.CI_DATABASE_PASSWORD }}@127.0.0.1:${{ job.services.mysql.ports['3306'] }}/monolithic_db
           ELASTICSEARCH_URL: http://localhost:9200
           OPENSEARCH_URL: http://localhost:9201
           DATABASE_SERVER_VERSION: ${{ matrix.mysql-version }}
 
       - name: Run PHPUnit
         env:
-          DEF_DATABASE_URL: mysql://root:${{ steps.get-secrets.outputs.db_password }}@127.0.0.1:${{ job.services.mysql.ports['3306'] }}/default_db
-          PERSISTENCE_DATABASE_URL: mysql://root:${{ steps.get-secrets.outputs.db_password }}@127.0.0.1:${{ job.services.mysql.ports['3306'] }}/persistence_db
-          MONOLITHIC_DATABASE_URL: mysql://root:${{ steps.get-secrets.outputs.db_password }}@127.0.0.1:${{ job.services.mysql.ports['3306'] }}/monolithic_db
+          DEF_DATABASE_URL: mysql://root:${{ secrets.CI_DATABASE_PASSWORD }}@127.0.0.1:${{ job.services.mysql.ports['3306'] }}/default_db
+          PERSISTENCE_DATABASE_URL: mysql://root:${{ secrets.CI_DATABASE_PASSWORD }}@127.0.0.1:${{ job.services.mysql.ports['3306'] }}/persistence_db
+          MONOLITHIC_DATABASE_URL: mysql://root:${{ secrets.CI_DATABASE_PASSWORD }}@127.0.0.1:${{ job.services.mysql.ports['3306'] }}/monolithic_db
           ELASTICSEARCH_URL: http://localhost:9200
           OPENSEARCH_URL: http://localhost:9201
           DATABASE_SERVER_VERSION: ${{ matrix.mysql-version }}
@@ -189,7 +182,7 @@ jobs:
           sed -i 's@'$GITHUB_WORKSPACE'@/github/workspace/@g' tests-junit.xml
 
       - name: SonarCloud Scan
-        uses: SonarSource/sonarqube-scan-action@v5.3.0
+        uses: SonarSource/sonarqube-scan-action@v5.3.1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}

@@ -1,4 +1,6 @@
 framework:
+  http_client:
+    enabled: false
   http_method_override: false
   handle_all_throwables: true
   session:

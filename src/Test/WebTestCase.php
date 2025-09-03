@@ -9,20 +9,15 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 abstract class WebTestCase extends FixturesAwareTestCase
 {
-    final protected function doRequest(
-        RequestBuilder $builder,
-        string $httpClientName = 'http_client',
-        ?Options $options = null,
-    ): Response {
-        $httpClientFixtures = $this->getPreviousHttpClientFixtures($httpClientName);
+    final protected function doRequest(RequestBuilder $builder, string $httpClientName = 'http_client'): Response
+    {
+        $previousHttpFixtures = $this->getHttpClientFixturesClasses($httpClientName);
 
         $this->shutdown();
 
         $client = $this->getKernelBrowser();
 
-        foreach ($httpClientFixtures ?? [] as $fixtureClass => $fixture) {
-            $this->loadHttpClientFixtures($httpClientName, $options ?? Options::create(), $fixtureClass);
-        }
+        $this->restoreHttpClientFixtures($httpClientName, $previousHttpFixtures);
 
         $client->request(...$builder->build());
 
@@ -30,20 +25,32 @@ abstract class WebTestCase extends FixturesAwareTestCase
 
         // Since there is no content, then there is also no content-type header.
         if (Response::HTTP_NO_CONTENT !== $response->getStatusCode()) {
-            self::assertTrue(
-                $response->headers->contains(
-                    'Content-type',
-                    'application/json'
-                )
-            );
+            self::assertTrue($response->headers->contains('Content-type', 'application/json'));
         }
 
         return $response;
     }
 
     /** @codeCoverageIgnore */
-    private function getPreviousHttpClientFixtures(string $httpClientName): ?array
+    private function getHttpClientFixturesClasses(string $clientId): ?array
     {
-        return interface_exists(HttpClientInterface::class) ? $this->getHttpClientFixtures($httpClientName) : null;
+        return match (interface_exists(HttpClientInterface::class)) {
+            false => null,
+            true  => array_filter(array_values(array_map(get_class(...), $this->getHttpClientFixtures($clientId)))),
+        };
+    }
+
+    private function restoreHttpClientFixtures(string $clientId, ?array $fixtures): void
+    {
+        match (true) {
+            is_array($fixtures) => $this->loadHttpClientFixtures(
+                $clientId,
+                Options::create()->withAppend()->withoutClear(),
+                ...$fixtures
+            ),
+            // @codeCoverageIgnoreStart
+            default             => null,
+            // @codeCoverageIgnoreEnd
+        };
     }
 }

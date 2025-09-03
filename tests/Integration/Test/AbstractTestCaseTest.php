@@ -27,6 +27,7 @@ final class AbstractTestCaseTest extends AbstractTestCase
         self::assertInstanceOf(OpenClientFactory::class, $this->getServiceFromContainer(self::OPEN_FACTORY));
 
         self::assertFalse($this->getFixturesContainer()->has(self::NON_EXISTING_SERVICE));
+
         $this->expectException(ServiceNotFoundException::class);
 
         $this->getServiceFromContainer(self::NON_EXISTING_SERVICE);

@@ -2,11 +2,11 @@
 declare(strict_types=1);
 
 return [
-    // HTTP GET to check reload after kernel shutdown
     [
-        'url'    => '/test-http-fixtures',
+        'url'    => 'https://my-external-service.fake/external/1',
         'body'   => <<<'JSON'
 {
+  "value": 1
 }
 JSON,
     ],

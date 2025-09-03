@@ -15,6 +15,7 @@ return (new Configuration())
             'symfony/console',
             'symfony/error-handler',
             'symfony/http-client-contracts',
+            'symfony/routing',
         ],
         [ErrorType::SHADOW_DEPENDENCY]
     )

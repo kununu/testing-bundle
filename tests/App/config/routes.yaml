@@ -1,3 +1,0 @@
-app_response:
-  path: /app/response
-  controller: Kununu\TestingBundle\Tests\App\Controller\AppController::response

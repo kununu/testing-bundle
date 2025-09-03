@@ -1,8 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace Kununu\TestingBundle\Tests\Integration\Test;
+namespace Kununu\TestingBundle\Tests\Unit\Test;
 
+use BadMethodCallException;
 use Kununu\TestingBundle\Test\RequestBuilder;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
@@ -156,6 +157,62 @@ final class RequestBuilderTest extends TestCase
         self::assertNull($content);
     }
 
+    public function testBuildConnectRequest(): void
+    {
+        $request = RequestBuilder::aConnectRequest();
+
+        [$method, $uri, $parameters, $files, $server, $content] = $request->build();
+
+        self::assertEquals('CONNECT', $method);
+        self::assertNull($uri);
+        self::assertEmpty($parameters);
+        self::assertEmpty($files);
+        self::assertEmpty($server);
+        self::assertNull($content);
+    }
+
+    public function testBuildOptionsRequest(): void
+    {
+        $request = RequestBuilder::aOptionsRequest();
+
+        [$method, $uri, $parameters, $files, $server, $content] = $request->build();
+
+        self::assertEquals('OPTIONS', $method);
+        self::assertNull($uri);
+        self::assertEmpty($parameters);
+        self::assertEmpty($files);
+        self::assertEmpty($server);
+        self::assertNull($content);
+    }
+
+    public function testBuildPurgeRequest(): void
+    {
+        $request = RequestBuilder::aPurgeRequest();
+
+        [$method, $uri, $parameters, $files, $server, $content] = $request->build();
+
+        self::assertEquals('PURGE', $method);
+        self::assertNull($uri);
+        self::assertEmpty($parameters);
+        self::assertEmpty($files);
+        self::assertEmpty($server);
+        self::assertNull($content);
+    }
+
+    public function testBuildTraceRequest(): void
+    {
+        $request = RequestBuilder::aTraceRequest();
+
+        [$method, $uri, $parameters, $files, $server, $content] = $request->build();
+
+        self::assertEquals('TRACE', $method);
+        self::assertNull($uri);
+        self::assertEmpty($parameters);
+        self::assertEmpty($files);
+        self::assertEmpty($server);
+        self::assertNull($content);
+    }
+
     public function testBuildRequestWithMethod(): void
     {
         $request = RequestBuilder::aGetRequest()->withMethod('POST');
@@ -245,5 +302,14 @@ final class RequestBuilderTest extends TestCase
         [, , , , $server] = $request->build();
 
         self::assertEquals(['REMOTE_ADDR' => '127.0.0.1', 'HTTP_ACCEPT' => 'application/json'], $server);
+    }
+
+    public function testBadStaticMethodCall(): void
+    {
+        $this->expectException(BadMethodCallException::class);
+        $this->expectExceptionMessage('Invalid static method "invalidMethod" called');
+
+        // @phpstan-ignore staticMethod.notFound
+        RequestBuilder::invalidMethod();
     }
 }
