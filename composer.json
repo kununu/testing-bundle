@@ -32,7 +32,7 @@
     "ext-json": "*",
     "ext-pdo": "*",
     "doctrine/dbal": "^3.8",
-    "doctrine/doctrine-bundle": "2.15.*",
+    "doctrine/doctrine-bundle": "~2.15.0",
     "doctrine/doctrine-migrations-bundle": "^3.3",
     "doctrine/orm": "^3.0",
     "elasticsearch/elasticsearch": "^7.10",
