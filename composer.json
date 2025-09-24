@@ -18,11 +18,17 @@
       "email": "joao.alves@kununu.com"
     }
   ],
+    "repositories": [
+        {
+            "type": "path",
+            "url": "../data-fixtures"
+        }
+    ],
   "require": {
     "php": ">=8.3",
     "ext-filter": "*",
     "kununu/collections": "^6.4",
-    "kununu/data-fixtures": "^13.0",
+    "kununu/data-fixtures": "*",
     "symfony/config": "^6.4",
     "symfony/dependency-injection": "^6.4",
     "symfony/framework-bundle": "^6.4",
@@ -53,6 +59,7 @@
   },
   "suggest": {
     "ext-pdo_mysql": "To run Integration Tests.",
+    "aws/aws-sdk-php": "To use DynamoDB fixtures.",
     "doctrine/doctrine-bundle": "To run Integration Tests.",
     "elasticsearch/elasticsearch": "To run Integration Tests.",
     "opensearch-project/opensearch-php": "To run Integration Tests.",
@@ -60,7 +67,7 @@
     "symfony/http-client": "To run Integration Tests.",
     "symfony/http-foundation": "To run Integration Tests."
   },
-  "minimum-stability": "stable",
+  "minimum-stability": "dev",
   "autoload": {
     "psr-4": {
       "Kununu\\TestingBundle\\": "src/"
