@@ -110,6 +110,42 @@ final class DynamoDbCompilerPassTest extends BaseLoadFixturesCommandCompilerPass
         }
     }
 
+    public function testCreatesOrchestratorWithEmptyTableNames(): void
+    {
+        $configWithEmptyTableNames = [
+            'dynamo_db' => [
+                'table_names_missing' => [
+                    'service' => 'aws.dynamo_db.client.empty',
+                ],
+                'table_names_empty' => [
+                    'service'     => 'aws.dynamo_db.client.explicit_empty',
+                    'table_names' => [],
+                ],
+            ],
+        ];
+
+        $this->container->loadFromExtension(KununuTestingExtension::ALIAS, $configWithEmptyTableNames);
+
+        $this->setDefinition('aws.dynamo_db.client.empty', new Definition());
+        $this->setDefinition('aws.dynamo_db.client.explicit_empty', new Definition());
+
+        $this->compile();
+
+        $this->assertPurger(
+            'kununu_testing.orchestrator.dynamo_db.table_names_missing.purger',
+            DynamoDbPurger::class,
+            new Reference('aws.dynamo_db.client.empty'),
+            []
+        );
+
+        $this->assertPurger(
+            'kununu_testing.orchestrator.dynamo_db.table_names_empty.purger',
+            DynamoDbPurger::class,
+            new Reference('aws.dynamo_db.client.explicit_empty'),
+            []
+        );
+    }
+
     protected function getCompilerInstance(): DynamoDbCompilerPass
     {
         return new DynamoDbCompilerPass();
@@ -148,9 +184,11 @@ final class DynamoDbCompilerPassTest extends BaseLoadFixturesCommandCompilerPass
             $container->registerExtension(new KununuTestingExtension());
         }
 
-        foreach (self::DYNAMO_DB_SERVICES as $config) {
-            $dynamoDbServiceDefinition = new Definition();
-            $this->setDefinition($config['service'], $dynamoDbServiceDefinition);
+        if ($this->name() !== 'testCreatesOrchestratorWithEmptyTableNames') {
+            foreach (self::DYNAMO_DB_SERVICES as $config) {
+                $dynamoDbServiceDefinition = new Definition();
+                $this->setDefinition($config['service'], $dynamoDbServiceDefinition);
+            }
         }
     }
 
