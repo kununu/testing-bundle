@@ -113,10 +113,8 @@ jobs:
           - 9201:9201
           - 9600:9600
 
-      - name: Setup LocalStack (DynamoDB)
-        uses: LocalStack/setup-localstack@v0.2.3
-        with:
-          install_awslocal: true
+      localstack:
+        image: localstack/localstack:latest
         env:
           AWS_DEFAULT_REGION: eu-west-1
           AWS_REGION: eu-west-1
