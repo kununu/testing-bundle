@@ -113,6 +113,20 @@ jobs:
           - 9201:9201
           - 9600:9600
 
+      - name: Setup LocalStack (DynamoDB)
+        uses: LocalStack/setup-localstack@v0.2.3
+        with:
+          install_awslocal: true
+        env:
+          AWS_DEFAULT_REGION: eu-west-1
+          AWS_REGION: eu-west-1
+          AWS_ACCESS_KEY_ID: test
+          AWS_SECRET_ACCESS_KEY: test
+          SERVICES: dynamodb
+        ports:
+          - 4566:4566
+          - 4571:4571
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4

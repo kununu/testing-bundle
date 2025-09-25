@@ -31,6 +31,7 @@
   "require-dev": {
     "ext-json": "*",
     "ext-pdo": "*",
+    "aws/aws-sdk-php": "^3.173",
     "doctrine/dbal": "^3.8",
     "doctrine/doctrine-bundle": "~2.15.0",
     "doctrine/doctrine-migrations-bundle": "^3.3",
