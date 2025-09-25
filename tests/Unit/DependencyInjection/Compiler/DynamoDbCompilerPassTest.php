@@ -82,6 +82,34 @@ final class DynamoDbCompilerPassTest extends BaseLoadFixturesCommandCompilerPass
         );
     }
 
+    public function testCompileWithoutDynamoDbParameter(): void
+    {
+        $this->compile();
+
+        foreach ($this->container->getServiceIds() as $serviceId) {
+            self::assertDoesNotMatchRegularExpression(
+                '/^kununu_testing\.orchestrator\.dynamo_db\.\w+$/m',
+                $serviceId
+            );
+            self::assertDoesNotMatchRegularExpression(
+                '/^kununu_testing\.orchestrator\.dynamo_db\.\w+\.purger$/m',
+                $serviceId
+            );
+            self::assertDoesNotMatchRegularExpression(
+                '/^kununu_testing\.orchestrator\.dynamo_db\.\w+\.executor$/m',
+                $serviceId
+            );
+            self::assertDoesNotMatchRegularExpression(
+                '/^kununu_testing\.orchestrator\.dynamo_db\.\w+\.loader$/m',
+                $serviceId
+            );
+            self::assertDoesNotMatchRegularExpression(
+                '/^kununu_testing\.load_fixtures\.dynamo_db\.\w+\.command$/m',
+                $serviceId
+            );
+        }
+    }
+
     protected function getCompilerInstance(): DynamoDbCompilerPass
     {
         return new DynamoDbCompilerPass();
