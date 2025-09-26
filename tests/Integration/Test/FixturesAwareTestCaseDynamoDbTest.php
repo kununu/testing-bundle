@@ -79,7 +79,6 @@ final class FixturesAwareTestCaseDynamoDbTest extends FixturesAwareTestCase
         self::assertEquals('Test 5', $item3['Item']['attr_1']['S']);
         self::assertEquals('Test 6', $item3['Item']['attr_2']['S']);
 
-        // Verify secondary table item
         $secondaryItem = $this->client->getItem([
             'TableName' => 'other_table',
             'Key'       => ['attr_1' => ['S' => 'Other test 3']],
@@ -163,11 +162,9 @@ final class FixturesAwareTestCaseDynamoDbTest extends FixturesAwareTestCase
     {
         $this->client = $this->getDynamoDbClient();
 
-        // Create tables if they don't exist (for testing purposes)
         $this->createTableIfNotExists('my_table');
         $this->createTableIfNotExists('other_table');
 
-        // Clear tables before each test
         $this->clearTable('my_table');
         $this->clearTable('other_table');
     }
@@ -195,7 +192,6 @@ final class FixturesAwareTestCaseDynamoDbTest extends FixturesAwareTestCase
                 'BillingMode' => 'PAY_PER_REQUEST',
             ]);
 
-            // Wait for table to be created
             $this->client->waitUntil('TableExists', ['TableName' => $tableName]);
         }
     }
@@ -203,7 +199,6 @@ final class FixturesAwareTestCaseDynamoDbTest extends FixturesAwareTestCase
     private function clearTable(string $tableName): void
     {
         try {
-            // Scan all items and delete them
             $result = $this->client->scan(['TableName' => $tableName]);
 
             foreach ($result['Items'] as $item) {

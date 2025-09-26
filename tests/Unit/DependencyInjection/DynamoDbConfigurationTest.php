@@ -8,7 +8,7 @@ final class DynamoDbConfigurationTest extends ConfigurationTestCase
     public static function validProcessedConfigurationDataProvider(): array
     {
         return [
-            'no_configuration'                                                  => [
+            'no_configuration' => [
                 [
                     [],
                 ],
@@ -16,7 +16,7 @@ final class DynamoDbConfigurationTest extends ConfigurationTestCase
                     'dynamo_db' => [],
                 ],
             ],
-            'dynamo_db_with_minimal_configuration'                             => [
+            'dynamo_db_with_minimal_configuration' => [
                 [
                     [
                         'dynamo_db' => [
@@ -36,7 +36,7 @@ final class DynamoDbConfigurationTest extends ConfigurationTestCase
                     ],
                 ],
             ],
-            'dynamo_db_with_table_names'                                       => [
+            'dynamo_db_with_table_names' => [
                 [
                     [
                         'dynamo_db' => [
@@ -57,7 +57,7 @@ final class DynamoDbConfigurationTest extends ConfigurationTestCase
                     ],
                 ],
             ],
-            'dynamo_db_with_load_command_fixtures_classes_namespace'           => [
+            'dynamo_db_with_load_command_fixtures_classes_namespace' => [
                 [
                     [
                         'dynamo_db' => [
@@ -78,13 +78,13 @@ final class DynamoDbConfigurationTest extends ConfigurationTestCase
                                 'App\DataFixtures\DynamoDb\Fixture1',
                                 'App\DataFixtures\DynamoDb\Fixture2',
                             ],
-                            'service'                                 => 'aws.dynamo_db.client.default',
-                            'table_names'                             => [],
+                            'service'     => 'aws.dynamo_db.client.default',
+                            'table_names' => [],
                         ],
                     ],
                 ],
             ],
-            'dynamo_db_with_full_configuration'                                => [
+            'dynamo_db_with_full_configuration' => [
                 [
                     [
                         'dynamo_db' => [
@@ -104,17 +104,17 @@ final class DynamoDbConfigurationTest extends ConfigurationTestCase
                             'load_command_fixtures_classes_namespace' => [
                                 'App\DataFixtures\DynamoDb\Fixture1',
                             ],
-                            'service'                                 => 'aws.dynamo_db.client.default',
-                            'table_names'                             => ['table1', 'table2'],
+                            'service'     => 'aws.dynamo_db.client.default',
+                            'table_names' => ['table1', 'table2'],
                         ],
                     ],
                 ],
             ],
-            'multiple_dynamo_db_services_with_different_configurations'        => [
+            'multiple_dynamo_db_services_with_different_configurations' => [
                 [
                     [
                         'dynamo_db' => [
-                            'default'   => [
+                            'default' => [
                                 'service'                                 => 'aws.dynamo_db.client.default',
                                 'table_names'                             => ['table1', 'table2'],
                                 'load_command_fixtures_classes_namespace' => [
@@ -126,7 +126,7 @@ final class DynamoDbConfigurationTest extends ConfigurationTestCase
                                 'service'     => 'aws.dynamo_db.client.secondary',
                                 'table_names' => ['table3'],
                             ],
-                            'tertiary'  => [
+                            'tertiary' => [
                                 'service'                                 => 'aws.dynamo_db.client.tertiary',
                                 'load_command_fixtures_classes_namespace' => [
                                     'App\DataFixtures\DynamoDb\TertiaryFixture',
@@ -137,25 +137,25 @@ final class DynamoDbConfigurationTest extends ConfigurationTestCase
                 ],
                 [
                     'dynamo_db' => [
-                        'default'   => [
+                        'default' => [
                             'load_command_fixtures_classes_namespace' => [
                                 'App\DataFixtures\DynamoDb\DefaultFixture1',
                                 'App\DataFixtures\DynamoDb\DefaultFixture2',
                             ],
-                            'service'                                 => 'aws.dynamo_db.client.default',
-                            'table_names'                             => ['table1', 'table2'],
+                            'service'     => 'aws.dynamo_db.client.default',
+                            'table_names' => ['table1', 'table2'],
                         ],
                         'secondary' => [
                             'load_command_fixtures_classes_namespace' => [],
                             'service'                                 => 'aws.dynamo_db.client.secondary',
                             'table_names'                             => ['table3'],
                         ],
-                        'tertiary'  => [
+                        'tertiary' => [
                             'load_command_fixtures_classes_namespace' => [
                                 'App\DataFixtures\DynamoDb\TertiaryFixture',
                             ],
-                            'service'                                 => 'aws.dynamo_db.client.tertiary',
-                            'table_names'                             => [],
+                            'service'     => 'aws.dynamo_db.client.tertiary',
+                            'table_names' => [],
                         ],
                     ],
                 ],
@@ -166,21 +166,21 @@ final class DynamoDbConfigurationTest extends ConfigurationTestCase
     protected static function getInvalidProcessedConfigurationData(): array
     {
         return [
-            'dynamo_db_as_null'                                    => [
+            'dynamo_db_as_null' => [
                 [
                     [
                         'dynamo_db' => null,
                     ],
                 ],
             ],
-            'dynamo_db_as_empty_array'                             => [
+            'dynamo_db_as_empty_array' => [
                 [
                     [
                         'dynamo_db' => [],
                     ],
                 ],
             ],
-            'dynamo_db_service_without_service_key'                => [
+            'dynamo_db_service_without_service_key' => [
                 [
                     [
                         'dynamo_db' => [
@@ -191,7 +191,7 @@ final class DynamoDbConfigurationTest extends ConfigurationTestCase
                     ],
                 ],
             ],
-            'dynamo_db_service_with_empty_service'                 => [
+            'dynamo_db_service_with_empty_service' => [
                 [
                     [
                         'dynamo_db' => [
@@ -202,7 +202,7 @@ final class DynamoDbConfigurationTest extends ConfigurationTestCase
                     ],
                 ],
             ],
-            'dynamo_db_service_with_null_service'                  => [
+            'dynamo_db_service_with_null_service' => [
                 [
                     [
                         'dynamo_db' => [
@@ -225,7 +225,7 @@ final class DynamoDbConfigurationTest extends ConfigurationTestCase
                     ],
                 ],
             ],
-            'dynamo_db_table_names_as_string'                      => [
+            'dynamo_db_table_names_as_string' => [
                 [
                     [
                         'dynamo_db' => [
