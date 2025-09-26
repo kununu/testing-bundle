@@ -71,6 +71,7 @@ Currently, this bundle supports the following types of fixtures:
 
 - [Doctrine DBAL Connection Fixtures](docs/FixturesTypes/doctrine-dbal-connection-fixtures.md)
 - [Cache Pool Fixtures](docs/FixturesTypes/cache-pool-fixtures.md)
+- [DynamoDB Fixtures](docs/FixturesTypes/dynamodb.md)
 - [Elasticsearch Fixtures](docs/FixturesTypes/elasticsearch.md)
 - [OpenSearch Fixtures](docs/FixturesTypes/opensearch.md)
 - [Symfony Http Client Fixtures](docs/FixturesTypes/symfony-http-client.md)

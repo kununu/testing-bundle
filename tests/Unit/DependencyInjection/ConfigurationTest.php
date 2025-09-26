@@ -22,6 +22,7 @@ final class ConfigurationTest extends ConfigurationTestCase
                         'clients' => [],
                     ],
                     'open_search'                   => [],
+                    'dynamo_db'                     => [],
                 ],
             ],
         ];

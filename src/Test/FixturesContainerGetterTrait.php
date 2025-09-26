@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Kununu\TestingBundle\Test;
 
+use Aws\DynamoDb\DynamoDbClient;
 use Doctrine\DBAL\Connection;
 use Elasticsearch\Client;
 use OpenSearch\Client as OpenSearchClient;
@@ -47,6 +48,14 @@ trait FixturesContainerGetterTrait
     {
         $client = $this->getServiceFromContainer($httpClientId);
         assert($client instanceof HttpClientInterface);
+
+        return $client;
+    }
+
+    protected function getDynamoDbClient(string $clientId = DynamoDbClient::class): DynamoDbClient
+    {
+        $client = $this->getServiceFromContainer($clientId);
+        assert($client instanceof DynamoDbClient);
 
         return $client;
     }

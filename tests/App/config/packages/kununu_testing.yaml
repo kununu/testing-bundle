@@ -44,3 +44,15 @@ kununu_testing:
   http_client:
     clients:
       - 'http_client'
+  dynamo_db:
+    my_table:
+      load_command_fixtures_classes_namespace:
+        - 'Kununu\TestingBundle\Tests\App\Fixtures\DynamoDb\DynamoDbFixture2'
+      service: 'Aws\DynamoDb\DynamoDbClient'
+      table_names:
+        - 'my_table'
+        - 'other_table'
+    other_table:
+      service: 'Aws\DynamoDb\DynamoDbClient'
+      table_names:
+        - 'my_table'

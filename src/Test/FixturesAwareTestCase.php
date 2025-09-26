@@ -12,6 +12,7 @@ abstract class FixturesAwareTestCase extends AbstractTestCase
     private const string KEY_CONNECTIONS = 'connections';
     private const string KEY_NON_TRANSACTIONAL_CONNECTIONS = 'non_transactional_connections';
     private const string KEY_CACHE_POOLS = 'cache_pools';
+    private const string KEY_DYNAMO_DB = 'dynamo_db';
     private const string KEY_ELASTICSEARCH = 'elastic_search';
     private const string KEY_OPEN_SEARCH = 'open_search';
     private const string KEY_HTTP_CLIENT = 'http_client';
@@ -27,6 +28,11 @@ abstract class FixturesAwareTestCase extends AbstractTestCase
             $options->transactional() ? self::KEY_CONNECTIONS : self::KEY_NON_TRANSACTIONAL_CONNECTIONS,
             $connectionName
         );
+    }
+
+    final protected function clearDynamoDbFixtures(string $alias): static
+    {
+        return $this->clearFixtures(self::KEY_DYNAMO_DB, $alias);
     }
 
     final protected function clearElasticsearchFixtures(string $alias): static
@@ -55,6 +61,11 @@ abstract class FixturesAwareTestCase extends AbstractTestCase
             $options->transactional() ? self::KEY_CONNECTIONS : self::KEY_NON_TRANSACTIONAL_CONNECTIONS,
             $connectionName
         );
+    }
+
+    final protected function getDynamoDbFixtures(string $alias): array
+    {
+        return $this->getFixtures(self::KEY_DYNAMO_DB, $alias);
     }
 
     final protected function getElasticsearchFixtures(string $alias): array
@@ -91,6 +102,14 @@ abstract class FixturesAwareTestCase extends AbstractTestCase
             $options,
             ...$classNames
         );
+    }
+
+    final protected function loadDynamoDbFixtures(
+        string $alias,
+        OptionsInterface $options,
+        string ...$classNames,
+    ): void {
+        $this->loadFixtures(self::KEY_DYNAMO_DB, $alias, $options, ...$classNames);
     }
 
     final protected function loadElasticsearchFixtures(
@@ -131,6 +150,14 @@ abstract class FixturesAwareTestCase extends AbstractTestCase
         mixed ...$args,
     ): void {
         $this->registerInitializableFixture(self::KEY_CONNECTIONS, $connectionName, $className, ...$args);
+    }
+
+    final protected function registerInitializableFixtureForDynamoDb(
+        string $alias,
+        string $className,
+        mixed ...$args,
+    ): void {
+        $this->registerInitializableFixture(self::KEY_DYNAMO_DB, $alias, $className, ...$args);
     }
 
     final protected function registerInitializableFixtureForElasticsearch(

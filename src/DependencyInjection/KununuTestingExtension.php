@@ -22,6 +22,10 @@ final class KununuTestingExtension extends Extension implements ExtensionConfigu
         'open_search',
     ];
 
+    private const array DYNAMO_DB = [
+        'dynamo_db',
+    ];
+
     private array $config = [];
 
     public function load(array $configs, ContainerBuilder $container): void
@@ -40,6 +44,11 @@ final class KununuTestingExtension extends Extension implements ExtensionConfigu
             }
         }
         foreach (self::SEARCH_ENGINES as $section) {
+            if (!empty($this->config[$section])) {
+                $container->setParameter(sprintf('kununu_testing.%s', $section), $this->config[$section]);
+            }
+        }
+        foreach (self::DYNAMO_DB as $section) {
             if (!empty($this->config[$section])) {
                 $container->setParameter(sprintf('kununu_testing.%s', $section), $this->config[$section]);
             }

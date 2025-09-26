@@ -6,6 +6,7 @@ namespace Kununu\TestingBundle\Tests\Unit;
 use Kununu\TestingBundle\DependencyInjection\Compiler\CachePoolCompilerPass;
 use Kununu\TestingBundle\DependencyInjection\Compiler\ConnectionCompilerPass;
 use Kununu\TestingBundle\DependencyInjection\Compiler\CopyConnectionSchemaCommandCompilerPass;
+use Kununu\TestingBundle\DependencyInjection\Compiler\DynamoDbCompilerPass;
 use Kununu\TestingBundle\DependencyInjection\Compiler\ElasticsearchCompilerPass;
 use Kununu\TestingBundle\DependencyInjection\Compiler\HttpClientCompilerPass;
 use Kununu\TestingBundle\DependencyInjection\Compiler\NonTransactionalConnectionCompilerPass;
@@ -23,7 +24,7 @@ final class KununuTestingBundleTest extends TestCase
 
         $container = $this->createMock(ContainerBuilder::class);
         $container
-            ->expects($this->exactly(7))
+            ->expects($this->exactly(8))
             ->method('addCompilerPass')
             ->willReturnCallback(
                 function($subject) use ($container, &$executedCompilerPasses): MockObject&ContainerBuilder {
@@ -40,6 +41,7 @@ final class KununuTestingBundleTest extends TestCase
                 CachePoolCompilerPass::class,
                 ConnectionCompilerPass::class,
                 NonTransactionalConnectionCompilerPass::class,
+                DynamoDbCompilerPass::class,
                 ElasticsearchCompilerPass::class,
                 OpenSearchCompilerPass::class,
                 HttpClientCompilerPass::class,

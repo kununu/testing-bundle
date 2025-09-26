@@ -29,3 +29,15 @@ services:
     public: true
     arguments:
       $client: '@http_client'
+
+  Aws\DynamoDb\DynamoDbClient:
+    class: Aws\DynamoDb\DynamoDbClient
+    arguments:
+      -
+        version: 'latest'
+        region: 'eu-west-1'
+        endpoint: 'http://localhost:4566'
+        credentials:
+          key: 'test'
+          secret: 'test'
+    public: true

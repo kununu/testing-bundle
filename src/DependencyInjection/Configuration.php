@@ -26,6 +26,7 @@ final class Configuration implements ConfigurationInterface
             )
             ->addSearchEngineSection($rootNode, 'elastic_search')
             ->addSearchEngineSection($rootNode, 'open_search')
+            ->addDynamoDbSection($rootNode)
             ->addCacheSection($rootNode)
             ->addHttpClientSection($rootNode);
 
@@ -111,6 +112,37 @@ final class Configuration implements ConfigurationInterface
                                         ->defaultValue([])
                                     ->end()
                                 ->end()
+                            ->end()
+                        ->end()
+                    ->end()
+                ->end()
+            ->end();
+
+        return $this;
+    }
+
+    private function addDynamoDbSection(ArrayNodeDefinition $node): self
+    {
+        $node
+            ->children()
+                ->arrayNode('dynamo_db')
+                    ->requiresAtLeastOneElement()
+                    ->useAttributeAsKey('name')
+                    ->arrayPrototype()
+                        ->children()
+                            ->arrayNode('load_command_fixtures_classes_namespace')
+                                ->scalarPrototype()
+                                ->end()
+                                ->defaultValue([])
+                            ->end()
+                            ->scalarNode('service')
+                                ->isRequired()
+                                ->cannotBeEmpty()
+                            ->end()
+                            ->arrayNode('table_names')
+                                ->scalarPrototype()->end()
+                                ->defaultValue([])
+                                ->info('Explicit table names')
                             ->end()
                         ->end()
                     ->end()
