@@ -37,7 +37,7 @@
     "doctrine/doctrine-migrations-bundle": "^3.3",
     "doctrine/orm": "^3.0",
     "elasticsearch/elasticsearch": "^7.10",
-    "kununu/scripts": ">=6.1",
+    "kununu/code-tools": "^3.1",
     "matthiasnoback/symfony-dependency-injection-test": "^6.1",
     "nyholm/psr7": "^1.8",
     "opensearch-project/opensearch-php": "^2.0",
@@ -75,7 +75,7 @@
   },
   "config": {
     "allow-plugins": {
-      "kununu/scripts": true,
+      "kununu/code-tools": true,
       "php-http/discovery": true
     },
     "sort-packages": true
@@ -83,7 +83,7 @@
   "scripts": {
     "cs": [
       "rm -rf tests/App/var/*",
-      "composer kununu:cs-fixer-code src/ tests/"
+      "composer kununu:cs-fixer src/ tests/"
     ],
     "integration": [
       "rm -rf tests/App/var/*",
