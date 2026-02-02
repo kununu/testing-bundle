@@ -8,7 +8,9 @@ use Kununu\DataFixtures\Purger\NonTransactionalConnectionPurger;
 use Kununu\TestingBundle\Command\LoadNonTransactionalConnectionFixturesCommand;
 use Kununu\TestingBundle\DependencyInjection\Compiler\AbstractConnectionCompilerPass;
 use Kununu\TestingBundle\DependencyInjection\Compiler\NonTransactionalConnectionCompilerPass;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 
+#[AllowMockObjectsWithoutExpectations]
 final class NonTransactionalConnectionCompilerPassTest extends BaseConnectionCompilerPassTestCase
 {
     protected function getCompilerInstance(): AbstractConnectionCompilerPass

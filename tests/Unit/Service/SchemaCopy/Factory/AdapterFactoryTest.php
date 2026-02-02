@@ -5,7 +5,7 @@ namespace Kununu\TestingBundle\Tests\Unit\Service\SchemaCopy\Factory;
 
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
-use Doctrine\DBAL\Platforms\MySQL80Platform;
+use Doctrine\DBAL\Platforms\MySQLPlatform;
 use Kununu\TestingBundle\Service\SchemaCopy\Exception\UnsupportedDatabasePlatformException;
 use Kununu\TestingBundle\Service\SchemaCopy\Factory\AdapterFactory;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -18,9 +18,9 @@ final class AdapterFactoryTest extends TestCase
     {
         $connection = $this->createMock(Connection::class);
         $connection
-            ->expects($this->any())
+            ->expects($this->atLeastOnce())
             ->method('getDatabasePlatform')
-            ->willReturn($this->createMock($platformClass));
+            ->willReturn($this->createStub($platformClass));
 
         if (null === $expectedType) {
             $this->expectException(UnsupportedDatabasePlatformException::class);
@@ -37,7 +37,7 @@ final class AdapterFactoryTest extends TestCase
     {
         return [
             'mysql'   => [
-                MySQL80Platform::class,
+                MySQLPlatform::class,
                 'MySql',
             ],
             'invalid' => [

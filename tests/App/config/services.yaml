@@ -36,7 +36,7 @@ services:
       -
         version: 'latest'
         region: 'eu-west-1'
-        endpoint: 'http://localhost:4566'
+        endpoint: '%dynamodb_url%'
         credentials:
           key: 'test'
           secret: 'test'

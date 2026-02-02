@@ -9,14 +9,16 @@ use Kununu\DataFixtures\Purger\CachePoolPurger;
 use Kununu\TestingBundle\Command\LoadCacheFixturesCommand;
 use Kununu\TestingBundle\DependencyInjection\Compiler\CachePoolCompilerPass;
 use Kununu\TestingBundle\DependencyInjection\KununuTestingExtension;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Reference;
 
+#[AllowMockObjectsWithoutExpectations]
 final class CachePoolCompilerPassTest extends BaseLoadFixturesCommandCompilerPassTestCase
 {
     private const array CACHE_POOL_IDS = [
-        'cache_pool.service_1' => [
+        'cache_pool.service_1'           => [
             'creates_command' => true,
         ],
         'cache_pool.service_2'           => [],

@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace Kununu\TestingBundle\Tests\Unit\Service\SchemaCopy;
 
 use Doctrine\DBAL\Connection;
-use Doctrine\DBAL\Platforms\MySQL80Platform;
+use Doctrine\DBAL\Platforms\MySQLPlatform;
 use Doctrine\DBAL\Result;
 use Kununu\TestingBundle\Service\SchemaCopy\SchemaCopyAdapterInterface;
 use LogicException;
@@ -30,9 +30,9 @@ abstract class SchemaCopyTestCase extends TestCase
     {
         $connection = $this->createMock(Connection::class);
         $connection
-            ->expects($this->any())
+            ->expects($this->atMost(1))
             ->method('getDatabasePlatform')
-            ->willReturn($this->createMock(MySQL80Platform::class));
+            ->willReturn($this->createStub(MySQLPlatform::class));
 
         return $connection;
     }
@@ -44,7 +44,7 @@ abstract class SchemaCopyTestCase extends TestCase
         $connection
             ->expects($this->exactly(count($statements)))
             ->method('executeQuery')
-            ->willReturnCallback(fn(string $statement): Result => match (true) {
+            ->willReturnCallback(static fn(string $statement): Result => match (true) {
                 isset($map[$statement]) => $map[$statement],
                 default                 => throw new LogicException(sprintf('Statement "%s" not found', $statement)),
             });
@@ -57,7 +57,7 @@ abstract class SchemaCopyTestCase extends TestCase
         $connection
             ->expects($this->exactly(count($statements)))
             ->method('executeStatement')
-            ->willReturnCallback(fn(string $statement): int => match (true) {
+            ->willReturnCallback(static fn(string $statement): int => match (true) {
                 isset($map[$statement]) => $map[$statement],
                 default                 => throw new LogicException(sprintf('Statement "%s" not found', $statement)),
             });

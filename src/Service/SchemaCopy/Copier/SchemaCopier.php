@@ -24,7 +24,7 @@ final readonly class SchemaCopier implements SchemaCopyInterface
         }
 
         $destinationAdapter->runCopy(
-            function() use ($sourceAdapter, $destinationAdapter, $destination): void {
+            static function() use ($sourceAdapter, $destinationAdapter, $destination): void {
                 $destinationAdapter->purgeTablesAndViews();
 
                 foreach ($sourceAdapter->getTables() as $table) {

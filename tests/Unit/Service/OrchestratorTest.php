@@ -8,10 +8,12 @@ use Kununu\DataFixtures\Executor\ExecutorInterface;
 use Kununu\DataFixtures\FixtureInterface;
 use Kununu\DataFixtures\Loader\LoaderInterface;
 use Kununu\TestingBundle\Service\Orchestrator;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
+#[AllowMockObjectsWithoutExpectations]
 final class OrchestratorTest extends TestCase
 {
     #[DataProvider('executesAsExpectedDataProvider')]
@@ -25,7 +27,7 @@ final class OrchestratorTest extends TestCase
             ->expects($this->exactly(2))
             ->method('loadFromClassName')
             ->with(
-                $this->callback(fn(string $class): bool => match ($class) {
+                $this->callback(static fn(string $class): bool => match ($class) {
                     $fixture1Class, $fixture2Class => true,
                     default                        => false,
                 })

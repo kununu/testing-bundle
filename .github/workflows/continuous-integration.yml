@@ -161,6 +161,7 @@ jobs:
           MONOLITHIC_DATABASE_URL: mysql://root:${{ secrets.CI_DATABASE_PASSWORD }}@127.0.0.1:${{ job.services.mysql.ports['3306'] }}/monolithic_db
           ELASTICSEARCH_URL: http://localhost:9200
           OPENSEARCH_URL: http://localhost:9201
+          DYNAMODB_URL: http://localhost:4566
           DATABASE_SERVER_VERSION: ${{ matrix.mysql-version }}
         run: |
           vendor/bin/phpunit --colors=always --testdox \

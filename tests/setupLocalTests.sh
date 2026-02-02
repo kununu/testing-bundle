@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 cd "$(dirname "${BASH_SOURCE[0]}")" || exit 1
-if ! [ -f App/.env.test ]; then
+if ! [[ -f App/.env.test ]]; then
   echo "Could not found local test env configurations!"
   echo "Copy tests/App/.env to tests/App/.env.test & tests/App/.env.local and setup according your local env."
   echo "Then run this script again!!"

@@ -8,7 +8,9 @@ use Kununu\DataFixtures\Purger\ConnectionPurger;
 use Kununu\TestingBundle\Command\LoadConnectionFixturesCommand;
 use Kununu\TestingBundle\DependencyInjection\Compiler\AbstractConnectionCompilerPass;
 use Kununu\TestingBundle\DependencyInjection\Compiler\ConnectionCompilerPass;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 
+#[AllowMockObjectsWithoutExpectations]
 final class ConnectionCompilerPassTest extends BaseConnectionCompilerPassTestCase
 {
     protected function getCompilerInstance(): AbstractConnectionCompilerPass

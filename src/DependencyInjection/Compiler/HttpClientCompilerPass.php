@@ -50,7 +50,7 @@ final class HttpClientCompilerPass extends AbstractCompilerPass
             // Orchestrator definition for HttpClient with provided id
             orchestratorId: sprintf('%s.%s', self::SERVICE_PREFIX, $id),
             // Purger Definition for HttpClient with provided id
-            purgerDefinitionBuilder: fn(ContainerBuilder $container, string $baseId): array => [
+            purgerDefinitionBuilder: static fn(ContainerBuilder $container, string $baseId): array => [
                 sprintf('%s.%s.purger', self::SERVICE_PREFIX, $baseId),
                 new Definition(
                     HttpClientPurger::class,
@@ -60,7 +60,7 @@ final class HttpClientCompilerPass extends AbstractCompilerPass
                 ),
             ],
             // Executor Definition for HttpClient with provided id
-            executorDefinitionBuilder: fn(ContainerBuilder $container, string $baseId, string $purgerId): array => [
+            executorDefinitionBuilder: static fn(ContainerBuilder $container, string $baseId, string $purgerId): array => [
                 sprintf('%s.%s.executor', self::SERVICE_PREFIX, $baseId),
                 new Definition(
                     HttpClientExecutor::class,

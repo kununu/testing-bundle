@@ -233,11 +233,11 @@ final class RequestBuilderTest extends TestCase
 
     public function testBuildRequestWithFiles(): void
     {
-        $request = RequestBuilder::aGetRequest()->withFiles([self::createMock(UploadedFile::class)]);
+        $request = RequestBuilder::aGetRequest()->withFiles([$file = self::createStub(UploadedFile::class)]);
 
         [, , , $files] = $request->build();
 
-        self::assertEquals([self::createMock(UploadedFile::class)], $files);
+        self::assertEquals([$file], $files);
     }
 
     public function testBuildRequestWithContent(): void
