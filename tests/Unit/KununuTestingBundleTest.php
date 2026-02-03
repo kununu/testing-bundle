@@ -13,10 +13,10 @@ use Kununu\TestingBundle\DependencyInjection\Compiler\NonTransactionalConnection
 use Kununu\TestingBundle\DependencyInjection\Compiler\OpenSearchCompilerPass;
 use Kununu\TestingBundle\KununuTestingBundle;
 use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
+use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
-final class KununuTestingBundleTest extends TestCase
+final class KununuTestingBundleTest extends KernelTestCase
 {
     public function testBuildContainerExpectedCompilerPasses(): void
     {
@@ -27,7 +27,7 @@ final class KununuTestingBundleTest extends TestCase
             ->expects($this->exactly(8))
             ->method('addCompilerPass')
             ->willReturnCallback(
-                function($subject) use ($container, &$executedCompilerPasses): MockObject&ContainerBuilder {
+                static function($subject) use ($container, &$executedCompilerPasses): MockObject&ContainerBuilder {
                     $executedCompilerPasses[] = $subject::class;
 
                     return $container;

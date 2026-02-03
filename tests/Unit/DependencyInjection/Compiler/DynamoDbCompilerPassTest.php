@@ -9,10 +9,12 @@ use Kununu\DataFixtures\Purger\DynamoDbPurger;
 use Kununu\TestingBundle\Command\LoadDynamoDbFixturesCommand;
 use Kununu\TestingBundle\DependencyInjection\Compiler\DynamoDbCompilerPass;
 use Kununu\TestingBundle\DependencyInjection\KununuTestingExtension;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Reference;
 
+#[AllowMockObjectsWithoutExpectations]
 final class DynamoDbCompilerPassTest extends BaseLoadFixturesCommandCompilerPassTestCase
 {
     private const array DYNAMO_DB_SERVICES = [

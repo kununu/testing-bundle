@@ -7,8 +7,10 @@ use Doctrine\DBAL\Connection;
 use Kununu\TestingBundle\Service\SchemaCopy\Adapter\MySqlAdapter;
 use Kununu\TestingBundle\Service\SchemaCopy\SchemaCopyAdapterInterface;
 use Kununu\TestingBundle\Tests\Unit\Service\SchemaCopy\SchemaCopyTestCase;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\MockObject\MockObject;
 
+#[AllowMockObjectsWithoutExpectations]
 final class MySqlAdapterTest extends SchemaCopyTestCase
 {
     private MockObject&Connection $connection;
@@ -36,7 +38,7 @@ final class MySqlAdapterTest extends SchemaCopyTestCase
 
         $value = false;
 
-        $this->adapter->runCopy(function() use (&$value): void {
+        $this->adapter->runCopy(static function() use (&$value): void {
             $value = true;
         });
 

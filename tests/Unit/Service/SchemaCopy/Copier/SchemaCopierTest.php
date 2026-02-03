@@ -12,8 +12,10 @@ use Kununu\TestingBundle\Service\SchemaCopy\SchemaCopyAdapterInterface;
 use Kununu\TestingBundle\Service\SchemaCopy\SchemaCopyInterface;
 use Kununu\TestingBundle\Tests\Unit\Service\SchemaCopy\SchemaCopyTestCase;
 use LogicException;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\MockObject\MockObject;
 
+#[AllowMockObjectsWithoutExpectations]
 final class SchemaCopierTest extends SchemaCopyTestCase
 {
     private MockObject&Connection $source;

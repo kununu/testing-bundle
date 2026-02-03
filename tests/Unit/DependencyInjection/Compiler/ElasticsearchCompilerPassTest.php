@@ -9,7 +9,9 @@ use Kununu\DataFixtures\Purger\ElasticsearchPurger;
 use Kununu\TestingBundle\Command\LoadElasticsearchFixturesCommand;
 use Kununu\TestingBundle\DependencyInjection\Compiler\AbstractSearchEngineCompilerPass;
 use Kununu\TestingBundle\DependencyInjection\Compiler\ElasticsearchCompilerPass;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 
+#[AllowMockObjectsWithoutExpectations]
 final class ElasticsearchCompilerPassTest extends BaseSearchEngineCompilerPassTestCase
 {
     protected function getCompilerInstance(): AbstractSearchEngineCompilerPass

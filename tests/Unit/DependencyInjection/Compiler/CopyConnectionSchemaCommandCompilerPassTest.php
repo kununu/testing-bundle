@@ -5,8 +5,10 @@ namespace Kununu\TestingBundle\Tests\Unit\DependencyInjection\Compiler;
 
 use Kununu\TestingBundle\Command\CopyConnectionSchemaCommand;
 use Kununu\TestingBundle\DependencyInjection\Compiler\CopyConnectionSchemaCommandCompilerPass;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
+#[AllowMockObjectsWithoutExpectations]
 final class CopyConnectionSchemaCommandCompilerPassTest extends BaseCompilerPassTestCase
 {
     private const string COMMAND_ID = 'kununu_testing:connections:schema:copy.command';

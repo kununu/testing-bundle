@@ -8,9 +8,11 @@ use Kununu\DataFixtures\Loader\HttpClientFixturesLoader;
 use Kununu\DataFixtures\Purger\HttpClientPurger;
 use Kununu\TestingBundle\DependencyInjection\Compiler\HttpClientCompilerPass;
 use Kununu\TestingBundle\DependencyInjection\KununuTestingExtension;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
 
+#[AllowMockObjectsWithoutExpectations]
 final class HttpClientCompilerPassTest extends BaseCompilerPassTestCase
 {
     private const array HTTP_CLIENT_IDS = [

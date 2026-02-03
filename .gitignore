@@ -6,6 +6,7 @@ composer.lock
 tests/.results/
 tests/App/.env.local
 tests/App/.env.test
+tests/App/config/reference.php
 tests/App/var/
 vendor/
 phpunit.log

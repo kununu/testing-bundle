@@ -9,7 +9,9 @@ use Kununu\DataFixtures\Purger\OpenSearchPurger;
 use Kununu\TestingBundle\Command\LoadOpenSearchFixturesCommand;
 use Kununu\TestingBundle\DependencyInjection\Compiler\AbstractSearchEngineCompilerPass;
 use Kununu\TestingBundle\DependencyInjection\Compiler\OpenSearchCompilerPass;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 
+#[AllowMockObjectsWithoutExpectations]
 final class OpenSearchCompilerPassTest extends BaseSearchEngineCompilerPassTestCase
 {
     protected function getCompilerInstance(): AbstractSearchEngineCompilerPass
