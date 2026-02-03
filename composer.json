@@ -22,7 +22,7 @@
     "php": ">=8.3",
     "ext-filter": "*",
     "kununu/collections": "^6.4",
-    "kununu/data-fixtures": "dev-support-doctrine-dbal-4 as 14.0",
+    "kununu/data-fixtures": "^14.0",
     "symfony/config": "^6.4 || ^7.4",
     "symfony/dependency-injection": "^6.4 || ^7.4",
     "symfony/framework-bundle": "^6.4 || ^7.4",
