@@ -34,7 +34,7 @@ final class KununuTestingBundleTest extends KernelTestCase
                 }
             );
 
-        (new KununuTestingBundle())->build($container);
+        new KununuTestingBundle()->build($container);
 
         self::assertEquals(
             [

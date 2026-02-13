@@ -10,7 +10,15 @@ final readonly class ConnectionFixture2 implements ConnectionFixtureInterface
 {
     public function load(Connection $connection): void
     {
-        $connection->executeStatement('INSERT INTO `table_1` (`name`, `description`) VALUES (\'name\', \'description\');');
-        $connection->executeStatement('INSERT INTO `table_2` (`name`, `description`) VALUES (\'name\', \'description\');');
+        $connection->executeStatement(
+            <<<'SQL'
+INSERT INTO `table_1` (`name`, `description`) VALUES ('name', 'description');
+SQL
+        );
+        $connection->executeStatement(
+            <<<'SQL'
+INSERT INTO `table_2` (`name`, `description`) VALUES ('name', 'description');
+SQL
+        );
     }
 }

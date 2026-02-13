@@ -27,7 +27,9 @@ final class CachePoolCompilerPass extends AbstractLoadFixturesCommandCompilerPas
             return;
         }
 
-        foreach ($this->getOrchestratorsIds($container, $container->findTaggedServiceIds(self::CACHE_POOL_TAG)) as $id) {
+        foreach (
+            $this->getOrchestratorsIds($container, $container->findTaggedServiceIds(self::CACHE_POOL_TAG)) as $id
+        ) {
             $this->buildContainerDefinitions($container, $id);
         }
     }

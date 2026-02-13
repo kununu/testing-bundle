@@ -60,7 +60,11 @@ final class HttpClientCompilerPass extends AbstractCompilerPass
                 ),
             ],
             // Executor Definition for HttpClient with provided id
-            executorDefinitionBuilder: static fn(ContainerBuilder $container, string $baseId, string $purgerId): array => [
+            executorDefinitionBuilder: static fn(
+                ContainerBuilder $container,
+                string $baseId,
+                string $purgerId,
+            ): array => [
                 sprintf('%s.%s.executor', self::SERVICE_PREFIX, $baseId),
                 new Definition(
                     HttpClientExecutor::class,

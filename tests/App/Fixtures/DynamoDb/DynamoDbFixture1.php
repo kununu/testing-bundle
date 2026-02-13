@@ -26,7 +26,8 @@ final class DynamoDbFixture1 extends DynamoDbFixture
             ]),
         ];
 
-        $this->setTableName('my_table')
+        $this
+            ->setTableName('my_table')
             ->addRecords($records);
     }
 }
