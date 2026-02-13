@@ -7,7 +7,7 @@ use Rector\PHPUnit\CodeQuality\Rector\Class_\PreferPHPUnitSelfCallRector;
 use Rector\Privatization\Rector\Class_\FinalizeTestCaseClassRector;
 
 return RectorConfig::configure()
-    ->withPhpSets(php83: true)
+    ->withPhpSets(php84: true)
     ->withAttributesSets(symfony: true, phpunit: true)
     ->withComposerBased(phpunit: true, symfony: true)
     ->withRules([

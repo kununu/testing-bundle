@@ -16,7 +16,8 @@ final class DynamoDbFixture2 extends DynamoDbFixture
             Value::stringValue('attr_2', 'Other test 4'),
         ]);
 
-        $this->setTableName('other_table')
+        $this
+            ->setTableName('other_table')
             ->addRecord($record);
     }
 }

@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Kununu\TestingBundle\DependencyInjection;
 
+use Exception;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\Extension;
@@ -28,10 +29,11 @@ final class KununuTestingExtension extends Extension implements ExtensionConfigu
 
     private array $config = [];
 
+    /** @throws Exception */
     public function load(array $configs, ContainerBuilder $container): void
     {
         $this->config = $this->processConfiguration(new Configuration(), $configs);
-        (new YamlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config')))->load('services.yaml');
+        new YamlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'))->load('services.yaml');
 
         foreach (self::CONNECTIONS as $section) {
             if (!empty($this->config[$section])) {

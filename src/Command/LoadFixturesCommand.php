@@ -43,7 +43,7 @@ abstract class LoadFixturesCommand extends Command
         $fixtureType = static::getFixtureType();
 
         if (!($append = (bool) filter_var($input->getOption(self::OPTION_APPEND), FILTER_VALIDATE_BOOLEAN))
-            && !(new SymfonyStyle($input, $output))->confirm(
+            && !new SymfonyStyle($input, $output)->confirm(
                 sprintf(
                     'Careful, Fixture type "%s" named "%s" will be purged. Do you want to continue?',
                     $fixtureType,

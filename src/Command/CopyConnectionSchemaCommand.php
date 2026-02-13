@@ -60,7 +60,7 @@ final class CopyConnectionSchemaCommand extends Command
             return Command::INVALID;
         }
 
-        $confirmation = (new SymfonyStyle($input, $output))
+        $confirmation = new SymfonyStyle($input, $output)
             ->confirm(
                 sprintf('WARNING! Connection named "%s" schema and data will be PURGED. Do you want to continue?', $to),
                 !$input->isInteractive()

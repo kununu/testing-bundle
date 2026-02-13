@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<ruleset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="code-tools"
+         xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/PHPCSStandards/PHP_CodeSniffer/refs/heads/master/phpcs.xsd">
+  <config name="installed_paths" value="vendor/kununu/code-tools"/>
+
+  <arg name="colors"/>
+  <arg name="parallel" value="75"/>
+  <arg value="p"/>
+  <arg value="n"/>
+
+  <file>src/</file>
+  <file>tests/</file>
+
+  <!-- Include all Kununu rules -->
+  <rule ref="Kununu"/>
+
+  <!-- Customize Rules according to project needs -->
+  <rule ref="Kununu.Files.LineLength">
+    <properties>
+      <property name="ignoreComments" value="true"/>
+      <property name="ignoreUseStatements" value="true"/>
+    </properties>
+  </rule>
+</ruleset>

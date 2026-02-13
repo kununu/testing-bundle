@@ -19,10 +19,10 @@
     }
   ],
   "require": {
-    "php": ">=8.3",
+    "php": ">=8.4",
     "ext-filter": "*",
-    "kununu/collections": "^6.4",
-    "kununu/data-fixtures": "^14.0",
+    "kununu/collections": "^7.0",
+    "kununu/data-fixtures": "^15.0",
     "symfony/config": "^6.4 || ^7.4",
     "symfony/dependency-injection": "^6.4 || ^7.4",
     "symfony/framework-bundle": "^6.4 || ^7.4",
@@ -37,7 +37,7 @@
     "doctrine/doctrine-migrations-bundle": "^3.7",
     "doctrine/orm": "^3.6",
     "elasticsearch/elasticsearch": "^7.10",
-    "kununu/code-tools": "^3.1",
+    "kununu/code-tools": "^4.0",
     "matthiasnoback/symfony-dependency-injection-test": "^6.2",
     "nyholm/psr7": "^1.8",
     "opensearch-project/opensearch-php": "^2.5",
@@ -98,6 +98,7 @@
     "phpstan": "phpstan",
     "rector": "rector process --dry-run --config rector-ci.php src/ tests/",
     "rector-fix": "rector process --config rector-ci.php src/ tests/",
+    "sniffer": "phpcs",
     "test": [
       "rm -rf tests/App/var/*",
       "tests/App/bin/setup_databases.sh test",
@@ -118,6 +119,7 @@
     "phpstan": "Run PHPStan",
     "rector": "Run Rector in dry-run mode with CI rules",
     "rector-fix": "Run Rector in fix mode with CI rules",
+    "sniffer": "Run PHP_CodeSniffer",
     "test": "Run all tests",
     "test-coverage": "Run all tests with coverage report",
     "unit": "Run all unit tests",

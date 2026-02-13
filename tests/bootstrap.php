@@ -11,4 +11,4 @@ use Symfony\Component\ErrorHandler\ErrorHandler;
 // https://github.com/symfony/symfony/issues/53812#issuecomment-1962740145
 set_exception_handler([new ErrorHandler(), 'handleException']);
 
-(new Dotenv())->bootEnv(dirname(__DIR__) . '/tests/App/.env');
+new Dotenv()->bootEnv(dirname(__DIR__) . '/tests/App/.env');

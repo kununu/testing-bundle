@@ -26,7 +26,7 @@ final class AdapterFactoryTest extends TestCase
             $this->expectException(UnsupportedDatabasePlatformException::class);
         }
 
-        $adapter = (new AdapterFactory())->createAdapter($connection);
+        $adapter = new AdapterFactory()->createAdapter($connection);
 
         if (null !== $expectedType) {
             self::assertEquals($expectedType, $adapter->type());
