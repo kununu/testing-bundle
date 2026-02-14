@@ -33,7 +33,7 @@
     "ext-pdo": "*",
     "aws/aws-sdk-php": "^3.173",
     "doctrine/dbal": "^3.10 || ^4.4",
-    "doctrine/doctrine-bundle": "~2.15.0",
+    "doctrine/doctrine-bundle": "~3.2.2",
     "doctrine/doctrine-migrations-bundle": "^3.7",
     "doctrine/orm": "^3.6",
     "elasticsearch/elasticsearch": "^7.10",
