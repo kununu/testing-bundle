@@ -121,7 +121,7 @@ jobs:
           - 9600:9600
 
       localstack:
-        image: localstack/localstack:latest
+        image: localstack/localstack:4.4.0
         env:
           AWS_DEFAULT_REGION: eu-west-1
           AWS_REGION: eu-west-1
