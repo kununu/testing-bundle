@@ -17,7 +17,7 @@ jobs:
 
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
 
@@ -30,7 +30,7 @@ jobs:
           tools: composer-dependency-analyser, composer-normalize, composer-require-checker, cs2pr
 
       - name: Install Composer Dependencies
-        uses: ramsey/composer-install@v3
+        uses: ramsey/composer-install@v4
         with:
           dependency-versions: "highest"
           composer-options: "--prefer-stable --optimize-autoloader --no-progress --no-interaction"
@@ -134,7 +134,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
 
@@ -146,7 +146,7 @@ jobs:
           extensions: filter
 
       - name: Install Composer Dependencies
-        uses: ramsey/composer-install@v3
+        uses: ramsey/composer-install@v4
         with:
           dependency-versions: ${{ matrix.dependencies }}
           composer-options: "--prefer-stable --optimize-autoloader --no-progress --no-interaction"
@@ -171,12 +171,15 @@ jobs:
           DYNAMODB_URL: http://localhost:4566
           DATABASE_SERVER_VERSION: ${{ matrix.mysql-version }}
         run: |
-          vendor/bin/phpunit --colors=always --testdox \
-            --log-junit tests/.results/tests-junit.xml \
-            --coverage-clover tests/.results/tests-clover.xml
+          vendor/bin/phpunit \
+            --colors=always \
+            --testdox \
+            --testdox-summary \
+            --coverage-clover tests/.results/tests-clover.xml \
+            --log-junit tests/.results/tests-junit.xml
 
       - name: Upload coverage files
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: ${{ github.job }}-${{ matrix.php-version }}-${{ matrix.dependencies }}-coverage
           include-hidden-files: true
@@ -187,11 +190,11 @@ jobs:
     name: Code Analysis
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 0
 
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v8
         with:
           name: tests-8.4-highest-coverage
           path: tests/.results/
@@ -203,7 +206,7 @@ jobs:
           sed -i 's@'$GITHUB_WORKSPACE'@/github/workspace/@g' tests-junit.xml
 
       - name: SonarCloud Scan
-        uses: SonarSource/sonarqube-scan-action@v7.0.0
+        uses: SonarSource/sonarqube-scan-action@v8.0.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
