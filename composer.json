@@ -43,7 +43,7 @@
     "opensearch-project/opensearch-php": "^2.5",
     "phpstan/phpstan": "^2.1",
     "phpstan/phpstan-phpunit": "^2.0",
-    "phpunit/phpunit": "^12.5",
+    "phpunit/phpunit": "^13.1",
     "psr/cache": "^2.0",
     "rector/rector": "^2.3",
     "shipmonk/composer-dependency-analyser": "^1.8",
@@ -88,29 +88,36 @@
     "integration": [
       "rm -rf tests/App/var/*",
       "tests/App/bin/setup_databases.sh test",
-      "phpunit --log-events-text phpunit.log --no-coverage --no-logging --no-progress --testsuite Integration"
+      "phpunit --testsuite Integration --testdox --testdox-summary --no-coverage --no-logging"
     ],
     "integration-coverage": [
       "rm -rf tests/App/var/*",
       "tests/App/bin/setup_databases.sh test",
-      "XDEBUG_MODE=coverage phpunit --log-events-text phpunit.log --no-progress --testsuite Integration --log-junit tests/.results/integration-junit.xml --coverage-clover tests/.results/coverage-integration.xml --coverage-html tests/.results/Integration"
+      "XDEBUG_MODE=coverage phpunit --testsuite Integration --testdox --testdox-summary --log-junit tests/.results/integration-junit.xml --coverage-clover tests/.results/coverage-integration --coverage-html tests/.results/Integration/"
     ],
     "phpstan": "phpstan",
     "rector": "rector process --dry-run --config rector-ci.php src/ tests/",
     "rector-fix": "rector process --config rector-ci.php src/ tests/",
-    "sniffer": "phpcs",
+    "sniffer": [
+      "rm -rf tests/App/var/*",
+      "phpcs"
+    ],
+    "sniffer-fix": [
+      "rm -rf tests/App/var/*",
+      "phpcbf"
+    ],
     "test": [
       "rm -rf tests/App/var/*",
       "tests/App/bin/setup_databases.sh test",
-      "phpunit --log-events-text phpunit.log --no-coverage --no-logging --no-progress --testsuite Unit,Integration"
+      "phpunit --testsuite Unit,Integration --testdox --testdox-summary --no-coverage --no-logging"
     ],
     "test-coverage": [
       "rm -rf tests/App/var/*",
       "tests/App/bin/setup_databases.sh test",
-      "XDEBUG_MODE=coverage phpunit --log-events-text phpunit.log --no-progress --testsuite Unit,Integration --log-junit tests/.results/tests-junit.xml --coverage-clover tests/.results/tests-clover.xml --coverage-html tests/.results/html"
+      "XDEBUG_MODE=coverage phpunit --testsuite Unit,Integration --testdox --testdox-summary --log-junit tests/.results/tests-junit.xml --coverage-clover tests/.results/tests-clover.xml --coverage-html tests/.results/html/"
     ],
-    "unit": "phpunit --log-events-text phpunit.log --no-coverage --no-logging --no-progress --testsuite Unit",
-    "unit-coverage": "XDEBUG_MODE=coverage phpunit --log-events-text phpunit.log --no-progress --testsuite Unit --log-junit tests/.results/unit-junit.xml --coverage-clover tests/.results/coverage-unit.xml --coverage-html tests/.results/Unit"
+    "unit": "phpunit --testsuite Unit --testdox --testdox-summary --no-coverage --no-logging",
+    "unit-coverage": "XDEBUG_MODE=coverage phpunit --testsuite Unit --testdox --testdox-summary --log-junit tests/.results/unit-junit.xml --coverage-clover tests/.results/coverage-unit.xml --coverage-html tests/.results/Unit/"
   },
   "scripts-descriptions": {
     "cs": "Run PHP CS Fixer with kununu code standards",
@@ -120,6 +127,7 @@
     "rector": "Run Rector in dry-run mode with CI rules",
     "rector-fix": "Run Rector in fix mode with CI rules",
     "sniffer": "Run PHP_CodeSniffer",
+    "sniffer-fix": "Run PHP_CodeSniffer in fix mode",
     "test": "Run all tests",
     "test-coverage": "Run all tests with coverage report",
     "unit": "Run all unit tests",

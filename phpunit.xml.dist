@@ -1,20 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- https://docs.phpunit.de/en/12.5/ -->
+<!-- https://docs.phpunit.de/en/13.1/ -->
 <phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/12.5/phpunit.xsd"
+         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/13.1/phpunit.xsd"
          bootstrap="tests/bootstrap.php"
          colors="true"
          beStrictAboutChangesToGlobalState="true"
          displayDetailsOnAllIssues="true"
-         testdoxSummary="true"
-         testdox="true"
          cacheDirectory=".phpunit.cache">
-    <coverage>
-        <report>
-            <clover outputFile="tests/.results/tests-clover.xml"/>
-            <html outputDirectory="tests/.results/html/"/>
-        </report>
-    </coverage>
     <testsuites>
         <testsuite name="Integration">
             <directory>tests/Integration</directory>
@@ -23,9 +15,6 @@
             <directory>tests/Unit</directory>
         </testsuite>
     </testsuites>
-    <logging>
-        <junit outputFile="tests/.results/tests-junit.xml"/>
-    </logging>
     <source ignoreIndirectDeprecations="true" restrictNotices="true" restrictWarnings="true">
         <include>
             <directory>src</directory>
