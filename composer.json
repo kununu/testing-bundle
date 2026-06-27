@@ -21,7 +21,7 @@
   "require": {
     "php": ">=8.4",
     "ext-filter": "*",
-    "kununu/collections": "^7.0",
+    "kununu/collections": "^8.0",
     "kununu/data-fixtures": "^15.0",
     "symfony/config": "^6.4 || ^7.4",
     "symfony/dependency-injection": "^6.4 || ^7.4",
