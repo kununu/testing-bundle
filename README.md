@@ -94,32 +94,16 @@ See more:
 
 To test your code, load fixtures and call your endpoints, see:
 
-- [FixtureAwareTextCase](docs/Test/fixtures-aware-test-case.md)
+- [FixturesAwareTestCase](docs/Test/fixtures-aware-test-case.md)
 - [WebTestCase](docs/Test/web-test-case.md)
 - [Request Builder](docs/Test/request-builder.md)
 
 ------------------------------
 
-## Testing the bundle
+## Contributing
 
-This repository takes advantages of GitHub actions to run tests when a commit is performed to a branch.
-
-If you want to run the integration tests on your local machine you will need:
-
-- *pdo_mysql* extension
-- MySQL server
-- Elasticsearch cluster
-- OpenSearch cluster
-
-In your local environment to get everything ready for you, run `./tests/setupLocalTests.sh` and follow the instructions.
-
-Then you can run the tests: `vendor/bin/phpunit`.
-
-------------------------------
-
-## Contribute
-
-If you are interested in contributing read our [contributing guidelines](CONTRIBUTING.md).
+Interested in contributing? See our [contributing guidelines](CONTRIBUTING.md)
+for local setup, quality gates, and how to run the tests.
 
 ------------------------------
 
