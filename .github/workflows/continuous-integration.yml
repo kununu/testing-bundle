@@ -17,7 +17,7 @@ jobs:
 
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           fetch-depth: 0
 
@@ -27,7 +27,7 @@ jobs:
           php-version: 8.4
           coverage: none
           extensions: filter
-          tools: composer-dependency-analyser, composer-normalize, composer-require-checker, cs2pr
+          tools: cs2pr
 
       - name: Install Composer Dependencies
         uses: ramsey/composer-install@v4
@@ -35,17 +35,22 @@ jobs:
           dependency-versions: "highest"
           composer-options: "--prefer-stable --optimize-autoloader --no-progress --no-interaction"
 
+      - name: Run Composer Audit
+        run: composer audit --abandoned=report
+
       - name: Run Composer Dependency Analyser
-        run: composer-dependency-analyser
+        run: vendor/bin/composer-dependency-analyser
 
       - name: Run Composer Require Checker
-        run: composer-require-checker
+        run: vendor/bin/composer-require-checker
 
       - name: Run Composer Normalize
         run: composer-normalize --dry-run --indent-size 2 --indent-style space --no-check-lock --no-update-lock
 
       - name: Run PHP CS Fixer
-        run: vendor/bin/php-cs-fixer check --using-cache=no --config vendor/kununu/code-tools/php-cs-fixer.php src/ tests/
+        run: |
+          vendor/bin/php-cs-fixer check --using-cache=no --config vendor/kununu/code-tools/dist/php-cs-fixer.php.dist \
+            src/ tests/
 
       - name: Run PHP_CodeSniffer
         id: php-code-sniffer
@@ -69,6 +74,7 @@ jobs:
       matrix:
         php-version:
           - 8.4
+          - 8.5
         mysql-version:
           - 8.0
         elasticsearch-version:
@@ -134,7 +140,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           fetch-depth: 0
 
@@ -142,6 +148,7 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php-version }}
+          ini-values: "zend.assertions=1"
           coverage: pcov
           extensions: filter
 
@@ -190,7 +197,7 @@ jobs:
     name: Code Analysis
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
 
@@ -206,7 +213,14 @@ jobs:
           sed -i 's@'$GITHUB_WORKSPACE'@/github/workspace/@g' tests-junit.xml
 
       - name: SonarCloud Scan
-        uses: SonarSource/sonarqube-scan-action@v8.0.0
+        uses: SonarSource/sonarqube-scan-action@v8
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+      - name: Quality Gate check
+        uses: sonarsource/sonarqube-quality-gate-action@master
+        with:
+          pollingTimeoutSec: 60
+        env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}

@@ -107,7 +107,7 @@ final class SchemaCopierTest extends SchemaCopyTestCase
             );
 
         $this->expectException(IncompatibleAdaptersException::class);
-        $this->expectExceptionMessage(
+        $this->expectExceptionMessageIs(
             'Source and destination adapters must be of the same type! Source: MySql Destination: YourSql'
         );
 

@@ -307,7 +307,7 @@ final class RequestBuilderTest extends TestCase
     public function testBadStaticMethodCall(): void
     {
         $this->expectException(BadMethodCallException::class);
-        $this->expectExceptionMessage('Invalid static method "invalidMethod" called');
+        $this->expectExceptionMessageIs('Invalid static method "invalidMethod" called');
 
         // @phpstan-ignore staticMethod.notFound
         RequestBuilder::invalidMethod();
