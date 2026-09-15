@@ -45,7 +45,7 @@ jobs:
         run: vendor/bin/composer-require-checker
 
       - name: Run Composer Normalize
-        run: composer-normalize --dry-run --indent-size 2 --indent-style space --no-check-lock --no-update-lock
+        run: composer normalize --dry-run --indent-size 2 --indent-style space --no-check-lock --no-update-lock
 
       - name: Run PHP CS Fixer
         run: |
