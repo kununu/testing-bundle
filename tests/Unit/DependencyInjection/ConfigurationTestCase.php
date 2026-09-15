@@ -31,13 +31,13 @@ abstract class ConfigurationTestCase extends TestCase
             return;
         }
 
-        // The configuration is processed here instead of through assertConfigurationIsInvalid() because
-        // matthiasnoback/symfony-config-test hands the exception object to PHPUnit's
-        // ExceptionMessageIsOrContains constraint, which only accepts the message string since PHPUnit 13.2.
+        // matthiasnoback/symfony-config-test hands the exception object to PHPUnit's ExceptionMessageIsOrContains
+        // constraint, which only accepts the message string since PHPUnit 13.2, so assertConfigurationIsInvalid()
+        // can not be used here and the configuration is processed directly instead.
         //
-        // Until this is fixed upstream we can not use:
-        // $this->assertConfigurationIsInvalid($values, sprintf('kununu_testing.%s', $this->getNodeName()))
-        //
+        // Fixed upstream in SymfonyTest/SymfonyConfigTest@c3daa66 but not yet released (latest tag: v6.2.0).
+        // Once a release ships, bump the dependency and restore:
+        // $this->assertConfigurationIsInvalid($values, sprintf('kununu_testing.%s', $this->getNodeName()));
         try {
             new Processor()->processConfiguration($this->getConfiguration(), $values);
         } catch (InvalidConfigurationException $exception) {
