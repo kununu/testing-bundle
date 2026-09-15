@@ -1,12 +1,13 @@
+.claude
 .idea/
 .php_cs.cache
 .phpunit.cache
 .phpunit.result.cache
 composer.lock
+phpunit.log
 tests/.results/
 tests/App/.env.local
 tests/App/.env.test
 tests/App/config/reference.php
 tests/App/var/
 vendor/
-phpunit.log

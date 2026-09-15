@@ -7,4 +7,4 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Auto assign owner
-        uses: toshimaru/auto-author-assign@v3.0.2
+        uses: toshimaru/auto-author-assign@v3.1.0

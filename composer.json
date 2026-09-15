@@ -21,8 +21,8 @@
   "require": {
     "php": ">=8.4",
     "ext-filter": "*",
-    "kununu/collections": "^7.0",
-    "kununu/data-fixtures": "^15.0",
+    "kununu/collections": "^7.0 || ^8.0",
+    "kununu/data-fixtures": "^15.1",
     "symfony/config": "^6.4 || ^7.4",
     "symfony/dependency-injection": "^6.4 || ^7.4",
     "symfony/framework-bundle": "^6.4 || ^7.4",
@@ -37,15 +37,14 @@
     "doctrine/doctrine-migrations-bundle": "^3.7",
     "doctrine/orm": "^3.6",
     "elasticsearch/elasticsearch": "^7.10",
-    "kununu/code-tools": "^4.0",
+    "ergebnis/composer-normalize": "^2.53",
+    "kununu/code-tools": "^5.1",
+    "maglnet/composer-require-checker": "^4.20",
     "matthiasnoback/symfony-dependency-injection-test": "^6.2",
     "nyholm/psr7": "^1.8",
     "opensearch-project/opensearch-php": "^2.5",
-    "phpstan/phpstan": "^2.1",
-    "phpstan/phpstan-phpunit": "^2.0",
-    "phpunit/phpunit": "^13.1",
+    "phpunit/phpunit": "^13.3",
     "psr/cache": "^2.0",
-    "rector/rector": "^2.3",
     "shipmonk/composer-dependency-analyser": "^1.8",
     "symfony/browser-kit": "^6.4 || ^7.4",
     "symfony/dotenv": "^6.4 || ^7.4",
@@ -75,12 +74,38 @@
   },
   "config": {
     "allow-plugins": {
+      "ergebnis/composer-normalize": true,
       "kununu/code-tools": true,
       "php-http/discovery": true
     },
     "sort-packages": true
   },
   "scripts": {
+    "ci": [
+      "print-section 'Removing integration tests caches'",
+      "rm -rf tests/App/var/*",
+      "print-section 'Security Audit'",
+      "composer audit --abandoned=report",
+      "print-section 'Dependency Analyser'",
+      "composer-dependency-analyser",
+      "print-section 'Composer Require Checker'",
+      "composer-require-checker",
+      "print-section 'Composer Normalize'",
+      "composer normalize --dry-run --indent-size 2 --indent-style space --no-check-lock --no-update-lock",
+      "print-section 'PHP CS Fixer'",
+      "@cs",
+      "print-section 'PHP CodeSniffer'",
+      "@sniffer",
+      "print-section 'Rector'",
+      "@rector",
+      "print-section 'PHPStan'",
+      "@phpstan",
+      "print-section 'Tests & Coverage'",
+      "@test-coverage",
+      "print-section 'Coverage Check'",
+      "@coverage-check"
+    ],
+    "coverage-check": "coverage-check tests/.results/tests-cobertura.xml 95",
     "cs": [
       "rm -rf tests/App/var/*",
       "composer kununu:cs-fixer src/ tests/"
@@ -93,8 +118,10 @@
     "integration-coverage": [
       "rm -rf tests/App/var/*",
       "tests/App/bin/setup_databases.sh test",
-      "XDEBUG_MODE=coverage phpunit --testsuite Integration --testdox --testdox-summary --log-junit tests/.results/integration-junit.xml --coverage-clover tests/.results/coverage-integration --coverage-html tests/.results/Integration/"
+      "@putenv XDEBUG_MODE=coverage",
+      "@php -d zend.assertions=1 vendor/bin/phpunit --testsuite Integration --testdox --testdox-summary --log-junit tests/.results/integration-junit.xml --coverage-clover tests/.results/coverage-integration --coverage-html tests/.results/Integration/"
     ],
+    "normalize-fix": "composer normalize --indent-size 2 --indent-style space --no-check-lock --no-update-lock",
     "phpstan": "phpstan",
     "rector": "rector process --dry-run --config rector-ci.php src/ tests/",
     "rector-fix": "rector process --config rector-ci.php src/ tests/",
@@ -114,10 +141,14 @@
     "test-coverage": [
       "rm -rf tests/App/var/*",
       "tests/App/bin/setup_databases.sh test",
-      "XDEBUG_MODE=coverage phpunit --testsuite Unit,Integration --testdox --testdox-summary --log-junit tests/.results/tests-junit.xml --coverage-clover tests/.results/tests-clover.xml --coverage-html tests/.results/html/"
+      "@putenv XDEBUG_MODE=coverage",
+      "@php -d zend.assertions=1 vendor/bin/phpunit --testsuite Unit,Integration --testdox --testdox-summary --log-junit tests/.results/tests-junit.xml --coverage-clover tests/.results/tests-clover.xml --coverage-cobertura tests/.results/tests-cobertura.xml --coverage-html tests/.results/html/"
     ],
     "unit": "phpunit --testsuite Unit --testdox --testdox-summary --no-coverage --no-logging",
-    "unit-coverage": "XDEBUG_MODE=coverage phpunit --testsuite Unit --testdox --testdox-summary --log-junit tests/.results/unit-junit.xml --coverage-clover tests/.results/coverage-unit.xml --coverage-html tests/.results/Unit/"
+    "unit-coverage": [
+      "@putenv XDEBUG_MODE=coverage",
+      "@php -d zend.assertions=1 vendor/bin/phpunit phpunit --testsuite Unit --testdox --testdox-summary --log-junit tests/.results/unit-junit.xml --coverage-clover tests/.results/coverage-unit.xml --coverage-html tests/.results/Unit/"
+    ]
   },
   "scripts-descriptions": {
     "cs": "Run PHP CS Fixer with kununu code standards",

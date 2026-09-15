@@ -7,7 +7,8 @@ use Kununu\TestingBundle\DependencyInjection\Configuration;
 use Matthias\SymfonyConfigTest\PhpUnit\ConfigurationTestCaseTrait;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
-use Throwable;
+use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
+use Symfony\Component\Config\Definition\Processor;
 
 abstract class ConfigurationTestCase extends TestCase
 {
@@ -24,18 +25,31 @@ abstract class ConfigurationTestCase extends TestCase
     #[DataProvider('invalidProcessedConfigurationDataProvider')]
     public function testInvalidConfigurationForNode(?array $values): void
     {
-        $message = '';
-        try {
-            $invalid = true;
-            if (null !== $values) {
-                $this->assertConfigurationIsInvalid($values, sprintf('kununu_testing.%s', $this->getNodeName()));
-            }
-        } catch (Throwable $t) {
-            $invalid = false;
-            $message = $t->getMessage();
+        if (null === $values) {
+            $this->expectNotToPerformAssertions();
+
+            return;
         }
 
-        self::assertTrue($invalid, $message);
+        // matthiasnoback/symfony-config-test hands the exception object to PHPUnit's ExceptionMessageIsOrContains
+        // constraint, which only accepts the message string since PHPUnit 13.2, so assertConfigurationIsInvalid()
+        // can not be used here and the configuration is processed directly instead.
+        //
+        // Fixed upstream in SymfonyTest/SymfonyConfigTest@c3daa66 but not yet released (latest tag: v6.2.0).
+        // Once a release ships, bump the dependency and restore:
+        // $this->assertConfigurationIsInvalid($values, sprintf('kununu_testing.%s', $this->getNodeName()));
+        try {
+            new Processor()->processConfiguration($this->getConfiguration(), $values);
+        } catch (InvalidConfigurationException $exception) {
+            self::assertStringContainsString(
+                sprintf('kununu_testing.%s', $this->getNodeName()),
+                $exception->getMessage()
+            );
+
+            return;
+        }
+
+        self::fail(sprintf('Configuration for node "%s" should be invalid', $this->getNodeName()));
     }
 
     public static function invalidProcessedConfigurationDataProvider(): ?array
