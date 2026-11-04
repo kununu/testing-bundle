@@ -11,3 +11,4 @@ tests/App/.env.test
 tests/App/config/reference.php
 tests/App/var/
 vendor/
+/tools/

@@ -27,7 +27,7 @@ jobs:
           php-version: 8.4
           coverage: none
           extensions: filter
-          tools: cs2pr
+          tools: 'composer-normalize, composer-require-checker, cs2pr'
 
       - name: Install Composer Dependencies
         uses: ramsey/composer-install@v4
@@ -42,10 +42,10 @@ jobs:
         run: vendor/bin/composer-dependency-analyser
 
       - name: Run Composer Require Checker
-        run: vendor/bin/composer-require-checker
+        run: composer-require-checker
 
       - name: Run Composer Normalize
-        run: composer normalize --dry-run --indent-size 2 --indent-style space --no-check-lock --no-update-lock
+        run: composer-normalize --dry-run --indent-size 2 --indent-style space --no-check-lock --no-update-lock
 
       - name: Run PHP CS Fixer
         run: |
