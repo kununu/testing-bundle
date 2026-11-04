@@ -69,8 +69,12 @@ final class RequestBuilder extends AbstractBasicItem
     private const string HTTP_HEADER_PREFIX = 'HTTP_';
     private const string HTTP_AUTHORIZATION_HEADER = 'HTTP_AUTHORIZATION';
     private const string HTTP_AUTHORIZATION_HEADER_BEARER = 'Bearer %s';
+    private const string CONTENT_TYPE = 'CONTENT_TYPE';
+    private const string HTTP_CONTENT_TYPE = 'HTTP_CONTENT_TYPE';
+    private const string JSON_CONTENT_TYPE = 'application/json';
 
     private array $server = [];
+    private ?string $jsonContent = null;
 
     private function __construct(string $method)
     {
@@ -95,7 +99,7 @@ final class RequestBuilder extends AbstractBasicItem
             $this->buildUri(),
             $this->getAttribute(self::PARAMETERS),
             $this->getAttribute(self::FILES),
-            $this->server,
+            $this->buildServer(),
             $this->getAttribute(self::RAW_CONTENT),
         ];
     }
@@ -110,7 +114,9 @@ final class RequestBuilder extends AbstractBasicItem
 
     public function withContent(array $content): self
     {
-        return $this->withRawContent(json_encode($content));
+        $this->jsonContent = json_encode($content, JSON_THROW_ON_ERROR);
+
+        return $this->withRawContent($this->jsonContent);
     }
 
     public function withHeader(string $headerName, string $headerValue): self
@@ -131,6 +137,36 @@ final class RequestBuilder extends AbstractBasicItem
         $this->server[$parameterName] = $parameterValue;
 
         return $this;
+    }
+
+    // CONTENT_TYPE is a server parameter without the HTTP_ prefix, as in a real CGI request. Without it Symfony sends
+    // the JSON body of withContent() as a form post (application/x-www-form-urlencoded). A Content-Type set explicitly
+    // wins, also when it was set with withHeader(), and raw content replacing the JSON body gets no Content-Type.
+    private function buildServer(): array
+    {
+        if (null === $this->jsonContent
+            || $this->jsonContent !== $this->getAttribute(self::RAW_CONTENT)
+            || isset($this->server[self::CONTENT_TYPE])
+        ) {
+            return $this->server;
+        }
+
+        return array_merge(
+            $this->server,
+            [self::CONTENT_TYPE => $this->getContentTypeHeader() ?? self::JSON_CONTENT_TYPE]
+        );
+    }
+
+    // withHeader('Content-Type', ...) keeps the dash (HTTP_CONTENT-TYPE), which Symfony reads as the same header
+    private function getContentTypeHeader(): ?string
+    {
+        foreach ($this->server as $name => $value) {
+            if (self::HTTP_CONTENT_TYPE === str_replace('-', '_', strtoupper((string) $name))) {
+                return $value;
+            }
+        }
+
+        return null;
     }
 
     private function buildUri(): ?string
