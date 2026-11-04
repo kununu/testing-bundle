@@ -8,6 +8,7 @@ use Kununu\TestingBundle\Test\RequestBuilder;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\HttpFoundation\Request;
 
 final class RequestBuilderTest extends TestCase
 {
@@ -247,6 +248,79 @@ final class RequestBuilderTest extends TestCase
         [, , , , , $content] = $request->build();
 
         self::assertEquals(json_encode(['data' => ['key' => 'value']]), $content);
+    }
+
+    #[DataProvider('buildRequestWithContentTypeDataProvider')]
+    public function testBuildRequestWithContentType(
+        RequestBuilder $request,
+        array $expectedServer,
+        ?string $expectedContentType,
+    ): void {
+        [$method, $uri, $parameters, $files, $server, $content] = $request->build();
+
+        self::assertEquals($expectedServer, $server);
+
+        // Request::create() is what the test client uses: without CONTENT_TYPE it treats the body as a form post
+        $symfonyRequest = Request::create((string) $uri, $method, $parameters, [], $files, $server, $content);
+
+        self::assertEquals($expectedContentType, $symfonyRequest->headers->get('Content-Type'));
+    }
+
+    public static function buildRequestWithContentTypeDataProvider(): array
+    {
+        $json = ['data' => ['key' => 'value']];
+
+        return [
+            'post_with_content'                       => [
+                RequestBuilder::aPostRequest()->withUri('/')->withContent($json),
+                ['CONTENT_TYPE' => 'application/json'],
+                'application/json',
+            ],
+            'put_with_content'                        => [
+                RequestBuilder::aPutRequest()->withUri('/')->withContent($json),
+                ['CONTENT_TYPE' => 'application/json'],
+                'application/json',
+            ],
+            'patch_with_content'                      => [
+                RequestBuilder::aPatchRequest()->withUri('/')->withContent($json),
+                ['CONTENT_TYPE' => 'application/json'],
+                'application/json',
+            ],
+            'server_parameter_set_before_content'     => [
+                RequestBuilder::aPostRequest()
+                    ->withUri('/')
+                    ->withServerParameter('CONTENT_TYPE', 'application/merge-patch+json')
+                    ->withContent($json),
+                ['CONTENT_TYPE' => 'application/merge-patch+json'],
+                'application/merge-patch+json',
+            ],
+            'server_parameter_set_after_content'      => [
+                RequestBuilder::aPostRequest()
+                    ->withUri('/')
+                    ->withContent($json)
+                    ->withServerParameter('CONTENT_TYPE', 'application/merge-patch+json'),
+                ['CONTENT_TYPE' => 'application/merge-patch+json'],
+                'application/merge-patch+json',
+            ],
+            'header_set_after_content'                => [
+                RequestBuilder::aPostRequest()
+                    ->withUri('/')
+                    ->withContent($json)
+                    ->withHeader('Content-Type', 'application/vnd.api+json'),
+                ['HTTP_CONTENT-TYPE' => 'application/vnd.api+json', 'CONTENT_TYPE' => 'application/vnd.api+json'],
+                'application/vnd.api+json',
+            ],
+            'raw_content_replaces_content'            => [
+                RequestBuilder::aPostRequest()->withUri('/')->withContent($json)->withRawContent('a=1'),
+                [],
+                'application/x-www-form-urlencoded',
+            ],
+            'raw_content_only'                        => [
+                RequestBuilder::aPostRequest()->withUri('/')->withRawContent('a=1'),
+                [],
+                'application/x-www-form-urlencoded',
+            ],
+        ];
     }
 
     public function testBuildRequestWithRawContent(): void

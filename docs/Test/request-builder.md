@@ -45,7 +45,9 @@ public function build(): array
 // Set an HTTP_AUTHORIZATION header with the value of "Bearer $token"
 public function withAuthorization(string $token): self;
 
-// Set the content of the request as an array that internally is transformed to JSON and provided as the raw body data
+// Set the content of the request as an array that internally is transformed to JSON and provided as the raw body data.
+// The request is sent with a "Content-Type: application/json" (CONTENT_TYPE server parameter), unless a Content-Type
+// was set explicitly with withServerParameter('CONTENT_TYPE', ...) or withHeader('Content-Type', ...)
 public function withContent(array $content): self;
 
 // Set the request files
@@ -64,7 +66,7 @@ public function withParameters(array $parameters): self;
 // Set the request query string parameters
 public function withQueryParameters(array $queryParameters): self;
 
-// Set the request raw body data
+// Set the request raw body data (no Content-Type is set; use withServerParameter('CONTENT_TYPE', ...) if needed)
 public function withRawContent(string $content): self;
 
 // Set a request server parameter (HTTP headers are referenced with an HTTP_ prefix as PHP does)
